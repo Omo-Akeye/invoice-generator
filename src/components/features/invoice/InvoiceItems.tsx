@@ -50,7 +50,12 @@ export const InvoiceItems: React.FC = () => {
                                     onChange={(e) => updateItem(item.id, { quantity: parseFloat(e.target.value) || 0 })}
                                 />
                                 <div className="relative">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">$</span>
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
+                                        {invoice.settings.currency === 'NGN' ? '₦' :
+                                            invoice.settings.currency === 'EUR' ? '€' :
+                                                invoice.settings.currency === 'GBP' ? '£' :
+                                                    invoice.settings.currency === 'JPY' ? '¥' : '$'}
+                                    </span>
                                     <Input
                                         className="pl-6"
                                         type="number"

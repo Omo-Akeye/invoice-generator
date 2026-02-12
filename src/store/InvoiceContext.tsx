@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import type { Invoice, LineItem, CompanyInfo, ClientInfo, InvoiceSettings } from '../types/invoice';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
@@ -49,11 +49,11 @@ const DEFAULT_INVOICE: Invoice = {
         },
     ],
     settings: {
-        currency: 'USD',
-        taxRate: 0,
+        currency: 'NGN',
+        taxRate: 7.5, // Standard Nigerian VAT
         discountValue: 0,
         discountType: 'percentage',
-        includeTax: false,
+        includeTax: true,
     },
     subtotal: 0,
     taxAmount: 0,
@@ -64,36 +64,29 @@ const DEFAULT_INVOICE: Invoice = {
 const InvoiceContext = createContext<InvoiceContextType | undefined>(undefined);
 
 export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [invoice, setInvoice] = useLocalStorage<Invoice>('invoice-data', DEFAULT_INVOICE);
+    const [rawInvoice, setInvoice] = useLocalStorage<Invoice>('invoice-data', DEFAULT_INVOICE);
 
-    // Re-calculate totals whenever items or settings change
-    useEffect(() => {
-        const subtotal = calculateSubtotal(invoice.items);
-        const taxAmount = invoice.settings.includeTax
-            ? calculateTaxAmount(subtotal, invoice.settings.taxRate)
+    // Derived state: calculate totals on every render (memoized for performance)
+    const invoice = useMemo(() => {
+        const subtotal = calculateSubtotal(rawInvoice.items);
+        const taxAmount = rawInvoice.settings.includeTax
+            ? calculateTaxAmount(subtotal, rawInvoice.settings.taxRate)
             : 0;
         const discountAmount = calculateDiscountAmount(
             subtotal,
-            invoice.settings.discountValue,
-            invoice.settings.discountType
+            rawInvoice.settings.discountValue,
+            rawInvoice.settings.discountType
         );
         const total = calculateGrandTotal(subtotal, taxAmount, discountAmount);
 
-        if (
-            subtotal !== invoice.subtotal ||
-            taxAmount !== invoice.taxAmount ||
-            discountAmount !== invoice.discountAmount ||
-            total !== invoice.total
-        ) {
-            setInvoice(prev => ({
-                ...prev,
-                subtotal,
-                taxAmount,
-                discountAmount,
-                total
-            }));
-        }
-    }, [invoice.items, invoice.settings, invoice.subtotal, invoice.taxAmount, invoice.discountAmount, invoice.total, setInvoice]);
+        return {
+            ...rawInvoice,
+            subtotal,
+            taxAmount,
+            discountAmount,
+            total,
+        };
+    }, [rawInvoice]);
 
     const updateCompany = (company: Partial<CompanyInfo>) => {
         setInvoice(prev => ({ ...prev, company: { ...prev.company, ...company } }));

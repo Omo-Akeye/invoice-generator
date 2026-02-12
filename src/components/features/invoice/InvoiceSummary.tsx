@@ -33,6 +33,23 @@ export const InvoiceSummary: React.FC = () => {
                             />
                         )}
 
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider ml-1">
+                                Currency
+                            </label>
+                            <select
+                                className="flex h-10 w-full rounded-apple border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary transition-all duration-200"
+                                value={invoice.settings.currency}
+                                onChange={(e) => updateSettings({ currency: e.target.value as any })}
+                            >
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                                <option value="JPY">JPY (¥)</option>
+                                <option value="NGN">NGN (₦)</option>
+                            </select>
+                        </div>
+
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Discount</label>

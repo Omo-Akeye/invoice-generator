@@ -1,4 +1,4 @@
-export type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY';
+export type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'NGN';
 
 export interface CompanyInfo {
     name: string;

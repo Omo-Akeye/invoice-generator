@@ -42,7 +42,7 @@ export const CompanyForm: React.FC = () => {
                     <div className="flex-1">
                         <Input
                             label="Company Name"
-                            placeholder="e.g. Acme Corp"
+                            placeholder="e.g. Dangote Group"
                             value={invoice.company.name}
                             onChange={(e) => updateCompany({ name: e.target.value })}
                         />
@@ -51,21 +51,21 @@ export const CompanyForm: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                         label="Email Address"
-                        placeholder="hello@acme.com"
+                        placeholder="hello@company.com.ng"
                         type="email"
                         value={invoice.company.email}
                         onChange={(e) => updateCompany({ email: e.target.value })}
                     />
                     <Input
                         label="Phone Number"
-                        placeholder="+1 (555) 000-0000"
+                        placeholder="+234 803 000 0000"
                         value={invoice.company.phone}
                         onChange={(e) => updateCompany({ phone: e.target.value })}
                     />
                 </div>
                 <Input
                     label="Address"
-                    placeholder="123 Apple Blvd, Cupertino, CA"
+                    placeholder="1 Victoria Island, Lagos, Nigeria"
                     value={invoice.company.address}
                     onChange={(e) => updateCompany({ address: e.target.value })}
                 />

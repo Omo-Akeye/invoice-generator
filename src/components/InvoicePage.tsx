@@ -28,9 +28,7 @@ export const InvoicePage: React.FC = () => {
             <header className="sticky top-0 z-30 w-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 no-print">
                 <div className="invoice-container px-6 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center">
-                            <span className="text-white font-black text-lg leading-none">I</span>
-                        </div>
+                        <img src="/favicon.svg" alt="Logo" className="w-8 h-8 rounded-lg" />
                         <h1 className="text-lg font-bold tracking-tight hidden sm:block">InvoicePro</h1>
                     </div>
 

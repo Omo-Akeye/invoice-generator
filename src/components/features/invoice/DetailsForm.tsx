@@ -11,20 +11,20 @@ export const ClientForm: React.FC = () => {
             <div className="space-y-4">
                 <Input
                     label="Client Name"
-                    placeholder="e.g. John Doe"
+                    placeholder="e.g. Fola Adeola"
                     value={invoice.client.name}
                     onChange={(e) => updateClient({ name: e.target.value })}
                 />
                 <Input
                     label="Client Email"
-                    placeholder="john@example.com"
+                    placeholder="fola@gtbank.com"
                     type="email"
                     value={invoice.client.email}
                     onChange={(e) => updateClient({ email: e.target.value })}
                 />
                 <Input
                     label="Client Address"
-                    placeholder="456 client Way, New York, NY"
+                    placeholder="8 Abuja Street, Wuse 2, Abuja"
                     value={invoice.client.address}
                     onChange={(e) => updateClient({ address: e.target.value })}
                 />
