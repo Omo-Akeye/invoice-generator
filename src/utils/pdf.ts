@@ -7,7 +7,7 @@ export const exportToPDF = async (elementId: string, filename: string) => {
 
     try {
         const canvas = await html2canvas(element, {
-            scale: 2, // High resolution
+            scale: 2, 
             useCORS: true,
             logging: false,
             backgroundColor: '#ffffff',

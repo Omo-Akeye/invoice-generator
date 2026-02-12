@@ -9,11 +9,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
         const variants = {
-            primary: 'bg-brand-primary text-white hover:bg-blue-600 shadow-sm active:scale-[0.98]',
+            primary: 'bg-brand-primary text-white hover:bg-blue-600 active:scale-[0.98]',
             secondary: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 active:scale-[0.98]',
             outline: 'border border-neutral-200 dark:border-neutral-700 bg-transparent text-neutral-900 dark:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-900 active:scale-[0.98]',
             ghost: 'bg-transparent text-neutral-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 dark:text-neutral-400 active:scale-[0.98]',
-            danger: 'bg-red-500 text-white hover:bg-red-600 shadow-sm active:scale-[0.98]',
+            danger: 'bg-red-500 text-white hover:bg-red-600 active:scale-[0.98]',
         };
 
         const sizes = {
@@ -27,7 +27,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             <button
                 ref={ref}
                 className={cn(
-                    'inline-flex items-center justify-center rounded-apple font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary disabled:opacity-50 disabled:pointer-events-none',
+                    'inline-flex items-center justify-center rounded-apple font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary disabled:opacity-50 disabled:pointer-events-none cursor-pointer disabled:cursor-not-allowed',
                     variants[variant],
                     sizes[size],
                     className

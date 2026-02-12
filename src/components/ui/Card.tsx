@@ -10,7 +10,7 @@ interface CardProps {
 export const Card: React.FC<CardProps> = ({ children, className, title }) => {
     return (
         <div className={cn(
-            'bg-white dark:bg-neutral-900 rounded-apple border border-neutral-200 dark:border-neutral-800 shadow-premium overflow-hidden transition-all duration-300',
+            'bg-white dark:bg-neutral-900 rounded-apple border border-neutral-200 dark:border-neutral-800 overflow-hidden transition-all duration-300',
             className
         )}>
             {title && (

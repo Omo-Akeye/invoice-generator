@@ -7,7 +7,7 @@
     --color-brand-secondary: #86868b;
     /* Apple Gray */
     --radius-apple: 12px;
-    --shadow-premium: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05);
+    --shadow-premium: none;
 }
 
 :root {
@@ -17,6 +17,14 @@
 body {
     @apply bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
 }
 
 /* Custom scrollbar for a premium feel */

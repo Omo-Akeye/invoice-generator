@@ -50,7 +50,7 @@ const DEFAULT_INVOICE: Invoice = {
     ],
     settings: {
         currency: 'NGN',
-        taxRate: 7.5, // Standard Nigerian VAT
+        taxRate: 7.5,
         discountValue: 0,
         discountType: 'percentage',
         includeTax: true,
@@ -66,7 +66,7 @@ const InvoiceContext = createContext<InvoiceContextType | undefined>(undefined);
 export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [rawInvoice, setInvoice] = useLocalStorage<Invoice>('invoice-data', DEFAULT_INVOICE);
 
-    // Derived state: calculate totals on every render (memoized for performance)
+
     const invoice = useMemo(() => {
         const subtotal = calculateSubtotal(rawInvoice.items);
         const taxAmount = rawInvoice.settings.includeTax
@@ -122,7 +122,7 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
             items: prev.items.map(item => {
                 if (item.id === id) {
                     const updatedItem = { ...item, ...updates };
-                    // Auto-calculate item total
+             
                     if ('quantity' in updates || 'unitPrice' in updates) {
                         updatedItem.total = calculateLineItemTotal(updatedItem.quantity, updatedItem.unitPrice);
                     }

@@ -13,7 +13,7 @@ export const InvoiceItems: React.FC = () => {
     return (
         <Card title="LINE ITEMS">
             <div className="space-y-4">
-                {/* Header - visible only on desktop */}
+
                 <div className="hidden md:grid grid-cols-[1fr_2fr_80px_120px_100px_40px] gap-4 px-1 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
                     <div>Item Name</div>
                     <div>Description</div>
@@ -46,8 +46,10 @@ export const InvoiceItems: React.FC = () => {
                                 <Input
                                     type="number"
                                     min="1"
-                                    value={item.quantity}
+                                    placeholder="0"
+                                    value={item.quantity === 0 ? '' : item.quantity}
                                     onChange={(e) => updateItem(item.id, { quantity: parseFloat(e.target.value) || 0 })}
+                                    onFocus={(e) => e.target.select()}
                                 />
                                 <div className="relative">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
@@ -61,8 +63,10 @@ export const InvoiceItems: React.FC = () => {
                                         type="number"
                                         min="0"
                                         step="0.01"
-                                        value={item.unitPrice}
+                                        placeholder="0.00"
+                                        value={item.unitPrice === 0 ? '' : item.unitPrice}
                                         onChange={(e) => updateItem(item.id, { unitPrice: parseFloat(e.target.value) || 0 })}
+                                        onFocus={(e) => e.target.select()}
                                     />
                                 </div>
                                 <div className="flex items-center justify-end h-10 text-sm font-semibold text-neutral-900 dark:text-neutral-100">

@@ -7,7 +7,7 @@ import { InvoiceSummary } from './features/invoice/InvoiceSummary';
 import { InvoicePreview } from './features/invoice/InvoicePreview';
 import { Button } from './ui/Button';
 import { TextArea } from './ui/Input';
-import { Download, Trash2, Printer, Layout } from 'lucide-react';
+import { Download, Trash2, Layout } from 'lucide-react';
 import { exportToPDF } from '../utils/pdf';
 import { motion } from 'framer-motion';
 
@@ -15,16 +15,17 @@ export const InvoicePage: React.FC = () => {
     const { invoice, updateInvoiceDetails, clearInvoice } = useInvoice();
 
     const handleExport = async () => {
-        await exportToPDF('invoice-preview', `invoice-${invoice.invoiceNumber || 'draft'}`);
-    };
+        const defaultName = invoice.invoiceNumber || 'draft-invoice';
+        const fileName = window.prompt('Enter filename for PDF:', defaultName);
 
-    const handlePrint = () => {
-        window.print();
+        if (fileName !== null) {
+            await exportToPDF('invoice-preview', fileName || defaultName);
+        }
     };
 
     return (
         <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
-            {/* Top Navbar */}
+
             <header className="sticky top-0 z-30 w-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 no-print">
                 <div className="invoice-container px-6 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -38,10 +39,6 @@ export const InvoicePage: React.FC = () => {
                             Clear
                         </Button>
                         <div className="w-[1px] h-6 bg-neutral-200 dark:bg-neutral-800 mx-2" />
-                        <Button variant="outline" size="sm" onClick={handlePrint}>
-                            <Printer size={16} className="mr-2" />
-                            Print
-                        </Button>
                         <Button variant="primary" size="sm" onClick={handleExport}>
                             <Download size={16} className="mr-2" />
                             Export PDF
@@ -53,7 +50,6 @@ export const InvoicePage: React.FC = () => {
             <main className="invoice-container px-4 py-8">
                 <div className="flex flex-col xl:flex-row gap-8 items-start">
 
-                    {/* Form Side */}
                     <div className="w-full xl:w-[60%] space-y-8 no-print pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -79,7 +75,7 @@ export const InvoicePage: React.FC = () => {
 
                             <InvoiceSummary />
 
-                            <div className="bg-white dark:bg-neutral-900 rounded-apple p-6 border border-neutral-200 dark:border-neutral-800 shadow-premium">
+                            <div className="bg-white dark:bg-neutral-900 rounded-apple p-6 border border-neutral-200 dark:border-neutral-800">
                                 <TextArea
                                     label="Notes / Terms"
                                     placeholder="Payment is due within 14 days. Thank you for your business!"
@@ -91,7 +87,6 @@ export const InvoicePage: React.FC = () => {
                         </motion.div>
                     </div>
 
-                    {/* Preview Side */}
                     <div className="w-full xl:w-[40%] xl:sticky xl:top-24 space-y-4">
                         <div className="flex items-center justify-between mb-4 no-print">
                             <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest flex items-center">
@@ -101,9 +96,8 @@ export const InvoicePage: React.FC = () => {
                             <p className="text-[10px] text-neutral-400 font-medium italic">Changes update instantly</p>
                         </div>
 
-                        <div className="xl:scale-[0.6] xl:origin-top-left 2xl:scale-[0.7] transform transition-transform border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden shadow-2xl bg-neutral-100 dark:bg-neutral-900 group">
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors pointer-events-none z-10" />
-                            <div className="bg-white pointer-events-none xl:pointer-events-auto">
+                        <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-white group w-full">
+                            <div className="bg-white">
                                 <InvoicePreview />
                             </div>
                         </div>

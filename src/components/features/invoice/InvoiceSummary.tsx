@@ -18,7 +18,7 @@ export const InvoiceSummary: React.FC = () => {
                                 type="checkbox"
                                 checked={invoice.settings.includeTax}
                                 onChange={(e) => updateSettings({ includeTax: e.target.checked })}
-                                className="w-4 h-4 rounded border-neutral-300 text-brand-primary focus:ring-brand-primary"
+                                className="w-4 h-4 rounded border-neutral-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
                             />
                         </div>
 
@@ -28,8 +28,10 @@ export const InvoiceSummary: React.FC = () => {
                                 type="number"
                                 min="0"
                                 max="100"
-                                value={invoice.settings.taxRate}
+                                placeholder="0"
+                                value={invoice.settings.taxRate === 0 ? '' : invoice.settings.taxRate}
                                 onChange={(e) => updateSettings({ taxRate: parseFloat(e.target.value) || 0 })}
+                                onFocus={(e) => e.target.select()}
                             />
                         )}
 
@@ -38,7 +40,7 @@ export const InvoiceSummary: React.FC = () => {
                                 Currency
                             </label>
                             <select
-                                className="flex h-10 w-full rounded-apple border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary transition-all duration-200"
+                                className="flex h-10 w-full rounded-apple border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary transition-all duration-200 cursor-pointer"
                                 value={invoice.settings.currency}
                                 onChange={(e) => updateSettings({ currency: e.target.value as any })}
                             >
@@ -65,8 +67,10 @@ export const InvoiceSummary: React.FC = () => {
                             <Input
                                 type="number"
                                 min="0"
-                                value={invoice.settings.discountValue}
+                                placeholder="0"
+                                value={invoice.settings.discountValue === 0 ? '' : invoice.settings.discountValue}
                                 onChange={(e) => updateSettings({ discountValue: parseFloat(e.target.value) || 0 })}
+                                onFocus={(e) => e.target.select()}
                             />
                         </div>
                     </div>
