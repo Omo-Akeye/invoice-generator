@@ -1,11 +1,14 @@
 import { InvoiceProvider } from './store/InvoiceContext';
 import { InvoicePage } from './components/InvoicePage';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
 function App() {
   return (
-    <InvoiceProvider>
-      <InvoicePage />
-    </InvoiceProvider>
+    <ErrorBoundary>
+      <InvoiceProvider>
+        <InvoicePage />
+      </InvoiceProvider>
+    </ErrorBoundary>
   );
 }
 

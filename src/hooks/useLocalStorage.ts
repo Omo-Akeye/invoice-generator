@@ -6,7 +6,6 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     const [isLoading, setIsLoading] = useState(true);
     const initialValueRef = useRef(initialValue);
 
-    // Load and decrypt data from localStorage on mount
     useEffect(() => {
         let cancelled = false;
 
@@ -15,20 +14,16 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
                 const raw = window.localStorage.getItem(key);
 
                 if (!raw) {
-                    // No stored data — keep the initial value
                     return;
                 }
 
                 if (isEncryptedData(raw)) {
-                    // Decrypt the encrypted data
                     const decrypted = await decryptData(raw);
                     if (!cancelled) setStoredValue(JSON.parse(decrypted));
                 } else {
-                    // Legacy plain JSON — parse it, then auto-migrate to encrypted
                     const parsed = JSON.parse(raw) as T;
                     if (!cancelled) setStoredValue(parsed);
 
-                    // Migrate: re-save as encrypted in the background
                     const encrypted = await encryptData(JSON.stringify(parsed));
                     window.localStorage.setItem(key, encrypted);
                 }
@@ -44,12 +39,10 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         return () => { cancelled = true; };
     }, [key]);
 
-    // Encrypt and write to localStorage on every update
     const setValue = useCallback((value: T | ((val: T) => T)) => {
         setStoredValue((prevValue) => {
             const valueToStore = value instanceof Function ? value(prevValue) : value;
 
-            // Encrypt asynchronously, then persist
             encryptData(JSON.stringify(valueToStore))
                 .then((encrypted) => {
                     window.localStorage.setItem(key, encrypted);

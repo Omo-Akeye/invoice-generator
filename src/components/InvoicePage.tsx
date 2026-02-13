@@ -15,6 +15,9 @@ import { formatCurrency } from '../utils/formatters';
 import { cn } from '../utils/cn';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 
+import { Footer } from './ui/Footer';
+import { Loader2 } from 'lucide-react';
+
 type Section = 'template' | 'details' | 'parties' | 'items' | 'summary' | 'notes';
 
 const AccordionSection: React.FC<{
@@ -79,14 +82,28 @@ const AccordionSection: React.FC<{
 };
 
 export const InvoicePage: React.FC = () => {
-    const { invoice, isLoading, updateInvoiceDetails, clearInvoice } = useInvoice();
+    const { invoice, isLoading, isValid, updateInvoiceDetails, clearInvoice } = useInvoice();
     const [activeSection, setActiveSection] = useState<Section>('template');
     const [showMobilePreview, setShowMobilePreview] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
     const isMobile = useMediaQuery('(max-width: 1279px)');
 
     const handleExport = async () => {
-        const filename = invoice.invoiceNumber || 'draft-invoice';
-        await exportToPDF('invoice-preview', filename);
+        if (!isValid) {
+            alert('Please add a client name and at least one item with a price before exporting.');
+            return;
+        }
+
+        try {
+            setIsExporting(true);
+            const filename = invoice.invoiceNumber || 'draft-invoice';
+            await exportToPDF('invoice-preview', filename);
+        } catch (error) {
+            console.error('PDF Export Error:', error);
+            alert('Failed to generate PDF. Please try again.');
+        } finally {
+            setIsExporting(false);
+        }
     };
 
     if (isLoading) {
@@ -109,7 +126,7 @@ export const InvoicePage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 pb-32 xl:pb-8">
+        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 flex flex-col">
             <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 no-print">
                 <div className="invoice-container px-6 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -130,16 +147,28 @@ export const InvoicePage: React.FC = () => {
                             <Button variant="ghost" size="icon" onClick={clearInvoice} className="xl:hidden text-neutral-400">
                                 <Trash2 size={18} />
                             </Button>
-                            <Button variant="primary" size="sm" onClick={handleExport} className="hidden sm:flex">
-                                <Download size={16} className="mr-2" />
-                                PDF
+                            <Button
+                                variant="primary"
+                                size="sm"
+                                onClick={handleExport}
+                                disabled={isExporting}
+                                className="hidden sm:flex min-w-[80px]"
+                            >
+                                {isExporting ? (
+                                    <Loader2 size={16} className="animate-spin" />
+                                ) : (
+                                    <>
+                                        <Download size={16} className="mr-2" />
+                                        PDF
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <main className="invoice-container px-0 sm:px-4 py-0 sm:py-8">
+            <main className="invoice-container px-0 sm:px-4 py-0 sm:py-8 flex-1">
                 <div className="flex flex-col xl:flex-row gap-8 items-start">
 
                     <div className="w-full xl:w-[55%] no-print">
@@ -148,10 +177,12 @@ export const InvoicePage: React.FC = () => {
                                 <h2 className="text-3xl font-black tracking-tighter">Draft Invoice</h2>
                                 <div className="flex items-center gap-1 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-md text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-tighter">
                                     <Check size={12} className="text-green-500" />
-                                    Saved to browser
+                                    Saved & Encrypted
                                 </div>
                             </div>
                             <p className="text-neutral-500 text-sm">Fill in the details to generate your professional invoice. All data is processed locally.</p>
+
+
                         </div>
 
                         <div className={cn(
@@ -192,7 +223,7 @@ export const InvoicePage: React.FC = () => {
                             </AccordionSection>
 
                             <AccordionSection
-                                title="Line Items"
+                                title="Items"
                                 id="items"
                                 activeSection={activeSection}
                                 setActiveSection={setActiveSection}
@@ -249,7 +280,7 @@ export const InvoicePage: React.FC = () => {
                             </h3>
                             <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 font-medium">
                                 <ShieldCheck size={12} className="text-neutral-300" />
-                                <span>Encrypted Local Storage</span>
+                                <span>AES-256 AES-GCM Encrypted</span>
                             </div>
                         </div>
 
@@ -259,6 +290,8 @@ export const InvoicePage: React.FC = () => {
                     </div>
                 </div>
             </main>
+
+            <Footer />
 
             <AnimatePresence>
                 {isMobile && !showMobilePreview && (
@@ -295,8 +328,13 @@ export const InvoicePage: React.FC = () => {
                                     size="sm"
                                     className="px-3 min-w-[40px] h-10 shadow-lg shadow-blue-500/25"
                                     onClick={handleExport}
+                                    disabled={isExporting}
                                 >
-                                    <Download size={18} />
+                                    {isExporting ? (
+                                        <Loader2 size={18} className="animate-spin" />
+                                    ) : (
+                                        <Download size={18} />
+                                    )}
                                 </Button>
                             </div>
                         </div>
@@ -327,10 +365,35 @@ export const InvoicePage: React.FC = () => {
                             </div>
                         </div>
                         <div className="p-4 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800">
-                            <Button variant="primary" className="w-full" onClick={handleExport}>
-                                <Download size={18} className="mr-2" />
-                                Download PDF
+                            <Button variant="primary" className="w-full" onClick={handleExport} disabled={isExporting}>
+                                {isExporting ? (
+                                    <Loader2 size={18} className="mr-2 animate-spin" />
+                                ) : (
+                                    <Download size={18} className="mr-2" />
+                                )}
+                                {isExporting ? 'Generating PDF...' : 'Download PDF'}
                             </Button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {isExporting && !isMobile && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-neutral-950/20 backdrop-blur-sm flex items-center justify-center no-print"
+                    >
+                        <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-4">
+                            <div className="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center">
+                                <Loader2 size={24} className="text-white animate-spin" />
+                            </div>
+                            <div className="text-center">
+                                <h3 className="font-bold text-lg">Generating PDF</h3>
+                                <p className="text-sm text-neutral-500">Please wait while we prepare your invoice...</p>
+                            </div>
                         </div>
                     </motion.div>
                 )}

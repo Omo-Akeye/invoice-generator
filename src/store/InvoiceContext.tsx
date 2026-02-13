@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, useCallback } from 'react';
 import type { Invoice, LineItem, CompanyInfo, ClientInfo, InvoiceSettings, InvoiceTemplate } from '../types/invoice';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
@@ -22,6 +22,7 @@ interface InvoiceContextType {
     removeItem: (id: string) => void;
     updateInvoiceDetails: (updates: Partial<Pick<Invoice, 'invoiceNumber' | 'issueDate' | 'dueDate' | 'notes' | 'company'>>) => void;
     clearInvoice: () => void;
+    isValid: boolean;
 }
 
 const DEFAULT_INVOICE: Invoice = {
@@ -91,27 +92,37 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         };
     }, [rawInvoice]);
 
-    const updateCompany = (company: Partial<CompanyInfo>) => {
+    const isValid = useMemo(() => {
+        const hasClientName = invoice.client.name.trim().length > 0;
+        const hasLineItems = invoice.items.some(item =>
+            item.name.trim().length > 0 &&
+            item.quantity > 0 &&
+            item.unitPrice > 0
+        );
+        return hasClientName && hasLineItems;
+    }, [invoice.client.name, invoice.items]);
+
+    const updateCompany = useCallback((company: Partial<CompanyInfo>) => {
         setInvoice(prev => ({ ...prev, company: { ...prev.company, ...company } }));
-    };
+    }, [setInvoice]);
 
-    const updateClient = (client: Partial<ClientInfo>) => {
+    const updateClient = useCallback((client: Partial<ClientInfo>) => {
         setInvoice(prev => ({ ...prev, client: { ...prev.client, ...client } }));
-    };
+    }, [setInvoice]);
 
-    const updateSettings = (settings: Partial<InvoiceSettings>) => {
+    const updateSettings = useCallback((settings: Partial<InvoiceSettings>) => {
         setInvoice(prev => ({ ...prev, settings: { ...prev.settings, ...settings } }));
-    };
+    }, [setInvoice]);
 
-    const updateTemplate = (template: InvoiceTemplate) => {
+    const updateTemplate = useCallback((template: InvoiceTemplate) => {
         setInvoice(prev => ({ ...prev, template }));
-    };
+    }, [setInvoice]);
 
-    const updateInvoiceDetails = (updates: Partial<Pick<Invoice, 'invoiceNumber' | 'issueDate' | 'dueDate' | 'notes' | 'company'>>) => {
+    const updateInvoiceDetails = useCallback((updates: Partial<Pick<Invoice, 'invoiceNumber' | 'issueDate' | 'dueDate' | 'notes' | 'company'>>) => {
         setInvoice(prev => ({ ...prev, ...updates }));
-    };
+    }, [setInvoice]);
 
-    const addItem = () => {
+    const addItem = useCallback(() => {
         const newItem: LineItem = {
             id: uuidv4(),
             name: '',
@@ -121,9 +132,9 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
             total: 0,
         };
         setInvoice(prev => ({ ...prev, items: [...prev.items, newItem] }));
-    };
+    }, [setInvoice]);
 
-    const updateItem = (id: string, updates: Partial<LineItem>) => {
+    const updateItem = useCallback((id: string, updates: Partial<LineItem>) => {
         setInvoice(prev => ({
             ...prev,
             items: prev.items.map(item => {
@@ -138,20 +149,20 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
                 return item;
             }),
         }));
-    };
+    }, [setInvoice]);
 
-    const removeItem = (id: string) => {
+    const removeItem = useCallback((id: string) => {
         setInvoice(prev => ({
             ...prev,
             items: prev.items.filter(item => item.id !== id),
         }));
-    };
+    }, [setInvoice]);
 
-    const clearInvoice = () => {
+    const clearInvoice = useCallback(() => {
         if (window.confirm('Are you sure you want to clear the entire invoice?')) {
             setInvoice({ ...DEFAULT_INVOICE, id: uuidv4() });
         }
-    };
+    }, [setInvoice]);
 
     const value = useMemo(() => ({
         invoice,
@@ -165,7 +176,21 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         removeItem,
         updateInvoiceDetails,
         clearInvoice,
-    }), [invoice, isLoading]);
+        isValid,
+    }), [
+        invoice,
+        isLoading,
+        updateCompany,
+        updateClient,
+        updateSettings,
+        updateTemplate,
+        addItem,
+        updateItem,
+        removeItem,
+        updateInvoiceDetails,
+        clearInvoice,
+        isValid
+    ]);
 
     return <InvoiceContext.Provider value={value}>{children}</InvoiceContext.Provider>;
 };
