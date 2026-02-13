@@ -2,9 +2,11 @@ import React from 'react';
 import { useInvoice } from '../../../store/InvoiceContext';
 import { Card } from '../../ui/Card';
 import { Input } from '../../ui/Input';
+import { Button } from '../../ui/Button';
+import { Download } from 'lucide-react';
 import { formatCurrency } from '../../../utils/formatters';
 
-export const InvoiceSummary: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
+export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: () => void }> = ({ hideHeader, onExport }) => {
     const { invoice, updateSettings } = useInvoice();
 
     return (
@@ -75,40 +77,53 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean }> = ({ hideHeader 
                         </div>
                     </div>
 
-                    <div className="bg-neutral-50 dark:bg-neutral-950 p-6 rounded-apple space-y-3 border border-neutral-100 dark:border-neutral-800">
-                        <div className="flex justify-between text-sm">
-                            <span className="text-neutral-500 font-medium uppercase tracking-tight">Subtotal</span>
-                            <span className="text-neutral-900 dark:text-neutral-100 font-semibold">
-                                {formatCurrency(invoice.subtotal, invoice.settings.currency)}
-                            </span>
-                        </div>
-
-                        {invoice.settings.includeTax && (
+                    <div className="bg-neutral-50 dark:bg-neutral-950 p-6 rounded-apple space-y-3 border border-neutral-100 dark:border-neutral-800 flex flex-col justify-between">
+                        <div className="space-y-3">
                             <div className="flex justify-between text-sm">
-                                <span className="text-neutral-500 font-medium uppercase tracking-tight">Tax ({invoice.settings.taxRate}%)</span>
+                                <span className="text-neutral-500 font-medium uppercase tracking-tight">Subtotal</span>
                                 <span className="text-neutral-900 dark:text-neutral-100 font-semibold">
-                                    + {formatCurrency(invoice.taxAmount, invoice.settings.currency)}
+                                    {formatCurrency(invoice.subtotal, invoice.settings.currency)}
                                 </span>
                             </div>
-                        )}
 
-                        {invoice.settings.discountValue > 0 && (
-                            <div className="flex justify-between text-sm">
-                                <span className="text-neutral-500 font-medium uppercase tracking-tight">
-                                    Discount {invoice.settings.discountType === 'percentage' ? `(${invoice.settings.discountValue}%)` : ''}
-                                </span>
-                                <span className="text-red-500 font-semibold">
-                                    - {formatCurrency(invoice.discountAmount, invoice.settings.currency)}
+                            {invoice.settings.includeTax && (
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-neutral-500 font-medium uppercase tracking-tight">Tax ({invoice.settings.taxRate}%)</span>
+                                    <span className="text-neutral-900 dark:text-neutral-100 font-semibold">
+                                        + {formatCurrency(invoice.taxAmount, invoice.settings.currency)}
+                                    </span>
+                                </div>
+                            )}
+
+                            {invoice.settings.discountValue > 0 && (
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-neutral-500 font-medium uppercase tracking-tight">
+                                        Discount {invoice.settings.discountType === 'percentage' ? `(${invoice.settings.discountValue}%)` : ''}
+                                    </span>
+                                    <span className="text-red-500 font-semibold">
+                                        - {formatCurrency(invoice.discountAmount, invoice.settings.currency)}
+                                    </span>
+                                </div>
+                            )}
+
+                            <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 flex justify-between items-baseline">
+                                <span className="text-base font-bold text-neutral-900 dark:text-neutral-100 uppercase tracking-tighter">Total</span>
+                                <span className="text-2xl font-black text-brand-primary">
+                                    {formatCurrency(invoice.total, invoice.settings.currency)}
                                 </span>
                             </div>
-                        )}
-
-                        <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 flex justify-between items-baseline">
-                            <span className="text-base font-bold text-neutral-900 dark:text-neutral-100 uppercase tracking-tighter">Total</span>
-                            <span className="text-2xl font-black text-brand-primary">
-                                {formatCurrency(invoice.total, invoice.settings.currency)}
-                            </span>
                         </div>
+
+                        {onExport && (
+                            <Button
+                                variant="primary"
+                                className="w-full mt-6 shadow-lg shadow-blue-500/25 py-6 text-base"
+                                onClick={onExport}
+                            >
+                                <Download size={20} className="mr-2" />
+                                Download PDF
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>

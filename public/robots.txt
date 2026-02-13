@@ -1,11 +1,11 @@
 # InvoicePro robots.txt
-# https://invoicepro.app/
+# https://invoicegeneratorpro.vercel.app/
 
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://invoicepro.app/sitemap.xml
+Sitemap: https://invoicegeneratorpro.vercel.app/sitemap.xml
 
 # Block dev/build artifacts
 Disallow: /assets/

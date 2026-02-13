@@ -8,7 +8,7 @@ import { InvoicePreview } from './features/invoice/InvoicePreview';
 import { TemplatePicker } from './features/invoice/TemplatePicker';
 import { Button } from './ui/Button';
 import { TextArea } from './ui/Input';
-import { Download, Trash2, Layout, ChevronRight, Eye, X } from 'lucide-react';
+import { Download, Trash2, ChevronRight, Eye, X, Check, ShieldCheck, Circle } from 'lucide-react';
 import { exportToPDF } from '../utils/pdf';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '../utils/formatters';
@@ -102,14 +102,20 @@ export const InvoicePage: React.FC = () => {
                         </h1>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={clearInvoice} className="xl:hidden text-neutral-400">
-                            <Trash2 size={18} />
-                        </Button>
-                        <Button variant="primary" size="sm" onClick={handleExport} className="hidden sm:flex">
-                            <Download size={16} className="mr-2" />
-                            PDF
-                        </Button>
+                    <div className="flex items-center gap-4">
+                        <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-green-50 dark:bg-green-950/30 border border-green-100 dark:border-green-900/50 rounded-full">
+                            <ShieldCheck size={14} className="text-green-600 dark:text-green-400" />
+                            <span className="text-[10px] font-bold text-green-700 dark:text-green-400 uppercase tracking-tight">Privacy-First (No Backend)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="icon" onClick={clearInvoice} className="xl:hidden text-neutral-400">
+                                <Trash2 size={18} />
+                            </Button>
+                            <Button variant="primary" size="sm" onClick={handleExport} className="hidden sm:flex">
+                                <Download size={16} className="mr-2" />
+                                PDF
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -118,9 +124,15 @@ export const InvoicePage: React.FC = () => {
                 <div className="flex flex-col xl:flex-row gap-8 items-start">
 
                     <div className="w-full xl:w-[55%] no-print">
-                        <div className="px-6 py-8 sm:px-0 sm:pt-0 sm:pb-8">
-                            <h2 className="text-3xl font-black tracking-tighter">Draft Invoice</h2>
-                            <p className="text-neutral-500 mt-1">Fill in the details to generate your professional invoice.</p>
+                        <div className="px-6 py-8 sm:px-0 sm:pt-0 sm:pb-8 space-y-2">
+                            <div className="flex items-center gap-3">
+                                <h2 className="text-3xl font-black tracking-tighter">Draft Invoice</h2>
+                                <div className="flex items-center gap-1 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-md text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-tighter">
+                                    <Check size={12} className="text-green-500" />
+                                    Saved to browser
+                                </div>
+                            </div>
+                            <p className="text-neutral-500 text-sm">Fill in the details to generate your professional invoice. All data is processed locally.</p>
                         </div>
 
                         <div className={cn(
@@ -177,7 +189,7 @@ export const InvoicePage: React.FC = () => {
                                 setActiveSection={setActiveSection}
                                 isMobile={isMobile}
                             >
-                                <InvoiceSummary hideHeader />
+                                <InvoiceSummary hideHeader onExport={handleExport} />
                             </AccordionSection>
 
                             <AccordionSection
@@ -209,11 +221,17 @@ export const InvoicePage: React.FC = () => {
 
                     <div className="hidden xl:block w-full xl:w-[45%] xl:sticky xl:top-24 space-y-4">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest flex items-center">
-                                <Layout size={14} className="mr-2" />
+                            <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest flex items-center gap-2">
+                                <div className="relative flex items-center justify-center">
+                                    <Circle size={8} className="text-brand-primary fill-brand-primary" />
+                                    <Circle size={8} className="absolute text-brand-primary fill-brand-primary animate-pulse-soft" />
+                                </div>
                                 Live Preview
                             </h3>
-                            <p className="text-[10px] text-neutral-400 font-medium italic">Auto-saves to browser</p>
+                            <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 font-medium">
+                                <ShieldCheck size={12} className="text-neutral-300" />
+                                <span>Encrypted Local Storage</span>
+                            </div>
                         </div>
 
                         <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-white shadow-2xl shadow-neutral-200/50 dark:shadow-none">

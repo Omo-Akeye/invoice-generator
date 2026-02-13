@@ -3,9 +3,7 @@
 @theme {
     --font-sans: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --color-brand-primary: #0071e3;
-    /* Apple Blue */
     --color-brand-secondary: #86868b;
-    /* Apple Gray */
     --radius-apple: 12px;
     --shadow-premium: none;
 }
@@ -27,7 +25,6 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* Custom scrollbar for a premium feel */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -49,4 +46,22 @@ button:disabled {
     .no-print {
         display: none !important;
     }
+}
+
+@keyframes pulse-soft {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
