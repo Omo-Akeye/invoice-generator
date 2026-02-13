@@ -1,0 +1,13 @@
+# InvoicePro robots.txt
+# https://invoicepro.app/
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://invoicepro.app/sitemap.xml
+
+# Block dev/build artifacts
+Disallow: /assets/
+Disallow: /*.js$
+Disallow: /*.css$

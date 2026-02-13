@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo } from 'react';
-import type { Invoice, LineItem, CompanyInfo, ClientInfo, InvoiceSettings } from '../types/invoice';
+import type { Invoice, LineItem, CompanyInfo, ClientInfo, InvoiceSettings, InvoiceTemplate } from '../types/invoice';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
     calculateLineItemTotal,
@@ -15,6 +15,7 @@ interface InvoiceContextType {
     updateCompany: (company: Partial<CompanyInfo>) => void;
     updateClient: (client: Partial<ClientInfo>) => void;
     updateSettings: (settings: Partial<InvoiceSettings>) => void;
+    updateTemplate: (template: InvoiceTemplate) => void;
     addItem: () => void;
     updateItem: (id: string, updates: Partial<LineItem>) => void;
     removeItem: (id: string) => void;
@@ -27,6 +28,7 @@ const DEFAULT_INVOICE: Invoice = {
     invoiceNumber: `INV-${new Date().getFullYear()}-001`,
     issueDate: new Date().toISOString().split('T')[0],
     dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    template: 'classic',
     company: {
         name: '',
         address: '',
@@ -100,6 +102,10 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setInvoice(prev => ({ ...prev, settings: { ...prev.settings, ...settings } }));
     };
 
+    const updateTemplate = (template: InvoiceTemplate) => {
+        setInvoice(prev => ({ ...prev, template }));
+    };
+
     const updateInvoiceDetails = (updates: Partial<Pick<Invoice, 'invoiceNumber' | 'issueDate' | 'dueDate' | 'notes' | 'company'>>) => {
         setInvoice(prev => ({ ...prev, ...updates }));
     };
@@ -122,7 +128,7 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
             items: prev.items.map(item => {
                 if (item.id === id) {
                     const updatedItem = { ...item, ...updates };
-             
+
                     if ('quantity' in updates || 'unitPrice' in updates) {
                         updatedItem.total = calculateLineItemTotal(updatedItem.quantity, updatedItem.unitPrice);
                     }
@@ -151,6 +157,7 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateCompany,
         updateClient,
         updateSettings,
+        updateTemplate,
         addItem,
         updateItem,
         removeItem,

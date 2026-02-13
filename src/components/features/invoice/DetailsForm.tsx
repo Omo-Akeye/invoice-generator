@@ -3,11 +3,11 @@ import { useInvoice } from '../../../store/InvoiceContext';
 import { Input } from '../../ui/Input';
 import { Card } from '../../ui/Card';
 
-export const ClientForm: React.FC = () => {
+export const ClientForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
     const { invoice, updateClient } = useInvoice();
 
     return (
-        <Card title="BILL TO">
+        <Card title={hideHeader ? "" : "BILL TO"} noPadding={hideHeader}>
             <div className="space-y-4">
                 <Input
                     label="Client Name"
@@ -33,11 +33,11 @@ export const ClientForm: React.FC = () => {
     );
 };
 
-export const InvoiceDetailsForm: React.FC = () => {
+export const InvoiceDetailsForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
     const { invoice, updateInvoiceDetails } = useInvoice();
 
     return (
-        <Card title="INVOICE DETAILS">
+        <Card title={hideHeader ? "" : "INVOICE DETAILS"} noPadding={hideHeader}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
                     label="Invoice Number"

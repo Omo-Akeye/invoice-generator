@@ -4,11 +4,11 @@ import { Card } from '../../ui/Card';
 import { Input } from '../../ui/Input';
 import { formatCurrency } from '../../../utils/formatters';
 
-export const InvoiceSummary: React.FC = () => {
+export const InvoiceSummary: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
     const { invoice, updateSettings } = useInvoice();
 
     return (
-        <Card title="SUMMARY & SETTINGS">
+        <Card title={hideHeader ? "" : "SUMMARY & SETTINGS"} noPadding={hideHeader}>
             <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">

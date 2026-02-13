@@ -7,11 +7,11 @@ import { Plus, Trash2 } from 'lucide-react';
 import { formatCurrency } from '../../../utils/formatters';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const InvoiceItems: React.FC = () => {
+export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
     const { invoice, addItem, updateItem, removeItem } = useInvoice();
 
     return (
-        <Card title="LINE ITEMS">
+        <Card title={hideHeader ? "" : "LINE ITEMS"} noPadding={hideHeader}>
             <div className="space-y-4">
 
                 <div className="hidden md:grid grid-cols-[1fr_2fr_80px_120px_100px_40px] gap-4 px-1 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">

@@ -4,7 +4,7 @@ import { Input } from '../../ui/Input';
 import { Card } from '../../ui/Card';
 import { ImagePlus, X } from 'lucide-react';
 
-export const CompanyForm: React.FC = () => {
+export const CompanyForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
     const { invoice, updateCompany } = useInvoice();
 
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,7 +19,7 @@ export const CompanyForm: React.FC = () => {
     };
 
     return (
-        <Card title="YOUR COMPANY">
+        <Card title={hideHeader ? "" : "YOUR COMPANY"} noPadding={hideHeader}>
             <div className="space-y-4">
                 <div className="flex items-center gap-4">
                     {invoice.company.logo ? (

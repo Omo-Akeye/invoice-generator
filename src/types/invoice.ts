@@ -1,5 +1,7 @@
 export type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'NGN';
 
+export type InvoiceTemplate = 'classic' | 'modern' | 'elegant';
+
 export interface CompanyInfo {
     name: string;
     address: string;
@@ -36,6 +38,7 @@ export interface Invoice {
     invoiceNumber: string;
     issueDate: string;
     dueDate: string;
+    template: InvoiceTemplate;
     company: CompanyInfo;
     client: ClientInfo;
     items: LineItem[];
