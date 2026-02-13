@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 interface InvoiceContextType {
     invoice: Invoice;
+    isLoading: boolean;
     updateCompany: (company: Partial<CompanyInfo>) => void;
     updateClient: (client: Partial<ClientInfo>) => void;
     updateSettings: (settings: Partial<InvoiceSettings>) => void;
@@ -66,7 +67,7 @@ const DEFAULT_INVOICE: Invoice = {
 const InvoiceContext = createContext<InvoiceContextType | undefined>(undefined);
 
 export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [rawInvoice, setInvoice] = useLocalStorage<Invoice>('invoice-data', DEFAULT_INVOICE);
+    const [rawInvoice, setInvoice, isLoading] = useLocalStorage<Invoice>('invoice-data', DEFAULT_INVOICE);
 
 
     const invoice = useMemo(() => {
@@ -154,6 +155,7 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const value = useMemo(() => ({
         invoice,
+        isLoading,
         updateCompany,
         updateClient,
         updateSettings,
@@ -163,7 +165,7 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         removeItem,
         updateInvoiceDetails,
         clearInvoice,
-    }), [invoice]);
+    }), [invoice, isLoading]);
 
     return <InvoiceContext.Provider value={value}>{children}</InvoiceContext.Provider>;
 };

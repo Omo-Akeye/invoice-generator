@@ -6,8 +6,3 @@ Allow: /
 
 # Sitemap
 Sitemap: https://invoicegeneratorpro.vercel.app/sitemap.xml
-
-# Block dev/build artifacts
-Disallow: /assets/
-Disallow: /*.js$
-Disallow: /*.css$

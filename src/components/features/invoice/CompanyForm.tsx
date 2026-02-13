@@ -10,6 +10,18 @@ export const CompanyForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) 
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Validation: Max 500KB
+            if (file.size > 500 * 1024) {
+                alert('Logo file is too large. Please use an image under 500KB.');
+                return;
+            }
+
+            // Validation: Image type
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload a valid image file.');
+                return;
+            }
+
             const reader = new FileReader();
             reader.onloadend = () => {
                 updateCompany({ logo: reader.result as string });

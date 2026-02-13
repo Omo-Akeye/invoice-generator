@@ -1,13 +1,15 @@
 import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   plugins: [
+    react(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'sitemap.xml'],
+      includeAssets: ['favicon.svg', 'robots.txt', 'sitemap.xml', 'apple-touch-icon.png'],
       manifest: {
         name: 'InvoicePro — Professional Invoice Generator',
         short_name: 'InvoicePro',
@@ -66,4 +68,14 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'pdf-libs': ['html2canvas-pro', 'jspdf'],
+          'vendor': ['react', 'react-dom', 'framer-motion', 'lucide-react'],
+        }
+      }
+    }
+  }
 })

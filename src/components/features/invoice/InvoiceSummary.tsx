@@ -5,6 +5,7 @@ import { Input } from '../../ui/Input';
 import { Button } from '../../ui/Button';
 import { Download } from 'lucide-react';
 import { formatCurrency } from '../../../utils/formatters';
+import type { Currency } from '../../../types/invoice';
 
 export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: () => void }> = ({ hideHeader, onExport }) => {
     const { invoice, updateSettings } = useInvoice();
@@ -44,7 +45,7 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: () => v
                             <select
                                 className="flex h-10 w-full rounded-apple border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary transition-all duration-200 cursor-pointer"
                                 value={invoice.settings.currency}
-                                onChange={(e) => updateSettings({ currency: e.target.value as any })}
+                                onChange={(e) => updateSettings({ currency: e.target.value as Currency })}
                             >
                                 <option value="USD">USD ($)</option>
                                 <option value="EUR">EUR (€)</option>

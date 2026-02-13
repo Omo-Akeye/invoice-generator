@@ -79,7 +79,7 @@ const AccordionSection: React.FC<{
 };
 
 export const InvoicePage: React.FC = () => {
-    const { invoice, updateInvoiceDetails, clearInvoice } = useInvoice();
+    const { invoice, isLoading, updateInvoiceDetails, clearInvoice } = useInvoice();
     const [activeSection, setActiveSection] = useState<Section>('template');
     const [showMobilePreview, setShowMobilePreview] = useState(false);
     const isMobile = useMediaQuery('(max-width: 1279px)');
@@ -88,6 +88,25 @@ export const InvoicePage: React.FC = () => {
         const filename = invoice.invoiceNumber || 'draft-invoice';
         await exportToPDF('invoice-preview', filename);
     };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 flex flex-col items-center justify-center gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center">
+                        <img src="/favicon.svg" alt="Logo" className="w-5 h-5" />
+                    </div>
+                    <h1 className="text-lg font-black tracking-tight">
+                        Invoice<span className="text-brand-primary">Pro</span>
+                    </h1>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-neutral-400">
+                    <ShieldCheck size={16} className="text-brand-primary animate-pulse" />
+                    <span>Decrypting your data&hellip;</span>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 pb-32 xl:pb-8">
