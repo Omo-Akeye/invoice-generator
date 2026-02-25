@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '../utils/formatters';
 import { cn } from '../utils/cn';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import { sanitizeText } from '../utils/sanitize';
 
 import { Footer } from './ui/Footer';
 import { Loader2 } from 'lucide-react';
@@ -253,7 +254,7 @@ export const InvoicePage: React.FC = () => {
                                     label="Notes / Terms"
                                     placeholder="Payment is due within 14 days. Thank you for your business!"
                                     value={invoice.notes}
-                                    onChange={(e) => updateInvoiceDetails({ notes: e.target.value })}
+                                    onChange={(e) => updateInvoiceDetails({ notes: sanitizeText(e.target.value, 500) })}
                                     rows={4}
                                 />
                             </AccordionSection>

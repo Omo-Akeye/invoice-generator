@@ -3,6 +3,7 @@ import { useInvoice } from '../../../store/InvoiceContext';
 import { Input } from '../../ui/Input';
 import { Card } from '../../ui/Card';
 import { ImagePlus, X } from 'lucide-react';
+import { sanitizeText, sanitizeEmail } from '../../../utils/sanitize';
 
 export const CompanyForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
     const { invoice, updateCompany } = useInvoice();
@@ -54,7 +55,7 @@ export const CompanyForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) 
                             label="Company Name"
                             placeholder="e.g. Dangote Group"
                             value={invoice.company.name}
-                            onChange={(e) => updateCompany({ name: e.target.value })}
+                            onChange={(e) => updateCompany({ name: sanitizeText(e.target.value, 100) })}
                         />
                     </div>
                 </div>
@@ -64,20 +65,20 @@ export const CompanyForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) 
                         placeholder="hello@company.com.ng"
                         type="email"
                         value={invoice.company.email}
-                        onChange={(e) => updateCompany({ email: e.target.value })}
+                        onChange={(e) => updateCompany({ email: sanitizeEmail(e.target.value) })}
                     />
                     <Input
                         label="Phone Number"
                         placeholder="+234 803 000 0000"
                         value={invoice.company.phone}
-                        onChange={(e) => updateCompany({ phone: e.target.value })}
+                        onChange={(e) => updateCompany({ phone: sanitizeText(e.target.value, 30) })}
                     />
                 </div>
                 <Input
                     label="Address"
                     placeholder="1 Victoria Island, Lagos, Nigeria"
                     value={invoice.company.address}
-                    onChange={(e) => updateCompany({ address: e.target.value })}
+                    onChange={(e) => updateCompany({ address: sanitizeText(e.target.value, 200) })}
                 />
             </div>
         </Card>

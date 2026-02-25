@@ -2,6 +2,7 @@ import React from 'react';
 import { useInvoice } from '../../../store/InvoiceContext';
 import { Input } from '../../ui/Input';
 import { Card } from '../../ui/Card';
+import { sanitizeText, sanitizeEmail } from '../../../utils/sanitize';
 
 export const ClientForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
     const { invoice, updateClient } = useInvoice();
@@ -13,20 +14,20 @@ export const ClientForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) =
                     label="Client Name"
                     placeholder="e.g. Fola Adeola"
                     value={invoice.client.name}
-                    onChange={(e) => updateClient({ name: e.target.value })}
+                    onChange={(e) => updateClient({ name: sanitizeText(e.target.value, 100) })}
                 />
                 <Input
                     label="Client Email"
                     placeholder="fola@gtbank.com"
                     type="email"
                     value={invoice.client.email}
-                    onChange={(e) => updateClient({ email: e.target.value })}
+                    onChange={(e) => updateClient({ email: sanitizeEmail(e.target.value) })}
                 />
                 <Input
                     label="Client Address"
                     placeholder="8 Abuja Street, Wuse 2, Abuja"
                     value={invoice.client.address}
-                    onChange={(e) => updateClient({ address: e.target.value })}
+                    onChange={(e) => updateClient({ address: sanitizeText(e.target.value, 200) })}
                 />
             </div>
         </Card>
@@ -42,7 +43,7 @@ export const InvoiceDetailsForm: React.FC<{ hideHeader?: boolean }> = ({ hideHea
                 <Input
                     label="Invoice Number"
                     value={invoice.invoiceNumber}
-                    onChange={(e) => updateInvoiceDetails({ invoiceNumber: e.target.value })}
+                    onChange={(e) => updateInvoiceDetails({ invoiceNumber: sanitizeText(e.target.value, 50) })}
                 />
                 <div className="grid grid-cols-2 gap-2">
                     <Input

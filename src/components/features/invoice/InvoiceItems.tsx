@@ -6,6 +6,7 @@ import { Input } from '../../ui/Input';
 import { Plus, Trash2 } from 'lucide-react';
 import { formatCurrency } from '../../../utils/formatters';
 import { motion, AnimatePresence } from 'framer-motion';
+import { sanitizeText } from '../../../utils/sanitize';
 
 export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
     const { invoice, addItem, updateItem, removeItem } = useInvoice();
@@ -36,12 +37,12 @@ export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = ({ hideHeader })
                                 <Input
                                     placeholder="Item name"
                                     value={item.name}
-                                    onChange={(e) => updateItem(item.id, { name: e.target.value })}
+                                    onChange={(e) => updateItem(item.id, { name: sanitizeText(e.target.value, 100) })}
                                 />
                                 <Input
                                     placeholder="Short description"
                                     value={item.description}
-                                    onChange={(e) => updateItem(item.id, { description: e.target.value })}
+                                    onChange={(e) => updateItem(item.id, { description: sanitizeText(e.target.value, 200) })}
                                 />
                                 <Input
                                     type="number"
