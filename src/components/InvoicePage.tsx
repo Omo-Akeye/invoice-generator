@@ -7,9 +7,10 @@ import { InvoiceSummary } from './features/invoice/InvoiceSummary';
 import { InvoicePreview } from './features/invoice/InvoicePreview';
 import { TemplatePicker } from './features/invoice/TemplatePicker';
 import { Button } from './ui/Button';
+import { ExportButton } from './ui/ExportButton';
 import { TextArea } from './ui/Input';
-import { Download, Trash2, ChevronRight, Eye, X, Check, ShieldCheck, Circle } from 'lucide-react';
-import { exportToPDF } from '../utils/pdf';
+import { Trash2, ChevronRight, Eye, X, Check, ShieldCheck, Circle } from 'lucide-react';
+import { exportToPDF, exportToPNG } from '../utils/pdf';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '../utils/formatters';
 import { cn } from '../utils/cn';
@@ -89,7 +90,7 @@ export const InvoicePage: React.FC = () => {
     const [isExporting, setIsExporting] = useState(false);
     const isMobile = useMediaQuery('(max-width: 1279px)');
 
-    const handleExport = async () => {
+    const handleExport = async (format: 'pdf' | 'png' = 'pdf') => {
         if (!isValid) {
             alert('Please add a client name and at least one item with a price before exporting.');
             return;
@@ -98,10 +99,14 @@ export const InvoicePage: React.FC = () => {
         try {
             setIsExporting(true);
             const filename = invoice.invoiceNumber || 'draft-invoice';
-            await exportToPDF('invoice-preview', filename);
+            if (format === 'png') {
+                await exportToPNG('invoice-preview', filename);
+            } else {
+                await exportToPDF('invoice-preview', filename);
+            }
         } catch (error) {
-            console.error('PDF Export Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            console.error(`${format.toUpperCase()} Export Error:`, error);
+            alert(`Failed to generate ${format.toUpperCase()}. Please try again.`);
         } finally {
             setIsExporting(false);
         }
@@ -148,22 +153,14 @@ export const InvoicePage: React.FC = () => {
                             <Button variant="ghost" size="icon" onClick={clearInvoice} className="xl:hidden text-neutral-400">
                                 <Trash2 size={18} />
                             </Button>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={handleExport}
-                                disabled={isExporting}
-                                className="hidden sm:flex min-w-[80px]"
-                            >
-                                {isExporting ? (
-                                    <Loader2 size={16} className="animate-spin" />
-                                ) : (
-                                    <>
-                                        <Download size={16} className="mr-2" />
-                                        PDF
-                                    </>
-                                )}
-                            </Button>
+                            <div className="hidden sm:flex min-w-[120px]">
+                                <ExportButton 
+                                    onExport={handleExport}
+                                    isExporting={isExporting}
+                                    variant="primary"
+                                    size="sm"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -324,19 +321,16 @@ export const InvoicePage: React.FC = () => {
                                     <Eye size={18} className="sm:mr-2" />
                                     <span className="hidden sm:inline">Preview</span>
                                 </Button>
-                                <Button
-                                    variant="primary"
-                                    size="sm"
-                                    className="px-3 min-w-[40px] h-10 shadow-lg shadow-blue-500/25"
-                                    onClick={handleExport}
-                                    disabled={isExporting}
-                                >
-                                    {isExporting ? (
-                                        <Loader2 size={18} className="animate-spin" />
-                                    ) : (
-                                        <Download size={18} />
-                                    )}
-                                </Button>
+                                <div className="ml-2 w-[110px]">
+                                    <ExportButton
+                                        onExport={handleExport}
+                                        isExporting={isExporting}
+                                        variant="primary"
+                                        size="sm"
+                                        fullWidth
+                                        dropUp
+                                    />
+                                </div>
                             </div>
                         </div>
                     </motion.div>
@@ -366,14 +360,14 @@ export const InvoicePage: React.FC = () => {
                             </div>
                         </div>
                         <div className="p-4 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800">
-                            <Button variant="primary" className="w-full" onClick={handleExport} disabled={isExporting}>
-                                {isExporting ? (
-                                    <Loader2 size={18} className="mr-2 animate-spin" />
-                                ) : (
-                                    <Download size={18} className="mr-2" />
-                                )}
-                                {isExporting ? 'Generating PDF...' : 'Download PDF'}
-                            </Button>
+                            <ExportButton
+                                onExport={handleExport}
+                                isExporting={isExporting}
+                                variant="primary"
+                                size="md"
+                                fullWidth
+                                dropUp
+                            />
                         </div>
                     </motion.div>
                 )}
@@ -392,7 +386,7 @@ export const InvoicePage: React.FC = () => {
                                 <Loader2 size={24} className="text-white animate-spin" />
                             </div>
                             <div className="text-center">
-                                <h3 className="font-bold text-lg">Generating PDF</h3>
+                                <h3 className="font-bold text-lg">Generating...</h3>
                                 <p className="text-sm text-neutral-500">Please wait while we prepare your invoice...</p>
                             </div>
                         </div>

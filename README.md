@@ -10,7 +10,7 @@ InvoicePro is a fully client-side invoice generator built with React and TypeScr
 
 - **3 Professional Templates** — Choose from *Classic*, *Modern*, and *Elegant* layouts to match your brand
 - **Live Preview** — See your invoice update in real time as you fill in the details
-- **One-Click PDF Export** — Downloads a high-fidelity PDF using `html2canvas-pro` + `jsPDF`
+- **Multiple Export Options** — Download high-fidelity PDFs or PNGs using `html2canvas-pro` + `jsPDF`
 - **AES-256-GCM Encryption** — Invoice data is encrypted with the Web Crypto API before being written to `localStorage`; your data never leaves the browser
 - **Tax & Discount Support** — Toggle VAT/tax with a configurable rate; apply percentage or fixed-amount discounts
 - **Multi-Currency** — Supports USD, EUR, GBP, JPY, and NGN out of the box
@@ -42,6 +42,7 @@ src/
 │   │   ├── Button.tsx
 │   │   ├── Card.tsx
 │   │   ├── ErrorBoundary.tsx
+│   │   ├── ExportButton.tsx
 │   │   ├── Footer.tsx
 │   │   └── Input.tsx
 │   └── InvoicePage.tsx               # Root page — layout, accordion, export logic
@@ -57,7 +58,7 @@ src/
 │   ├── cn.ts                         # Tailwind class merging utility
 │   ├── crypto.ts                     # AES-256-GCM encrypt/decrypt via Web Crypto
 │   ├── formatters.ts                 # Currency formatting
-│   └── pdf.ts                        # PDF generation (html2canvas-pro + jsPDF)
+│   └── pdf.ts                        # PDF and PNG generation (html2canvas-pro + jsPDF)
 ├── App.tsx
 └── main.tsx
 ```
@@ -141,7 +142,7 @@ npm run preview
 4. **Add Line Items** — Add services or products with quantity and unit price; totals are calculated automatically
 5. **Configure Summary** — Toggle tax (VAT), set rates, apply discounts, and choose a currency
 6. **Add Notes** — Include any payment terms or additional information
-7. **Download PDF** — Click the **PDF** button in the header or the **Download PDF** button in the summary panel
+7. **Export Invoice** — Click the **Export** button in the header or summary panel to download your invoice as a PDF or PNG.
 
 ---
 

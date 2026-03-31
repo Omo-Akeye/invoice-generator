@@ -2,12 +2,11 @@ import React from 'react';
 import { useInvoice } from '../../../store/InvoiceContext';
 import { Card } from '../../ui/Card';
 import { Input } from '../../ui/Input';
-import { Button } from '../../ui/Button';
-import { Download } from 'lucide-react';
+import { ExportButton } from '../../ui/ExportButton';
 import { formatCurrency } from '../../../utils/formatters';
 import type { Currency } from '../../../types/invoice';
 
-export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: () => void }> = ({ hideHeader, onExport }) => {
+export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format: 'pdf' | 'png') => void }> = ({ hideHeader, onExport }) => {
     const { invoice, updateSettings } = useInvoice();
 
     return (
@@ -114,16 +113,16 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: () => v
                                 </span>
                             </div>
                         </div>
-
                         {onExport && (
-                            <Button
-                                variant="primary"
-                                className="w-full mt-6 shadow-lg shadow-blue-500/25 py-6 text-base"
-                                onClick={onExport}
-                            >
-                                <Download size={20} className="mr-2" />
-                                Download PDF
-                            </Button>
+                            <div className="mt-6">
+                                <ExportButton 
+                                    onExport={onExport} 
+                                    isExporting={false} 
+                                    fullWidth 
+                                    dropUp 
+                                    size="md" 
+                                />
+                            </div>
                         )}
                     </div>
                 </div>

@@ -64,3 +64,45 @@ export const exportToPDF = async (elementId: string, filename: string) => {
         console.error('Error generating PDF:', error);
     }
 };
+
+export const exportToPNG = async (elementId: string, filename: string) => {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    try {
+        const clone = element.cloneNode(true) as HTMLElement;
+        clone.style.position = 'absolute';
+        clone.style.left = '-9999px';
+        clone.style.top = '0';
+        clone.style.display = 'block';
+        clone.style.width = `${element.scrollWidth || 800}px`;
+        clone.style.visibility = 'visible';
+        clone.style.opacity = '1';
+        document.body.appendChild(clone);
+
+        const canvas = await html2canvas(clone, {
+            scale: 2, // Higher scale for better PNG quality
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+        });
+
+        document.body.removeChild(clone);
+
+        if (canvas.width === 0 || canvas.height === 0) {
+            console.error('PNG export failed: captured canvas is empty.');
+            return;
+        }
+
+        const imgData = canvas.toDataURL('image/png');
+
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `${filename}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error generating PNG:', error);
+    }
+};
