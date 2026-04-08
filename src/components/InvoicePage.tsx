@@ -6,6 +6,7 @@ import { InvoiceItems } from './features/invoice/InvoiceItems';
 import { InvoiceSummary } from './features/invoice/InvoiceSummary';
 import { InvoicePreview } from './features/invoice/InvoicePreview';
 import { TemplatePicker } from './features/invoice/TemplatePicker';
+import { PaymentDetailsForm } from './features/invoice/PaymentDetailsForm';
 import { Button } from './ui/Button';
 import { ExportButton } from './ui/ExportButton';
 import { TextArea } from './ui/Input';
@@ -20,7 +21,7 @@ import { sanitizeText } from '../utils/sanitize';
 import { Footer } from './ui/Footer';
 import { Loader2 } from 'lucide-react';
 
-type Section = 'template' | 'details' | 'parties' | 'items' | 'summary' | 'notes';
+type Section = 'template' | 'details' | 'parties' | 'items' | 'summary' | 'payment' | 'notes';
 
 const AccordionSection: React.FC<{
     title: string;
@@ -238,6 +239,16 @@ export const InvoicePage: React.FC = () => {
                                 isMobile={isMobile}
                             >
                                 <InvoiceSummary hideHeader onExport={handleExport} />
+                            </AccordionSection>
+
+                            <AccordionSection
+                                title="Payment Details"
+                                id="payment"
+                                activeSection={activeSection}
+                                setActiveSection={setActiveSection}
+                                isMobile={isMobile}
+                            >
+                                <PaymentDetailsForm hideHeader />
                             </AccordionSection>
 
                             <AccordionSection

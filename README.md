@@ -1,6 +1,14 @@
+<div align="center">
+  <a href="https://www.invoicegeneratorpro.online/">
+    <img src="public/og-image.png" alt="InvoicePro Dashboard" width="100%">
+  </a>
+</div>
+
 # InvoicePro — Professional Invoice Generator
 
 > Create beautiful, professional invoices in seconds. Free, privacy-first, no signup required.
+> 
+> 🌐 **Live Demo:** [www.invoicegeneratorpro.online](https://www.invoicegeneratorpro.online/)
 
 InvoicePro is a fully client-side invoice generator built with React and TypeScript. It lets you compose and export pixel-perfect PDF invoices directly in your browser — with zero backend, zero accounts, and zero data ever leaving your device.
 
@@ -10,6 +18,7 @@ InvoicePro is a fully client-side invoice generator built with React and TypeScr
 
 - **3 Professional Templates** — Choose from *Classic*, *Modern*, and *Elegant* layouts to match your brand
 - **Live Preview** — See your invoice update in real time as you fill in the details
+- **Payment Instructions** — Include Bank Transfer or Crypto payment details directly on the invoice
 - **Multiple Export Options** — Download high-fidelity PDFs or PNGs using `html2canvas-pro` + `jsPDF`
 - **AES-256-GCM Encryption** — Invoice data is encrypted with the Web Crypto API before being written to `localStorage`; your data never leaves the browser
 - **Tax & Discount Support** — Toggle VAT/tax with a configurable rate; apply percentage or fixed-amount discounts
@@ -33,6 +42,7 @@ src/
 │   │       ├── InvoiceItems.tsx      # Line items management
 │   │       ├── InvoicePreview.tsx    # Live preview wrapper
 │   │       ├── InvoiceSummary.tsx    # Tax, discount, totals & export
+│   │       ├── PaymentDetailsForm.tsx# Payment instructions input
 │   │       ├── TemplatePicker.tsx    # Template selection UI
 │   │       └── templates/
 │   │           ├── ClassicTemplate.tsx
@@ -141,8 +151,9 @@ npm run preview
 3. **Add Sender & Client Info** — Enter your company name, address, email, phone, and optionally upload a logo; then enter your client's details
 4. **Add Line Items** — Add services or products with quantity and unit price; totals are calculated automatically
 5. **Configure Summary** — Toggle tax (VAT), set rates, apply discounts, and choose a currency
-6. **Add Notes** — Include any payment terms or additional information
-7. **Export Invoice** — Click the **Export** button in the header or summary panel to download your invoice as a PDF or PNG.
+6. **Payment Details** — Choose Bank Transfer or Crypto and input your payment details
+7. **Add Notes** — Include any payment terms or additional information
+8. **Export Invoice** — Click the **Export** button in the header or summary panel to download your invoice as a PDF or PNG.
 
 ---
 

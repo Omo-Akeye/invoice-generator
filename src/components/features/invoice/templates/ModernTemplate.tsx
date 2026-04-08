@@ -137,6 +137,31 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                         <p className="text-[11px] text-slate-500 leading-relaxed">{invoice.notes}</p>
                     </div>
                 )}
+
+                {invoice.paymentInfo && (
+                    <div className="mt-6 pt-4 border-t border-slate-100">
+                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-3">Payment Details</p>
+                        {invoice.paymentInfo.method === 'bank_transfer' && (
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-2 p-3 rounded-xl" style={{ background: '#f0f9ff' }}>
+                                {invoice.paymentInfo.bankName && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Bank</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.bankName}</p></div>}
+                                {invoice.paymentInfo.accountName && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Account Name</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.accountName}</p></div>}
+                                {invoice.paymentInfo.accountNumber && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Account No.</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.accountNumber}</p></div>}
+                                {invoice.paymentInfo.routingNumber && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Routing / Sort</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.routingNumber}</p></div>}
+                                {invoice.paymentInfo.swift && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">SWIFT / BIC</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.swift}</p></div>}
+                                {invoice.paymentInfo.iban && <div className="col-span-2"><p className="text-[9px] text-sky-400 uppercase tracking-wide">IBAN</p><p className="text-[11px] font-semibold text-slate-800 font-mono">{invoice.paymentInfo.iban}</p></div>}
+                            </div>
+                        )}
+                        {invoice.paymentInfo.method === 'crypto' && (
+                            <div className="space-y-2 p-3 rounded-xl" style={{ background: '#f0f9ff' }}>
+                                {invoice.paymentInfo.cryptoCurrency && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Currency</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.cryptoCurrency}</p></div>}
+                                {invoice.paymentInfo.walletAddress && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Wallet Address</p><p className="text-[10px] font-mono text-slate-700 break-all">{invoice.paymentInfo.walletAddress}</p></div>}
+                            </div>
+                        )}
+                        {invoice.paymentInfo.method === 'other' && invoice.paymentInfo.customInstructions && (
+                            <p className="text-[11px] text-slate-500 leading-relaxed">{invoice.paymentInfo.customInstructions}</p>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

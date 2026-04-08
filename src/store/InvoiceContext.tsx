@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo, useCallback } from 'react';
-import type { Invoice, LineItem, CompanyInfo, ClientInfo, InvoiceSettings, InvoiceTemplate } from '../types/invoice';
+import type { Invoice, LineItem, CompanyInfo, ClientInfo, InvoiceSettings, InvoiceTemplate, PaymentInfo } from '../types/invoice';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
     calculateLineItemTotal,
@@ -21,6 +21,7 @@ interface InvoiceContextType {
     updateItem: (id: string, updates: Partial<LineItem>) => void;
     removeItem: (id: string) => void;
     updateInvoiceDetails: (updates: Partial<Pick<Invoice, 'invoiceNumber' | 'issueDate' | 'dueDate' | 'notes' | 'company'>>) => void;
+    updatePaymentInfo: (paymentInfo: Partial<PaymentInfo> | undefined) => void;
     clearInvoice: () => void;
     isValid: boolean;
 }
@@ -158,6 +159,17 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }));
     }, [setInvoice]);
 
+    const updatePaymentInfo = useCallback((paymentInfo: Partial<PaymentInfo> | undefined) => {
+        if (paymentInfo === undefined) {
+            setInvoice(prev => ({ ...prev, paymentInfo: undefined }));
+        } else {
+            setInvoice(prev => ({
+                ...prev,
+                paymentInfo: { ...(prev.paymentInfo ?? { method: 'bank_transfer' }), ...paymentInfo } as PaymentInfo,
+            }));
+        }
+    }, [setInvoice]);
+
     const clearInvoice = useCallback(() => {
         if (window.confirm('Are you sure you want to clear the entire invoice?')) {
             setInvoice({ ...DEFAULT_INVOICE, id: uuidv4() });
@@ -175,6 +187,7 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateItem,
         removeItem,
         updateInvoiceDetails,
+        updatePaymentInfo,
         clearInvoice,
         isValid,
     }), [
@@ -188,6 +201,7 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateItem,
         removeItem,
         updateInvoiceDetails,
+        updatePaymentInfo,
         clearInvoice,
         isValid
     ]);

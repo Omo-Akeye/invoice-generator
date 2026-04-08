@@ -2,6 +2,24 @@ export type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'NGN';
 
 export type InvoiceTemplate = 'classic' | 'modern' | 'elegant';
 
+export type PaymentMethod = 'bank_transfer' | 'crypto' | 'other';
+
+export interface PaymentInfo {
+    method: PaymentMethod;
+    // Bank Transfer
+    bankName?: string;
+    accountName?: string;
+    accountNumber?: string;
+    routingNumber?: string;
+    iban?: string;
+    swift?: string;
+    // Crypto
+    cryptoCurrency?: string;
+    walletAddress?: string;
+    // Other
+    customInstructions?: string;
+}
+
 export interface CompanyInfo {
     name: string;
     address: string;
@@ -48,4 +66,5 @@ export interface Invoice {
     discountAmount: number;
     total: number;
     notes?: string;
+    paymentInfo?: PaymentInfo;
 }

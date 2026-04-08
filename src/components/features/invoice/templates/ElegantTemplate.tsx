@@ -189,6 +189,31 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                 </div>
             )}
 
+            {invoice.paymentInfo && (
+                <div className="mt-6 pt-4 border-t border-stone-100">
+                    <p className="text-[10px] font-medium uppercase tracking-[0.2em] mb-3" style={{ color: '#b45309' }}>Payment Details</p>
+                    {invoice.paymentInfo.method === 'bank_transfer' && (
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 p-3 rounded-lg border border-amber-100" style={{ background: '#fffbeb' }}>
+                            {invoice.paymentInfo.bankName && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Bank</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.bankName}</p></div>}
+                            {invoice.paymentInfo.accountName && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Account Name</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.accountName}</p></div>}
+                            {invoice.paymentInfo.accountNumber && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Account No.</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.accountNumber}</p></div>}
+                            {invoice.paymentInfo.routingNumber && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Routing / Sort</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.routingNumber}</p></div>}
+                            {invoice.paymentInfo.swift && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>SWIFT / BIC</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.swift}</p></div>}
+                            {invoice.paymentInfo.iban && <div className="col-span-2"><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>IBAN</p><p className="text-[11px] font-medium text-stone-800 font-mono">{invoice.paymentInfo.iban}</p></div>}
+                        </div>
+                    )}
+                    {invoice.paymentInfo.method === 'crypto' && (
+                        <div className="space-y-2 p-3 rounded-lg border border-amber-100" style={{ background: '#fffbeb' }}>
+                            {invoice.paymentInfo.cryptoCurrency && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Currency</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.cryptoCurrency}</p></div>}
+                            {invoice.paymentInfo.walletAddress && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Wallet Address</p><p className="text-[10px] font-mono text-stone-700 break-all">{invoice.paymentInfo.walletAddress}</p></div>}
+                        </div>
+                    )}
+                    {invoice.paymentInfo.method === 'other' && invoice.paymentInfo.customInstructions && (
+                        <p className="text-[10px] text-stone-400 leading-relaxed italic">{invoice.paymentInfo.customInstructions}</p>
+                    )}
+                </div>
+            )}
+
             <div
                 className="w-full h-[3px] rounded-full mt-8"
                 style={{ background: 'linear-gradient(90deg, #92400e, #d97706, #f59e0b, #d97706, #92400e)' }}
