@@ -1,5 +1,6 @@
 import type { Invoice } from '../../../../types/invoice';
 import { formatCurrency, formatDate } from '../../../../utils/formatters';
+import { CurrencyText } from '../../../ui/CurrencyText';
 
 interface TemplateProps {
     invoice: Invoice;
@@ -90,8 +91,8 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                                         {item.description && <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-2">{item.description}</p>}
                                     </td>
                                     <td className="py-3 px-3 text-center text-xs font-semibold text-slate-700">{item.quantity}</td>
-                                    <td className="py-3 px-3 text-right text-xs font-semibold text-slate-700 whitespace-nowrap">{formatCurrency(item.unitPrice, invoice.settings.currency)}</td>
-                                    <td className="py-3 px-3 text-right text-xs font-extrabold text-slate-900 whitespace-nowrap">{formatCurrency(item.total, invoice.settings.currency)}</td>
+                                    <td className="py-3 px-3 text-right text-xs font-semibold text-slate-700 whitespace-nowrap"><CurrencyText currency={invoice.settings.currency}>{formatCurrency(item.unitPrice, invoice.settings.currency)}</CurrencyText></td>
+                                    <td className="py-3 px-3 text-right text-xs font-extrabold text-slate-900 whitespace-nowrap"><CurrencyText currency={invoice.settings.currency}>{formatCurrency(item.total, invoice.settings.currency)}</CurrencyText></td>
                                 </tr>
                             ))}
                         </tbody>
@@ -102,20 +103,20 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                     <div className="w-3/5 space-y-2">
                         <div className="flex justify-between text-xs py-1">
                             <span className="text-slate-400 font-medium">Subtotal</span>
-                            <span className="font-bold text-slate-700 whitespace-nowrap">{formatCurrency(invoice.subtotal, invoice.settings.currency)}</span>
+                            <span className="font-bold text-slate-700 whitespace-nowrap"><CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.subtotal, invoice.settings.currency)}</CurrencyText></span>
                         </div>
 
                         {invoice.settings.includeTax && (
                             <div className="flex justify-between text-xs py-1">
                                 <span className="text-slate-400 font-medium">Tax ({invoice.settings.taxRate}%)</span>
-                                <span className="font-bold text-slate-700 whitespace-nowrap">+{formatCurrency(invoice.taxAmount, invoice.settings.currency)}</span>
+                                <span className="font-bold text-slate-700 whitespace-nowrap">+<CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.taxAmount, invoice.settings.currency)}</CurrencyText></span>
                             </div>
                         )}
 
                         {invoice.settings.discountValue > 0 && (
                             <div className="flex justify-between text-xs py-1">
                                 <span className="text-red-400 font-medium">Discount</span>
-                                <span className="font-bold text-red-500 whitespace-nowrap">-{formatCurrency(invoice.discountAmount, invoice.settings.currency)}</span>
+                                <span className="font-bold text-red-500 whitespace-nowrap">-<CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.discountAmount, invoice.settings.currency)}</CurrencyText></span>
                             </div>
                         )}
 
@@ -125,7 +126,7 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                         >
                             <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-200">Total Due</span>
                             <span className="text-lg font-black text-white leading-none whitespace-nowrap">
-                                {formatCurrency(invoice.total, invoice.settings.currency)}
+                                <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
                             </span>
                         </div>
                     </div>

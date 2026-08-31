@@ -4,7 +4,8 @@ import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { Input } from '../../ui/Input';
 import { Plus, Trash2 } from 'lucide-react';
-import { formatCurrency } from '../../../utils/formatters';
+import { formatCurrency, getCurrencySymbol } from '../../../utils/formatters';
+import { CurrencyText } from '../../ui/CurrencyText';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sanitizeText } from '../../../utils/sanitize';
 
@@ -54,10 +55,7 @@ export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = ({ hideHeader })
                                 />
                                 <div className="relative">
                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
-                                        {invoice.settings.currency === 'NGN' ? '₦' :
-                                            invoice.settings.currency === 'EUR' ? '€' :
-                                                invoice.settings.currency === 'GBP' ? '£' :
-                                                    invoice.settings.currency === 'JPY' ? '¥' : '$'}
+                                        <CurrencyText currency={invoice.settings.currency}>{getCurrencySymbol(invoice.settings.currency)}</CurrencyText>
                                     </span>
                                     <Input
                                         className="pl-6"
@@ -71,7 +69,7 @@ export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = ({ hideHeader })
                                     />
                                 </div>
                                 <div className="flex items-center justify-end h-10 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-                                    {formatCurrency(item.total, invoice.settings.currency)}
+                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(item.total, invoice.settings.currency)}</CurrencyText>
                                 </div>
                                 <div className="flex justify-end">
                                     <Button

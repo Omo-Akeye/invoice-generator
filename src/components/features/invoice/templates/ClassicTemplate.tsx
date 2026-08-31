@@ -1,5 +1,6 @@
 import type { Invoice } from '../../../../types/invoice';
 import { formatCurrency, formatDate } from '../../../../utils/formatters';
+import { CurrencyText } from '../../../ui/CurrencyText';
 
 interface TemplateProps {
     invoice: Invoice;
@@ -67,8 +68,8 @@ export const ClassicTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                                     {item.description && <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{item.description}</p>}
                                 </td>
                                 <td className="py-3 text-center text-xs font-medium">{item.quantity}</td>
-                                <td className="py-3 text-right text-xs font-medium whitespace-nowrap">{formatCurrency(item.unitPrice, invoice.settings.currency)}</td>
-                                <td className="py-3 text-right text-xs font-bold whitespace-nowrap">{formatCurrency(item.total, invoice.settings.currency)}</td>
+                                <td className="py-3 text-right text-xs font-medium whitespace-nowrap"><CurrencyText currency={invoice.settings.currency}>{formatCurrency(item.unitPrice, invoice.settings.currency)}</CurrencyText></td>
+                                <td className="py-3 text-right text-xs font-bold whitespace-nowrap"><CurrencyText currency={invoice.settings.currency}>{formatCurrency(item.total, invoice.settings.currency)}</CurrencyText></td>
                             </tr>
                         ))}
                     </tbody>
@@ -79,27 +80,27 @@ export const ClassicTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                 <div className="w-1/2 space-y-2">
                     <div className="flex justify-between text-xs py-0.5">
                         <span className="text-neutral-500 font-medium">Subtotal</span>
-                        <span className="font-bold whitespace-nowrap">{formatCurrency(invoice.subtotal, invoice.settings.currency)}</span>
+                        <span className="font-bold whitespace-nowrap"><CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.subtotal, invoice.settings.currency)}</CurrencyText></span>
                     </div>
 
                     {invoice.settings.includeTax && (
                         <div className="flex justify-between text-xs py-0.5">
                             <span className="text-neutral-500 font-medium">Tax ({invoice.settings.taxRate}%)</span>
-                            <span className="font-bold whitespace-nowrap">{formatCurrency(invoice.taxAmount, invoice.settings.currency)}</span>
+                            <span className="font-bold whitespace-nowrap"><CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.taxAmount, invoice.settings.currency)}</CurrencyText></span>
                         </div>
                     )}
 
                     {invoice.settings.discountValue > 0 && (
                         <div className="flex justify-between text-xs py-0.5 text-red-600">
                             <span className="font-medium">Discount</span>
-                            <span className="font-bold whitespace-nowrap">-{formatCurrency(invoice.discountAmount, invoice.settings.currency)}</span>
+                            <span className="font-bold whitespace-nowrap">-<CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.discountAmount, invoice.settings.currency)}</CurrencyText></span>
                         </div>
                     )}
 
                     <div className="flex justify-between items-baseline pt-3 border-t border-neutral-900">
                         <span className="text-[10px] font-black uppercase tracking-tight">Total Due</span>
                         <span className="text-lg font-black text-neutral-900 leading-none whitespace-nowrap">
-                            {formatCurrency(invoice.total, invoice.settings.currency)}
+                            <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
                         </span>
                     </div>
                 </div>

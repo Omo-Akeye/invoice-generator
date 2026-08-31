@@ -1,5 +1,6 @@
 import type { Invoice } from '../../../../types/invoice';
 import { formatCurrency, formatDate } from '../../../../utils/formatters';
+import { CurrencyText } from '../../../ui/CurrencyText';
 
 interface TemplateProps {
     invoice: Invoice;
@@ -122,10 +123,10 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                                 </td>
                                 <td className="py-3 text-center text-xs text-stone-600">{item.quantity}</td>
                                 <td className="py-3 text-right text-xs text-stone-600 whitespace-nowrap">
-                                    {formatCurrency(item.unitPrice, invoice.settings.currency)}
+                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(item.unitPrice, invoice.settings.currency)}</CurrencyText>
                                 </td>
                                 <td className="py-3 text-right text-xs font-semibold text-stone-800 whitespace-nowrap">
-                                    {formatCurrency(item.total, invoice.settings.currency)}
+                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(item.total, invoice.settings.currency)}</CurrencyText>
                                 </td>
                             </tr>
                         ))}
@@ -138,7 +139,7 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                     <div className="flex justify-between text-xs py-1">
                         <span className="text-stone-400 font-medium italic">Subtotal</span>
                         <span className="font-medium text-stone-700 whitespace-nowrap">
-                            {formatCurrency(invoice.subtotal, invoice.settings.currency)}
+                            <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.subtotal, invoice.settings.currency)}</CurrencyText>
                         </span>
                     </div>
 
@@ -146,7 +147,7 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                         <div className="flex justify-between text-xs py-1">
                             <span className="text-stone-400 font-medium italic">Tax ({invoice.settings.taxRate}%)</span>
                             <span className="font-medium text-stone-700 whitespace-nowrap">
-                                {formatCurrency(invoice.taxAmount, invoice.settings.currency)}
+                                <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.taxAmount, invoice.settings.currency)}</CurrencyText>
                             </span>
                         </div>
                     )}
@@ -155,7 +156,7 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                         <div className="flex justify-between text-xs py-1">
                             <span className="text-red-700/70 font-medium italic">Discount</span>
                             <span className="font-medium text-red-700/80 whitespace-nowrap">
-                                -{formatCurrency(invoice.discountAmount, invoice.settings.currency)}
+                                -<CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.discountAmount, invoice.settings.currency)}</CurrencyText>
                             </span>
                         </div>
                     )}
@@ -171,7 +172,7 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                             className="text-xl font-bold leading-none whitespace-nowrap"
                             style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#78350f' }}
                         >
-                            {formatCurrency(invoice.total, invoice.settings.currency)}
+                            <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
                         </span>
                     </div>
                 </div>

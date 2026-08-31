@@ -4,6 +4,7 @@ import { Card } from '../../ui/Card';
 import { Input } from '../../ui/Input';
 import { ExportButton } from '../../ui/ExportButton';
 import { formatCurrency } from '../../../utils/formatters';
+import { CurrencyText } from '../../ui/CurrencyText';
 import type { Currency } from '../../../types/invoice';
 
 export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format: 'pdf' | 'png') => void }> = ({ hideHeader, onExport }) => {
@@ -82,7 +83,7 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format
                             <div className="flex justify-between text-sm">
                                 <span className="text-neutral-500 font-medium uppercase tracking-tight">Subtotal</span>
                                 <span className="text-neutral-900 dark:text-neutral-100 font-semibold">
-                                    {formatCurrency(invoice.subtotal, invoice.settings.currency)}
+                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.subtotal, invoice.settings.currency)}</CurrencyText>
                                 </span>
                             </div>
 
@@ -90,7 +91,7 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format
                                 <div className="flex justify-between text-sm">
                                     <span className="text-neutral-500 font-medium uppercase tracking-tight">Tax ({invoice.settings.taxRate}%)</span>
                                     <span className="text-neutral-900 dark:text-neutral-100 font-semibold">
-                                        + {formatCurrency(invoice.taxAmount, invoice.settings.currency)}
+                                        + <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.taxAmount, invoice.settings.currency)}</CurrencyText>
                                     </span>
                                 </div>
                             )}
@@ -101,7 +102,7 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format
                                         Discount {invoice.settings.discountType === 'percentage' ? `(${invoice.settings.discountValue}%)` : ''}
                                     </span>
                                     <span className="text-red-500 font-semibold">
-                                        - {formatCurrency(invoice.discountAmount, invoice.settings.currency)}
+                                        - <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.discountAmount, invoice.settings.currency)}</CurrencyText>
                                     </span>
                                 </div>
                             )}
@@ -109,7 +110,7 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format
                             <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 flex justify-between items-baseline">
                                 <span className="text-base font-bold text-neutral-900 dark:text-neutral-100 uppercase tracking-tighter">Total</span>
                                 <span className="text-2xl font-black text-brand-primary">
-                                    {formatCurrency(invoice.total, invoice.settings.currency)}
+                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
                                 </span>
                             </div>
                         </div>

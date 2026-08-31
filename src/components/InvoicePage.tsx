@@ -14,6 +14,7 @@ import { Trash2, ChevronRight, Eye, X, Check, ShieldCheck, Circle } from 'lucide
 import { exportToPDF, exportToPNG } from '../utils/pdf';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '../utils/formatters';
+import { CurrencyText } from './ui/CurrencyText';
 import { cn } from '../utils/cn';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { sanitizeText } from '../utils/sanitize';
@@ -318,7 +319,7 @@ export const InvoicePage: React.FC = () => {
                                     invoice.total.toString().length > 15 ? "text-sm" :
                                         invoice.total.toString().length > 10 ? "text-lg" : "text-xl"
                                 )}>
-                                    {formatCurrency(invoice.total, invoice.settings.currency)}
+                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
                                 </p>
                             </div>
 

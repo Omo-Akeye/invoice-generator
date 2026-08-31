@@ -16,6 +16,8 @@ export const exportToPDF = async (elementId: string, filename: string) => {
         clone.style.opacity = '1';
         document.body.appendChild(clone);
 
+        await document.fonts.ready;
+
         const canvas = await html2canvas(clone, {
             scale: 1.5,
             useCORS: true,
@@ -79,6 +81,8 @@ export const exportToPNG = async (elementId: string, filename: string) => {
         clone.style.visibility = 'visible';
         clone.style.opacity = '1';
         document.body.appendChild(clone);
+
+        await document.fonts.ready;
 
         const canvas = await html2canvas(clone, {
             scale: 2, // Higher scale for better PNG quality
