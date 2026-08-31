@@ -47,7 +47,7 @@ export const PaymentDetailsForm: React.FC<{ hideHeader?: boolean }> = ({ hideHea
                         type="button"
                         onClick={handleToggle}
                         className={cn(
-                            'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
+                            'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2',
                             isEnabled ? 'bg-brand-primary' : 'bg-neutral-200 dark:bg-neutral-700'
                         )}
                         role="switch"
@@ -162,7 +162,7 @@ export const PaymentDetailsForm: React.FC<{ hideHeader?: boolean }> = ({ hideHea
                                     onChange={e => set({ walletAddress: e.target.value })}
                                 />
                                 <div className="flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-100 dark:border-amber-900/40">
-                                    <Bitcoin size={14} className="text-amber-600 mt-0.5 flex-shrink-0" />
+                                    <Bitcoin size={14} className="text-amber-600 mt-0.5 shrink-0" />
                                     <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
                                         Double-check your wallet address. Crypto transactions are irreversible.
                                     </p>

@@ -71,7 +71,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
                         exit={{ opacity: 0, y: dropUp ? 8 : -8, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
                         className={cn(
-                            "absolute z-50 flex flex-col py-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden min-w-[180px]",
+                            "absolute z-50 flex flex-col py-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden min-w-45",
                             dropUp ? "bottom-full mb-2" : "top-full mt-2",
                             fullWidth ? "w-full left-0 origin-bottom" : "w-max right-0 origin-top-right"
                         )}

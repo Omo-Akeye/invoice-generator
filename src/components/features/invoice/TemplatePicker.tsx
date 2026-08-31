@@ -39,7 +39,7 @@ const TemplateThumbnail: React.FC<{ templateId: InvoiceTemplate }> = ({ template
                     </div>
                     <div className="w-6 h-2 bg-neutral-800 rounded-sm" />
                 </div>
-                <div className="w-full h-[1px] bg-neutral-800" />
+                <div className="w-full h-px bg-neutral-800" />
                 <div className="flex-1 space-y-1 mt-0.5">
                     <div className="flex gap-1">
                         <div className="flex-1 h-1 bg-neutral-200 rounded-full" />
@@ -96,7 +96,7 @@ const TemplateThumbnail: React.FC<{ templateId: InvoiceTemplate }> = ({ template
     return (
         <div className="w-full h-full bg-white rounded overflow-hidden flex flex-col p-2 gap-1">
             <div
-                className="w-full h-[2px] rounded-full"
+                className="w-full h-0.5 rounded-full"
                 style={{ background: 'linear-gradient(90deg, #92400e, #f59e0b, #92400e)' }}
             />
             <div className="flex justify-between items-start">
@@ -109,7 +109,7 @@ const TemplateThumbnail: React.FC<{ templateId: InvoiceTemplate }> = ({ template
                     <div className="w-4 h-1 bg-stone-200 rounded-full" />
                 </div>
             </div>
-            <div className="w-full h-[1px] bg-stone-200" />
+            <div className="w-full h-px bg-stone-200" />
             <div className="flex-1 space-y-0.5">
                 <div className="flex gap-1">
                     <div className="flex-1 h-1 bg-stone-200 rounded-full" />
@@ -128,7 +128,7 @@ const TemplateThumbnail: React.FC<{ templateId: InvoiceTemplate }> = ({ template
                 <div className="w-8 h-1.5 rounded-full" style={{ background: '#78350f' }} />
             </div>
             <div
-                className="w-full h-[2px] rounded-full"
+                className="w-full h-0.5 rounded-full"
                 style={{ background: 'linear-gradient(90deg, #92400e, #f59e0b, #92400e)' }}
             />
         </div>
@@ -159,7 +159,7 @@ export const TemplatePicker: React.FC<{ hideHeader?: boolean }> = ({ hideHeader 
                                 key={template.id}
                                 onClick={() => updateTemplate(template.id)}
                                 className={cn(
-                                    'relative flex flex-col items-center gap-2 p-2 rounded-xl border-2 transition-all duration-200 group cursor-pointer flex-none w-[100px] xl:w-full',
+                                    'relative flex flex-col items-center gap-2 p-2 rounded-xl border-2 transition-all duration-200 group cursor-pointer flex-none w-25 xl:w-full',
                                     isActive
                                         ? 'border-brand-primary bg-blue-50/50 dark:bg-blue-950/20 shadow-sm'
                                         : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-500'
@@ -172,7 +172,7 @@ export const TemplatePicker: React.FC<{ hideHeader?: boolean }> = ({ hideHeader 
                                 )}
                                 <div
                                     className={cn(
-                                        'w-full aspect-[3/4] rounded-lg overflow-hidden border transition-shadow',
+                                        'w-full aspect-3/4 rounded-lg overflow-hidden border transition-shadow',
                                         isActive
                                             ? 'border-brand-primary/30 shadow-sm'
                                             : 'border-neutral-200 dark:border-neutral-700 group-hover:shadow-sm'

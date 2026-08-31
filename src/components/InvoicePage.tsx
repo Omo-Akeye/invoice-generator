@@ -155,7 +155,7 @@ export const InvoicePage: React.FC = () => {
                             <Button variant="ghost" size="icon" onClick={clearInvoice} className="xl:hidden text-neutral-400">
                                 <Trash2 size={18} />
                             </Button>
-                            <div className="hidden sm:flex min-w-[120px]">
+                            <div className="hidden sm:flex min-w-30">
                                 <ExportButton 
                                     onExport={handleExport}
                                     isExporting={isExporting}
@@ -323,17 +323,17 @@ export const InvoicePage: React.FC = () => {
                                 </p>
                             </div>
 
-                            <div className="flex items-center gap-2 flex-shrink-0">
+                            <div className="flex items-center gap-2 shrink-0">
                                 <Button
                                     variant="secondary"
                                     size="sm"
-                                    className="px-3 min-w-[40px] h-10"
+                                    className="px-3 min-w-10 h-10"
                                     onClick={() => setShowMobilePreview(true)}
                                 >
                                     <Eye size={18} className="sm:mr-2" />
                                     <span className="hidden sm:inline">Preview</span>
                                 </Button>
-                                <div className="ml-2 w-[110px]">
+                                <div className="ml-2 w-27.5">
                                     <ExportButton
                                         onExport={handleExport}
                                         isExporting={isExporting}
@@ -355,7 +355,7 @@ export const InvoicePage: React.FC = () => {
                         initial={{ opacity: 0, y: '100%' }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: '100%' }}
-                        className="fixed inset-0 z-[60] bg-neutral-100 dark:bg-neutral-950 flex flex-col no-print"
+                        className="fixed inset-0 z-60 bg-neutral-100 dark:bg-neutral-950 flex flex-col no-print"
                     >
                         <div className="flex items-center justify-between p-4 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
                             <h2 className="font-bold">Invoice Preview</h2>
@@ -391,7 +391,7 @@ export const InvoicePage: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] bg-neutral-950/20 backdrop-blur-sm flex items-center justify-center no-print"
+                        className="fixed inset-0 z-100 bg-neutral-950/20 backdrop-blur-sm flex items-center justify-center no-print"
                     >
                         <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-4">
                             <div className="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center">
