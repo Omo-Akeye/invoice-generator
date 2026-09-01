@@ -27,15 +27,26 @@ export const Footer: React.FC = () => {
                                 End-to-End Local Encryption
                             </span>
                         </div>
-                        <p className="text-[10px] text-neutral-400 font-medium">
-                            &copy; {new Date().getFullYear()} InvoicePro. Built for professionals.
-                        </p>
                         <div className="flex items-center gap-4 text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
                             <span className="hover:text-brand-primary cursor-pointer transition-colors">Privacy</span>
                             <span className="w-1 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full" />
                             <span className="hover:text-brand-primary cursor-pointer transition-colors">Terms</span>
                         </div>
                     </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-neutral-100 dark:border-neutral-800 text-center">
+                    <p className="text-xs text-neutral-400 font-medium">
+                        &copy; {new Date().getFullYear()} InvoicePro. Built with by{' '}
+                        <a
+                            href="https://www.akeyesaheed.tech/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-brand-primary hover:underline font-bold transition-colors"
+                        >
+                            Akeye Saheed
+                        </a>
+                    </p>
                 </div>
             </div>
         </footer>
