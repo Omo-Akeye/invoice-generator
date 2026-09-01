@@ -6,6 +6,7 @@ import { ExportButton } from '../../ui/ExportButton';
 import { formatCurrency } from '../../../utils/formatters';
 import { CurrencyText } from '../../ui/CurrencyText';
 import type { Currency } from '../../../types/invoice';
+import { NumericFormat } from 'react-number-format';
 
 export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format: 'pdf' | 'png') => void }> = ({ hideHeader, onExport }) => {
     const { invoice, updateSettings } = useInvoice();
@@ -26,14 +27,15 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format
                         </div>
 
                         {invoice.settings.includeTax && (
-                            <Input
+                            <NumericFormat
+                                customInput={Input}
                                 label="Tax Rate (%)"
-                                type="number"
-                                min="0"
-                                max="100"
+                                decimalScale={2}
+                                allowNegative={false}
+                                isAllowed={(values) => !values.floatValue || values.floatValue <= 100}
                                 placeholder="0"
                                 value={invoice.settings.taxRate === 0 ? '' : invoice.settings.taxRate}
-                                onChange={(e) => updateSettings({ taxRate: parseFloat(e.target.value) || 0 })}
+                                onValueChange={(values) => updateSettings({ taxRate: values.floatValue ?? 0 })}
                                 onFocus={(e) => e.target.select()}
                             />
                         )}
@@ -67,12 +69,14 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format
                                     <option value="fixed">Fixed Amount</option>
                                 </select>
                             </div>
-                            <Input
-                                type="number"
-                                min="0"
+                            <NumericFormat
+                                customInput={Input}
+                                thousandSeparator=","
+                                decimalScale={2}
+                                allowNegative={false}
                                 placeholder="0"
                                 value={invoice.settings.discountValue === 0 ? '' : invoice.settings.discountValue}
-                                onChange={(e) => updateSettings({ discountValue: parseFloat(e.target.value) || 0 })}
+                                onValueChange={(values) => updateSettings({ discountValue: values.floatValue ?? 0 })}
                                 onFocus={(e) => e.target.select()}
                             />
                         </div>

@@ -8,6 +8,7 @@ import { formatCurrency, getCurrencySymbol } from '../../../utils/formatters';
 import { CurrencyText } from '../../ui/CurrencyText';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sanitizeText } from '../../../utils/sanitize';
+import { NumericFormat } from 'react-number-format';
 
 export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
     const { invoice, addItem, updateItem, removeItem } = useInvoice();
@@ -45,26 +46,29 @@ export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = ({ hideHeader })
                                     value={item.description}
                                     onChange={(e) => updateItem(item.id, { description: sanitizeText(e.target.value, 200) })}
                                 />
-                                <Input
-                                    type="number"
-                                    min="1"
+                                <NumericFormat
+                                    customInput={Input}
+                                    thousandSeparator=","
+                                    decimalScale={0}
+                                    allowNegative={false}
                                     placeholder="0"
                                     value={item.quantity === 0 ? '' : item.quantity}
-                                    onChange={(e) => updateItem(item.id, { quantity: parseFloat(e.target.value) || 0 })}
+                                    onValueChange={(values) => updateItem(item.id, { quantity: values.floatValue ?? 0 })}
                                     onFocus={(e) => e.target.select()}
                                 />
                                 <div className="relative">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm z-10">
                                         <CurrencyText currency={invoice.settings.currency}>{getCurrencySymbol(invoice.settings.currency)}</CurrencyText>
                                     </span>
-                                    <Input
+                                    <NumericFormat
+                                        customInput={Input}
                                         className="pl-6"
-                                        type="number"
-                                        min="0"
-                                        step="0.01"
+                                        thousandSeparator=","
+                                        decimalScale={2}
+                                        allowNegative={false}
                                         placeholder="0.00"
                                         value={item.unitPrice === 0 ? '' : item.unitPrice}
-                                        onChange={(e) => updateItem(item.id, { unitPrice: parseFloat(e.target.value) || 0 })}
+                                        onValueChange={(values) => updateItem(item.id, { unitPrice: values.floatValue ?? 0 })}
                                         onFocus={(e) => e.target.select()}
                                     />
                                 </div>
