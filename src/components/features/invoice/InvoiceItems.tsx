@@ -49,7 +49,7 @@ export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = ({ hideHeader })
                                 <NumericFormat
                                     customInput={Input}
                                     thousandSeparator=","
-                                    decimalScale={0}
+                                    decimalScale={2}
                                     allowNegative={false}
                                     placeholder="0"
                                     value={item.quantity === 0 ? '' : item.quantity}
