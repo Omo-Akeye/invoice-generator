@@ -34,26 +34,24 @@ export class ErrorBoundary extends Component<Props, State> {
     public render() {
         if (this.state.hasError) {
             return (
-                <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 flex flex-col items-center justify-center p-6 text-center">
-                    <div className="w-16 h-16 bg-red-100 dark:bg-red-950/30 rounded-2xl flex items-center justify-center mb-6">
-                        <AlertTriangle className="text-red-600 dark:text-red-400" size={32} />
-                    </div>
-                    <h1 className="text-2xl font-black tracking-tight mb-2">Something went wrong</h1>
-                    <p className="text-neutral-500 dark:text-neutral-400 max-w-md mb-8">
-                        The application encountered an unexpected error. This might be due to corrupted data in your local storage.
+                <div className="flex min-h-screen flex-col items-center justify-center bg-canvas p-6 text-center">
+                    <AlertTriangle className="mb-5 text-danger" size={24} strokeWidth={1.75} />
+                    <h1 className="mb-2 text-2xl font-semibold tracking-[-0.03em] text-ink">Something went wrong</h1>
+                    <p className="mb-8 max-w-md text-[15px] leading-relaxed text-ink-muted">
+                        The app hit an unexpected error. Refreshing usually fixes it. If it keeps happening, your saved draft may be damaged and resetting will clear it.
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                        <Button variant="outline" onClick={() => window.location.reload()}>
-                            <RefreshCcw size={16} className="mr-2" />
-                            Try Refreshing
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                        <Button variant="primary" onClick={() => window.location.reload()}>
+                            <RefreshCcw size={15} strokeWidth={1.75} />
+                            Refresh
                         </Button>
                         <Button variant="danger" onClick={this.handleReset}>
-                            Reset Application Data
+                            Clear saved draft
                         </Button>
                     </div>
                     {import.meta.env.DEV && (
-                        <div className="mt-8 p-4 bg-neutral-100 dark:bg-neutral-900 rounded-lg text-left overflow-auto max-w-2xl">
-                            <p className="text-xs font-mono text-red-500">{this.state.error?.toString()}</p>
+                        <div className="mt-8 max-w-2xl overflow-auto rounded-control bg-subtle p-4 text-left">
+                            <p className="font-mono text-xs text-danger">{this.state.error?.toString()}</p>
                         </div>
                     )}
                 </div>

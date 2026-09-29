@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useInvoice } from '../store/InvoiceContext';
 import { CompanyForm } from './features/invoice/CompanyForm';
 import { ClientForm, InvoiceDetailsForm } from './features/invoice/DetailsForm';
@@ -10,339 +10,331 @@ import { PaymentDetailsForm } from './features/invoice/PaymentDetailsForm';
 import { Button } from './ui/Button';
 import { ExportButton } from './ui/ExportButton';
 import { TextArea } from './ui/Input';
-import { Trash2, ChevronRight, Eye, X, Check, ShieldCheck, Circle } from 'lucide-react';
-import { exportToPDF, exportToPNG } from '../utils/pdf';
+import { ScaledFrame } from './ui/ScaledFrame';
+import { Logo, LogoMark } from './ui/Logo';
+import { EditorSkeleton } from './ui/EditorSkeleton';
+import { Footer } from './ui/Footer';
+import { CurrencyText } from './ui/CurrencyText';
+import { RollingNumber } from './ui/RollingNumber';
+import { Check, ChevronDown, Eye, Loader2, RotateCcw, Share, X } from 'lucide-react';
+import { canShareFiles, createInvoiceFile, downloadFile, shareFile, type ExportFormat } from '../utils/pdf';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '../utils/formatters';
-import { CurrencyText } from './ui/CurrencyText';
 import { cn } from '../utils/cn';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { sanitizeText } from '../utils/sanitize';
+import { Link } from '../lib/Link';
 
-import { Footer } from './ui/Footer';
-import { Loader2 } from 'lucide-react';
+type Notice = { message: string; action?: { label: string; onClick: () => void } };
 
 type Section = 'template' | 'details' | 'parties' | 'items' | 'summary' | 'payment' | 'notes';
 
-const AccordionSection: React.FC<{
-    title: string;
+const EASE = [0.2, 0.8, 0.2, 1] as const;
+
+// Every export renders the preview at this width, so PDFs look the same on every device.
+const PAGE_WIDTH = 640;
+
+const TEMPLATE_NAMES = { classic: 'Classic', modern: 'Modern', elegant: 'Elegant' } as const;
+const PAYMENT_NAMES = { bank_transfer: 'Bank transfer', crypto: 'Crypto', other: 'Custom' } as const;
+
+const EditorSection: React.FC<{
     id: Section;
-    activeSection: Section;
-    setActiveSection: (id: Section) => void;
+    index: number;
+    title: string;
+    description: string;
+    hint?: React.ReactNode;
+    isOpen: boolean;
+    collapsible: boolean;
+    onToggle: (id: Section) => void;
     children: React.ReactNode;
-    isMobile: boolean;
-}> = ({ title, id, activeSection, setActiveSection, children, isMobile }) => {
-    const isOpen = !isMobile || activeSection === id;
+}> = ({ id, index, title, description, hint, isOpen, collapsible, onToggle, children }) => {
+    const number = <span className="w-5 shrink-0 pt-px font-mono text-xs tabular-nums text-ink-faint">{String(index).padStart(2, '0')}</span>;
 
     return (
-        <div className={cn(
-            "bg-white dark:bg-neutral-900 overflow-hidden transition-all duration-300",
-            isMobile ? "border-b border-neutral-100 dark:border-neutral-800" : "rounded-apple border border-neutral-200 dark:border-neutral-800 mb-8"
-        )}>
-            {isMobile && (
+        <section id={`section-${id}`} className="scroll-mt-20 rounded-card border border-line bg-surface">
+            {collapsible ? (
                 <button
-                    onClick={() => setActiveSection(id)}
-                    className="w-full px-6 py-5 flex items-center justify-between group"
+                    type="button"
+                    onClick={() => onToggle(id)}
+                    aria-expanded={isOpen}
+                    aria-controls={`section-body-${id}`}
+                    className="flex w-full items-center gap-3 px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/40 rounded-card"
                 >
-                    <span className={cn(
-                        "text-xs font-black tracking-widest uppercase transition-colors",
-                        isOpen ? "text-brand-primary" : "text-neutral-400 group-hover:text-neutral-600"
-                    )}>
-                        {title}
+                    {number}
+                    <span className="min-w-0 flex-1">
+                        <span className="block text-[15px] font-medium tracking-[-0.01em] text-ink">{title}</span>
+                        {!isOpen && hint && <span className="mt-0.5 block truncate text-[13px] text-ink-muted">{hint}</span>}
                     </span>
-                    <ChevronRight
-                        size={16}
-                        className={cn(
-                            "text-neutral-300 transition-transform duration-300",
-                            isOpen ? "rotate-90 text-brand-primary" : ""
-                        )}
-                    />
+                    <ChevronDown size={16} strokeWidth={1.75} className={cn('shrink-0 text-ink-faint transition-transform duration-200', isOpen && 'rotate-180')} />
                 </button>
-            )}
-
-            {!isMobile && (
-                <div className="px-6 py-4 border-b border-neutral-100 dark:border-neutral-800">
-                    <h2 className="text-xs font-bold text-neutral-900 dark:text-neutral-100 tracking-widest uppercase">
-                        {title}
-                    </h2>
+            ) : (
+                <div className="flex gap-3 px-5 pt-5">
+                    {number}
+                    <div>
+                        <h2 className="text-[15px] font-medium tracking-[-0.01em] text-ink">{title}</h2>
+                        <p className="mt-0.5 text-[13px] text-ink-muted">{description}</p>
+                    </div>
                 </div>
             )}
 
-            <motion.div
-                initial={isMobile ? false : { opacity: 1 }}
-                animate={{
-                    height: isOpen ? "auto" : 0,
-                    opacity: isOpen ? 1 : 0
-                }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="overflow-hidden"
-            >
-                <div className={cn(isMobile ? "px-6 pb-6 pt-2" : "p-6")}>
-                    {children}
-                </div>
-            </motion.div>
-        </div>
+            <AnimatePresence initial={false}>
+                {isOpen && (
+                    <motion.div
+                        id={`section-body-${id}`}
+                        initial={collapsible ? { height: 0, opacity: 0 } : false}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.24, ease: EASE }}
+                        className="overflow-hidden"
+                    >
+                        <div className={cn(collapsible ? 'px-4 pb-5 pt-1' : 'p-5 pl-13')}>{children}</div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </section>
     );
 };
 
 export const InvoicePage: React.FC = () => {
     const { invoice, isLoading, isValid, updateInvoiceDetails, clearInvoice } = useInvoice();
-    const [activeSection, setActiveSection] = useState<Section>('template');
+    const [activeSection, setActiveSection] = useState<Section | null>('template');
     const [showMobilePreview, setShowMobilePreview] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
+    const [notice, setNotice] = useState<Notice | null>(null);
     const isMobile = useMediaQuery('(max-width: 1279px)');
+    const canShare = useMemo(canShareFiles, []);
 
-    const handleExport = async (format: 'pdf' | 'png' = 'pdf') => {
+    useEffect(() => {
+        if (!notice) return;
+        // Notices with an action wait longer so there is time to tap it.
+        const timer = window.setTimeout(() => setNotice(null), notice.action ? 15000 : 4500);
+        return () => window.clearTimeout(timer);
+    }, [notice]);
+
+    const filename = invoice.invoiceNumber || 'draft-invoice';
+
+    const renderFile = async (format: ExportFormat): Promise<File | null> => {
         if (!isValid) {
-            alert('Please add a client name and at least one item with a price before exporting.');
-            return;
+            setNotice({ message: 'Add a client name and at least one priced item first.' });
+            return null;
         }
-
         try {
             setIsExporting(true);
-            const filename = invoice.invoiceNumber || 'draft-invoice';
-            if (format === 'png') {
-                await exportToPNG('invoice-preview', filename);
-            } else {
-                await exportToPDF('invoice-preview', filename);
-            }
+            return await createInvoiceFile('invoice-preview', filename, format);
         } catch (error) {
             console.error(`${format.toUpperCase()} Export Error:`, error);
-            alert(`Failed to generate ${format.toUpperCase()}. Please try again.`);
+            setNotice({ message: `Couldn't create the ${format.toUpperCase()}. Please try again.` });
+            return null;
         } finally {
             setIsExporting(false);
         }
     };
 
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 flex flex-col items-center justify-center gap-4">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center">
-                        <img src="/favicon.svg" alt="Logo" className="w-5 h-5" />
-                    </div>
-                    <h1 className="text-lg font-black tracking-tight">
-                        Invoice<span className="text-brand-primary">Pro</span>
-                    </h1>
+    const handleExport = async (format: ExportFormat = 'pdf') => {
+        const file = await renderFile(format);
+        if (file) downloadFile(file);
+    };
+
+    const share = async (file: File) => {
+        try {
+            const result = await shareFile(file, `Invoice ${invoice.invoiceNumber}`.trim());
+            if (result === 'needs-gesture') {
+                // Rendering outlasted the tap's permission window (Safari); ask for one more tap.
+                setNotice({ message: 'Your PDF is ready to send.', action: { label: 'Share', onClick: () => share(file) } });
+            } else {
+                setNotice(null);
+            }
+        } catch (error) {
+            console.error('Share Error:', error);
+            setNotice({ message: "Couldn't open sharing. Download the PDF and send it instead.", action: { label: 'Download', onClick: () => downloadFile(file) } });
+        }
+    };
+
+    const handleShare = async () => {
+        const file = await renderFile('pdf');
+        if (file) await share(file);
+    };
+
+    if (isLoading) return <EditorSkeleton />;
+
+    const currency = invoice.settings.currency;
+    const money = (value: number) => <CurrencyText currency={currency}>{formatCurrency(value, currency)}</CurrencyText>;
+    const namedItems = invoice.items.filter((item) => item.name.trim()).length;
+
+    const sections: { id: Section; title: string; description: string; hint?: React.ReactNode; body: React.ReactNode }[] = [
+        {
+            id: 'template',
+            title: 'Template',
+            description: 'Pick a look. You can switch any time.',
+            hint: TEMPLATE_NAMES[invoice.template],
+            body: <TemplatePicker />,
+        },
+        {
+            id: 'details',
+            title: 'Invoice details',
+            description: 'Number and dates shown at the top.',
+            hint: invoice.invoiceNumber,
+            body: <InvoiceDetailsForm />,
+        },
+        {
+            id: 'parties',
+            title: 'From and bill to',
+            description: 'Who is sending this, and who pays.',
+            hint: invoice.client.name ? `To ${invoice.client.name}` : 'Add your client',
+            body: (
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    <CompanyForm />
+                    <ClientForm />
                 </div>
-                <div className="flex items-center gap-2 text-sm text-neutral-400">
-                    <ShieldCheck size={16} className="text-brand-primary animate-pulse" />
-                    <span>Decrypting your data&hellip;</span>
-                </div>
-            </div>
-        );
-    }
+            ),
+        },
+        {
+            id: 'items',
+            title: 'Line items',
+            description: 'What you are charging for.',
+            hint: namedItems === 0 ? 'No items yet' : `${namedItems} ${namedItems === 1 ? 'item' : 'items'}`,
+            body: <InvoiceItems />,
+        },
+        {
+            id: 'summary',
+            title: 'Currency, tax and discount',
+            description: 'Totals update as you type.',
+            hint: <>Total {money(invoice.total)}</>,
+            body: <InvoiceSummary />,
+        },
+        {
+            id: 'payment',
+            title: 'Payment details',
+            description: 'Tell your client how to pay you.',
+            hint: invoice.paymentInfo ? PAYMENT_NAMES[invoice.paymentInfo.method] : 'Not shown',
+            body: <PaymentDetailsForm />,
+        },
+        {
+            id: 'notes',
+            title: 'Notes',
+            description: 'Terms, thanks, or anything else.',
+            hint: invoice.notes ? invoice.notes : 'Optional',
+            body: (
+                <TextArea
+                    aria-label="Notes or terms"
+                    placeholder="Payment is due within 14 days. Thank you for your business."
+                    value={invoice.notes}
+                    onChange={(e) => updateInvoiceDetails({ notes: sanitizeText(e.target.value, 500) })}
+                    rows={4}
+                />
+            ),
+        },
+    ];
+
+    // Exactly one #invoice-preview must exist at a time; the exporters look it up by id.
+    const preview = (
+        <ScaledFrame baseWidth={PAGE_WIDTH} className="rounded-[6px] bg-white shadow-paper">
+            <InvoicePreview />
+        </ScaledFrame>
+    );
 
     return (
-        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 flex flex-col">
-            <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 no-print">
-                <div className="invoice-container px-6 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center">
-                            <img src="/favicon.svg" alt="Logo" className="w-5 h-5" />
-                        </div>
-                        <h1 className="text-lg font-black tracking-tight flex items-baseline">
-                            Invoice<span className="text-brand-primary">Pro</span>
-                        </h1>
+        <div className="flex min-h-screen flex-col bg-canvas">
+            <header className="sticky top-0 z-40 border-b border-line bg-canvas/85 backdrop-blur-md no-print">
+                <div className="invoice-container flex h-14 items-center justify-between gap-4 px-4 sm:px-6">
+                    <div className="flex min-w-0 items-center gap-3">
+                        <Link href="/" aria-label="InvoicePro home" className="shrink-0">
+                            <LogoMark className="sm:hidden" />
+                            <Logo className="hidden sm:inline-flex" />
+                        </Link>
+                        <span aria-hidden className="text-line-strong">/</span>
+                        <span className="truncate font-mono text-[13px] tabular-nums text-ink">{invoice.invoiceNumber || 'Untitled'}</span>
+                        <span className="hidden items-center gap-1 text-xs text-ink-faint md:inline-flex">
+                            <Check size={13} strokeWidth={2} className="text-positive" />
+                            Saved on this device
+                        </span>
                     </div>
-
-                    <div className="flex items-center gap-4">
-                        <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-green-50 dark:bg-green-950/30 border border-green-100 dark:border-green-900/50 rounded-full">
-                            <ShieldCheck size={14} className="text-green-600 dark:text-green-400" />
-                            <span className="text-[10px] font-bold text-green-700 dark:text-green-400 uppercase tracking-tight">Privacy-First (No Backend)</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" onClick={clearInvoice} className="xl:hidden text-neutral-400">
-                                <Trash2 size={18} />
-                            </Button>
-                            <div className="hidden sm:flex min-w-30">
-                                <ExportButton 
-                                    onExport={handleExport}
-                                    isExporting={isExporting}
-                                    variant="primary"
-                                    size="sm"
-                                />
-                            </div>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                        <Button variant="ghost" size="sm" onClick={clearInvoice} aria-label="Start a new invoice">
+                            <RotateCcw size={14} strokeWidth={1.75} />
+                            <span className="hidden sm:inline">Start over</span>
+                        </Button>
+                        <div className="hidden xl:block">
+                            <ExportButton onExport={handleExport} onShare={canShare ? handleShare : undefined} isExporting={isExporting} size="sm" />
                         </div>
                     </div>
                 </div>
             </header>
 
-            <main className="invoice-container px-0 sm:px-4 py-0 sm:py-8 flex-1">
-                <div className="flex flex-col xl:flex-row gap-8 items-start">
-
-                    <div className="w-full xl:w-[55%] no-print">
-                        <div className="px-6 py-8 sm:px-0 sm:pt-0 sm:pb-8 space-y-2">
-                            <div className="flex items-center gap-3">
-                                <h2 className="text-3xl font-black tracking-tighter">Draft Invoice</h2>
-                                <div className="flex items-center gap-1 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-md text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-tighter">
-                                    <Check size={12} className="text-green-500" />
-                                    Saved & Encrypted
-                                </div>
-                            </div>
-                            <p className="text-neutral-500 text-sm">Fill in the details to generate your professional invoice. All data is processed locally.</p>
-
-
+            <main className="invoice-container w-full flex-1 px-4 pb-32 pt-8 sm:px-6 sm:pt-10 xl:pb-16">
+                <div className="grid items-start gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(440px,0.82fr)]">
+                    <div className="min-w-0 no-print">
+                        <div className="mb-8">
+                            <h1 className="text-2xl font-semibold tracking-[-0.03em] text-ink sm:text-[28px]">New invoice</h1>
+                            <p className="mt-1.5 text-[15px] text-ink-muted">
+                                Your draft saves automatically to this browser, and nowhere else.
+                            </p>
                         </div>
 
-                        <div className={cn(
-                            "space-y-0 xl:space-y-0",
-                            isMobile ? "bg-white dark:bg-neutral-900 border-y border-neutral-100 dark:border-neutral-800 shadow-sm sm:rounded-apple sm:border sm:mx-0" : ""
-                        )}>
-                            <AccordionSection
-                                title="Template Design"
-                                id="template"
-                                activeSection={activeSection}
-                                setActiveSection={setActiveSection}
-                                isMobile={isMobile}
-                            >
-                                <TemplatePicker hideHeader />
-                            </AccordionSection>
-
-                            <AccordionSection
-                                title="Invoice Details"
-                                id="details"
-                                activeSection={activeSection}
-                                setActiveSection={setActiveSection}
-                                isMobile={isMobile}
-                            >
-                                <InvoiceDetailsForm hideHeader />
-                            </AccordionSection>
-
-                            <AccordionSection
-                                title="Sender & Client"
-                                id="parties"
-                                activeSection={activeSection}
-                                setActiveSection={setActiveSection}
-                                isMobile={isMobile}
-                            >
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <CompanyForm hideHeader />
-                                    <ClientForm hideHeader />
-                                </div>
-                            </AccordionSection>
-
-                            <AccordionSection
-                                title="Items"
-                                id="items"
-                                activeSection={activeSection}
-                                setActiveSection={setActiveSection}
-                                isMobile={isMobile}
-                            >
-                                <InvoiceItems hideHeader />
-                            </AccordionSection>
-
-                            <AccordionSection
-                                title="Summary & Settings"
-                                id="summary"
-                                activeSection={activeSection}
-                                setActiveSection={setActiveSection}
-                                isMobile={isMobile}
-                            >
-                                <InvoiceSummary hideHeader onExport={handleExport} />
-                            </AccordionSection>
-
-                            <AccordionSection
-                                title="Payment Details"
-                                id="payment"
-                                activeSection={activeSection}
-                                setActiveSection={setActiveSection}
-                                isMobile={isMobile}
-                            >
-                                <PaymentDetailsForm hideHeader />
-                            </AccordionSection>
-
-                            <AccordionSection
-                                title="Additional Notes"
-                                id="notes"
-                                activeSection={activeSection}
-                                setActiveSection={setActiveSection}
-                                isMobile={isMobile}
-                            >
-                                <TextArea
-                                    label="Notes / Terms"
-                                    placeholder="Payment is due within 14 days. Thank you for your business!"
-                                    value={invoice.notes}
-                                    onChange={(e) => updateInvoiceDetails({ notes: sanitizeText(e.target.value, 500) })}
-                                    rows={4}
-                                />
-                            </AccordionSection>
-                        </div>
-
-                        {!isMobile && (
-                            <div className="mt-8 flex justify-end gap-3">
-                                <Button variant="ghost" onClick={clearInvoice} className="text-red-500 hover:bg-red-50">
-                                    <Trash2 size={16} className="mr-2" />
-                                    Reset Draft
-                                </Button>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="hidden xl:block w-full xl:w-[45%] xl:sticky xl:top-24 space-y-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest flex items-center gap-2">
-                                <div className="relative flex items-center justify-center">
-                                    <Circle size={8} className="text-brand-primary fill-brand-primary" />
-                                    <Circle size={8} className="absolute text-brand-primary fill-brand-primary animate-pulse-soft" />
-                                </div>
-                                Live Preview
-                            </h3>
-                            <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 font-medium">
-                                <ShieldCheck size={12} className="text-neutral-300" />
-                                <span>AES-256 AES-GCM Encrypted</span>
-                            </div>
-                        </div>
-
-                        <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-white shadow-2xl shadow-neutral-200/50 dark:shadow-none">
-                            <InvoicePreview />
+                        <div className="space-y-3 xl:space-y-4">
+                            {sections.map((section, i) => (
+                                <EditorSection
+                                    key={section.id}
+                                    id={section.id}
+                                    index={i + 1}
+                                    title={section.title}
+                                    description={section.description}
+                                    hint={section.hint}
+                                    collapsible={isMobile}
+                                    isOpen={!isMobile || activeSection === section.id}
+                                    onToggle={(id) => setActiveSection((current) => (current === id ? null : id))}
+                                >
+                                    {section.body}
+                                </EditorSection>
+                            ))}
                         </div>
                     </div>
+
+                    {!isMobile && (
+                        <aside className="sticky top-[4.5rem] flex max-h-[calc(100vh-5.5rem)] flex-col no-print" aria-label="Invoice preview">
+                            <div className="mb-3 flex items-center justify-between">
+                                <p className="text-[13px] font-medium text-ink">Preview</p>
+                                <p className="text-xs text-ink-faint">{TEMPLATE_NAMES[invoice.template]} · A4</p>
+                            </div>
+                            <div className="min-h-0 overflow-y-auto rounded-[20px] bg-subtle p-6">{preview}</div>
+                        </aside>
+                    )}
                 </div>
             </main>
 
             <Footer />
 
+            {/* Mobile: keep the preview mounted off-screen so downloads work without opening it. */}
+            {isMobile && !showMobilePreview && (
+                <div aria-hidden className="pointer-events-none fixed left-[-10000px] top-0" style={{ width: PAGE_WIDTH }}>
+                    {preview}
+                </div>
+            )}
+
             <AnimatePresence>
                 {isMobile && !showMobilePreview && (
                     <motion.div
-                        initial={{ y: 100 }}
+                        initial={{ y: 80 }}
                         animate={{ y: 0 }}
-                        exit={{ y: 100 }}
-                        className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border-t border-neutral-200 dark:border-neutral-800 no-print"
+                        exit={{ y: 80 }}
+                        transition={{ duration: 0.25, ease: EASE }}
+                        className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-canvas/90 px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl no-print"
                     >
-                        <div className="max-w-md mx-auto flex items-center justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                                <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-tight truncate">Total Amount</p>
-                                <p className={cn(
-                                    "font-black text-brand-primary leading-tight truncate",
-                                    invoice.total.toString().length > 15 ? "text-sm" :
-                                        invoice.total.toString().length > 10 ? "text-lg" : "text-xl"
-                                )}>
-                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
+                        <div className="mx-auto flex max-w-xl items-center justify-between gap-3">
+                            <div className="min-w-0">
+                                <p className="text-xs text-ink-faint">Total due</p>
+                                <p className="truncate text-lg font-semibold tracking-[-0.02em] text-ink">
+                                    <CurrencyText currency={currency}>
+                                        <RollingNumber value={formatCurrency(invoice.total, currency)} />
+                                    </CurrencyText>
                                 </p>
                             </div>
-
-                            <div className="flex items-center gap-2 shrink-0">
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    className="px-3 min-w-10 h-10"
-                                    onClick={() => setShowMobilePreview(true)}
-                                >
-                                    <Eye size={18} className="sm:mr-2" />
-                                    <span className="hidden sm:inline">Preview</span>
+                            <div className="flex shrink-0 items-center gap-2">
+                                <Button variant="secondary" size="md" className="px-3 min-[420px]:px-4" onClick={() => setShowMobilePreview(true)} aria-label="Preview invoice">
+                                    <Eye size={15} strokeWidth={1.75} />
+                                    <span className="hidden min-[420px]:inline">Preview</span>
                                 </Button>
-                                <div className="ml-2 w-27.5">
-                                    <ExportButton
-                                        onExport={handleExport}
-                                        isExporting={isExporting}
-                                        variant="primary"
-                                        size="sm"
-                                        fullWidth
-                                        dropUp
-                                    />
-                                </div>
+                                <ExportButton onExport={handleExport} onShare={canShare ? handleShare : undefined} isExporting={isExporting} size="md" dropUp />
                             </div>
                         </div>
                     </motion.div>
@@ -352,55 +344,85 @@ export const InvoicePage: React.FC = () => {
             <AnimatePresence>
                 {showMobilePreview && (
                     <motion.div
-                        initial={{ opacity: 0, y: '100%' }}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Invoice preview"
+                        initial={{ opacity: 0, y: 24 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: '100%' }}
-                        className="fixed inset-0 z-60 bg-neutral-100 dark:bg-neutral-950 flex flex-col no-print"
+                        exit={{ opacity: 0, y: 24 }}
+                        transition={{ duration: 0.25, ease: EASE }}
+                        className="fixed inset-0 z-60 flex flex-col bg-canvas no-print"
                     >
-                        <div className="flex items-center justify-between p-4 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
-                            <h2 className="font-bold">Invoice Preview</h2>
-                            <button
-                                onClick={() => setShowMobilePreview(false)}
-                                className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
+                        <div className="flex h-14 items-center justify-between border-b border-line px-4">
+                            <p className="text-[15px] font-medium text-ink">Preview</p>
+                            <Button variant="ghost" size="icon" onClick={() => setShowMobilePreview(false)} aria-label="Close preview">
+                                <X size={18} strokeWidth={1.75} />
+                            </Button>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-4 flex items-start justify-center">
-                            <div className="w-full max-w-2xl bg-white shadow-xl rounded-lg overflow-hidden">
-                                <InvoicePreview />
-                            </div>
+                        <div className="flex-1 overflow-y-auto bg-subtle p-4">
+                            <div className="mx-auto max-w-2xl">{preview}</div>
                         </div>
-                        <div className="p-4 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800">
-                            <ExportButton
-                                onExport={handleExport}
-                                isExporting={isExporting}
-                                variant="primary"
-                                size="md"
-                                fullWidth
-                                dropUp
-                            />
+                        <div className="border-t border-line bg-canvas p-4 pb-[max(16px,env(safe-area-inset-bottom))]">
+                            {canShare ? (
+                                <div className="flex gap-2">
+                                    <Button variant="secondary" size="lg" className="flex-1" onClick={handleShare} disabled={isExporting}>
+                                        <Share size={17} strokeWidth={1.75} />
+                                        Share
+                                    </Button>
+                                    <div className="flex-1">
+                                        <ExportButton onExport={handleExport} isExporting={isExporting} size="lg" fullWidth dropUp />
+                                    </div>
+                                </div>
+                            ) : (
+                                <ExportButton onExport={handleExport} isExporting={isExporting} size="lg" fullWidth dropUp />
+                            )}
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
             <AnimatePresence>
-                {isExporting && !isMobile && (
+                {notice && (
+                    <motion.div
+                        role="status"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 8 }}
+                        transition={{ duration: 0.2, ease: EASE }}
+                        className="fixed inset-x-4 bottom-24 z-[70] mx-auto flex max-w-md items-start gap-3 rounded-card bg-ink px-4 py-3 text-sm text-canvas shadow-pop xl:bottom-8 no-print"
+                    >
+                        <p className="flex-1 self-center leading-relaxed">{notice.message}</p>
+                        {notice.action && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const { onClick } = notice.action!;
+                                    setNotice(null);
+                                    onClick();
+                                }}
+                                className="-my-1 shrink-0 rounded-control bg-canvas px-3 py-1.5 text-[13px] font-medium text-ink transition-opacity hover:opacity-90"
+                            >
+                                {notice.action.label}
+                            </button>
+                        )}
+                        <button type="button" onClick={() => setNotice(null)} aria-label="Dismiss" className="mt-0.5 opacity-60 transition-opacity hover:opacity-100">
+                            <X size={15} />
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {isExporting && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-100 bg-neutral-950/20 backdrop-blur-sm flex items-center justify-center no-print"
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-canvas/60 backdrop-blur-sm no-print"
                     >
-                        <div className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-4">
-                            <div className="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center">
-                                <Loader2 size={24} className="text-white animate-spin" />
-                            </div>
-                            <div className="text-center">
-                                <h3 className="font-bold text-lg">Generating...</h3>
-                                <p className="text-sm text-neutral-500">Please wait while we prepare your invoice...</p>
-                            </div>
+                        <div className="flex items-center gap-3 rounded-card border border-line bg-surface px-5 py-4 shadow-pop">
+                            <Loader2 size={18} className="animate-spin text-ink-muted" />
+                            <p className="text-sm text-ink">Preparing your download…</p>
                         </div>
                     </motion.div>
                 )}

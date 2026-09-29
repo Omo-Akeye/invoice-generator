@@ -1,11 +1,10 @@
 import React from 'react';
 import { useInvoice } from '../../../store/InvoiceContext';
 import { Input } from '../../ui/Input';
-import { Card } from '../../ui/Card';
 import { ImagePlus, X } from 'lucide-react';
 import { sanitizeText, sanitizeEmail } from '../../../utils/sanitize';
 
-export const CompanyForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
+export const CompanyForm: React.FC<{ hideHeader?: boolean }> = () => {
     const { invoice, updateCompany } = useInvoice();
 
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,57 +29,61 @@ export const CompanyForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) 
     };
 
     return (
-        <Card title={hideHeader ? "" : "YOUR COMPANY"} noPadding={hideHeader}>
-            <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                    {invoice.company.logo ? (
-                        <div className="relative w-24 h-24 rounded-apple overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 group">
-                            <img src={invoice.company.logo} alt="Logo" className="w-full h-full object-contain" />
-                            <button
-                                onClick={() => updateCompany({ logo: undefined })}
-                                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                                <X size={12} />
-                            </button>
-                        </div>
-                    ) : (
-                        <label className="flex flex-col items-center justify-center w-24 h-24 rounded-apple border-2 border-dashed border-neutral-300 dark:border-neutral-700 hover:border-brand-primary cursor-pointer transition-colors bg-neutral-50 dark:bg-neutral-900">
-                            <ImagePlus size={20} className="text-neutral-400" />
-                            <span className="text-[10px] font-bold text-neutral-400 mt-2 uppercase tracking-tighter">Add Logo</span>
-                            <input type="file" className="hidden" accept="image/*" onChange={handleLogoChange} />
-                        </label>
-                    )}
-                    <div className="flex-1">
-                        <Input
-                            label="Company Name"
-                            placeholder="e.g. Dangote Group"
-                            value={invoice.company.name}
-                            onChange={(e) => updateCompany({ name: sanitizeText(e.target.value, 100) })}
-                        />
+        <fieldset className="space-y-3">
+            <legend className="mb-3 text-[13px] font-medium text-ink">From</legend>
+            <div className="flex items-end gap-3">
+                {invoice.company.logo ? (
+                    <div className="group relative h-[62px] w-[62px] shrink-0 overflow-hidden rounded-control border border-line bg-white">
+                        <img src={invoice.company.logo} alt="Your logo" className="h-full w-full object-contain p-1" />
+                        <button
+                            type="button"
+                            onClick={() => updateCompany({ logo: undefined })}
+                            aria-label="Remove logo"
+                            className="absolute inset-0 flex items-center justify-center bg-ink/60 text-canvas opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                        >
+                            <X size={16} />
+                        </button>
                     </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                ) : (
+                    <label className="flex h-[62px] w-[62px] shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-control border border-dashed border-line-strong text-ink-faint transition-colors hover:border-ink-faint hover:text-ink-muted focus-within:border-accent">
+                        <ImagePlus size={16} strokeWidth={1.75} />
+                        <span className="text-[10px] font-medium">Logo</span>
+                        <input type="file" className="sr-only" accept="image/*" onChange={handleLogoChange} />
+                    </label>
+                )}
+                <div className="flex-1">
                     <Input
-                        label="Email Address"
-                        placeholder="hello@company.com.ng"
-                        type="email"
-                        value={invoice.company.email}
-                        onChange={(e) => updateCompany({ email: sanitizeEmail(e.target.value) })}
-                    />
-                    <Input
-                        label="Phone Number"
-                        placeholder="+234 803 000 0000"
-                        value={invoice.company.phone}
-                        onChange={(e) => updateCompany({ phone: sanitizeText(e.target.value, 30) })}
+                        label="Business name"
+                        placeholder="Lumen Studio"
+                        autoComplete="organization"
+                        value={invoice.company.name}
+                        onChange={(e) => updateCompany({ name: sanitizeText(e.target.value, 100) })}
                     />
                 </div>
-                <Input
-                    label="Address"
-                    placeholder="1 Victoria Island, Lagos, Nigeria"
-                    value={invoice.company.address}
-                    onChange={(e) => updateCompany({ address: sanitizeText(e.target.value, 200) })}
-                />
             </div>
-        </Card>
+            <Input
+                label="Email"
+                placeholder="hello@business.com"
+                autoComplete="email"
+                type="email"
+                value={invoice.company.email}
+                onChange={(e) => updateCompany({ email: sanitizeEmail(e.target.value) })}
+            />
+            <Input
+                label="Phone"
+                placeholder="+234 803 000 0000"
+                type="tel"
+                autoComplete="tel"
+                value={invoice.company.phone}
+                onChange={(e) => updateCompany({ phone: sanitizeText(e.target.value, 30) })}
+            />
+            <Input
+                label="Address"
+                placeholder="1 Victoria Island, Lagos"
+                autoComplete="street-address"
+                value={invoice.company.address}
+                onChange={(e) => updateCompany({ address: sanitizeText(e.target.value, 200) })}
+            />
+        </fieldset>
     );
 };

@@ -1,53 +1,44 @@
 import React from 'react';
-import { ShieldCheck } from 'lucide-react';
+import { Logo } from './Logo';
+import { Link } from '../../lib/Link';
+import { cn } from '../../utils/cn';
 
-export const Footer: React.FC = () => {
+/** `framed` continues the landing page's vertical frame rails. */
+export const Footer: React.FC<{ framed?: boolean }> = ({ framed }) => {
+    const rail = framed && 'lg:border-x lg:border-line lg:px-10';
     return (
-        <footer className="w-full bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 py-12 mt-auto no-print">
-            <div className="invoice-container px-6">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div className="flex flex-col items-center md:items-start gap-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-brand-primary rounded-md flex items-center justify-center">
-                                <img src="/favicon.svg" alt="Logo" className="w-4 h-4" />
-                            </div>
-                            <span className="font-black tracking-tight text-neutral-900 dark:text-neutral-100">
-                                Invoice<span className="text-brand-primary">Pro</span>
-                            </span>
-                        </div>
-                        <p className="text-xs text-neutral-500 max-w-xs text-center md:text-left leading-relaxed">
-                            A professional, privacy-first invoice generator designed for modern businesses and freelancers.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col items-center md:items-end gap-3">
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full">
-                            <ShieldCheck size={14} className="text-brand-primary" />
-                            <span className="text-[10px] font-bold text-neutral-600 dark:text-neutral-400 uppercase tracking-tight">
-                                End-to-End Local Encryption
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-4 text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
-                            <span className="hover:text-brand-primary cursor-pointer transition-colors">Privacy</span>
-                            <span className="w-1 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full" />
-                            <span className="hover:text-brand-primary cursor-pointer transition-colors">Terms</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-neutral-100 dark:border-neutral-800 text-center">
-                    <p className="text-xs text-neutral-400 font-medium">
-                        &copy; {new Date().getFullYear()} InvoicePro. Built with by{' '}
-                        <a
-                            href="https://www.akeyesaheed.tech/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-brand-primary hover:underline font-bold transition-colors"
-                        >
-                            Akeye Saheed
-                        </a>
+        <footer className="mt-auto border-t border-line no-print">
+            <div className={cn('mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:px-6 md:flex-row md:items-start md:justify-between', rail)}>
+                <div className="max-w-xs space-y-3">
+                    <Link href="/" aria-label="InvoicePro home">
+                        <Logo />
+                    </Link>
+                    <p className="text-[13px] leading-relaxed text-ink-muted">
+                        A free invoice generator that runs entirely in your browser. No account, no server, no copies of your data.
                     </p>
                 </div>
+
+                <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-2 text-[13px]">
+                    <Link href="/app" className="text-ink-muted transition-colors hover:text-ink">Create invoice</Link>
+                    <Link href="/#templates" className="text-ink-muted transition-colors hover:text-ink">Templates</Link>
+                    <Link href="/#privacy" className="text-ink-muted transition-colors hover:text-ink">Privacy</Link>
+                    <Link href="/#faq" className="text-ink-muted transition-colors hover:text-ink">FAQ</Link>
+                </nav>
+            </div>
+
+            <div className={cn('mx-auto flex max-w-6xl flex-col gap-2 border-t border-line px-4 py-6 text-xs text-ink-faint sm:flex-row sm:justify-between sm:px-6', rail)}>
+                <p>&copy; {new Date().getFullYear()} InvoicePro</p>
+                <p>
+                    Built by{' '}
+                    <a
+                        href="https://www.akeyesaheed.tech/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-ink-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
+                    >
+                        Akeye Saheed
+                    </a>
+                </p>
             </div>
         </footer>
     );
