@@ -30,6 +30,7 @@
     --color-accent-soft: var(--accent-soft);
     --color-positive: var(--positive);
     --color-danger: var(--danger);
+    --color-danger-solid: var(--danger-solid);
 }
 
 :root {
@@ -46,6 +47,7 @@
     --accent-soft: #e7f4ee;
     --positive: #13805a;
     --danger: #d23b3b;
+    --danger-solid: #d23b3b;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -63,6 +65,7 @@
         --accent-soft: #10271d;
         --positive: #3ccf91;
         --danger: #f07070;
+        --danger-solid: #c43636;
     }
 }
 
@@ -81,6 +84,7 @@
     --accent-soft: #10271d;
     --positive: #3ccf91;
     --danger: #f07070;
+    --danger-solid: #c43636;
 }
 
 body {

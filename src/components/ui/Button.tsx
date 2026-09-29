@@ -3,7 +3,7 @@ import { cn } from '../../utils/cn';
 import { buttonBase, buttonSizes, buttonVariants } from './buttonStyles';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+    variant?: keyof typeof buttonVariants;
     size?: 'sm' | 'md' | 'lg' | 'icon';
 }
 

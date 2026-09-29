@@ -170,10 +170,9 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     }, [setInvoice]);
 
+    // Resets immediately; callers are responsible for confirming with the user first.
     const clearInvoice = useCallback(() => {
-        if (window.confirm('Are you sure you want to clear the entire invoice?')) {
-            setInvoice({ ...DEFAULT_INVOICE, id: uuidv4() });
-        }
+        setInvoice({ ...DEFAULT_INVOICE, id: uuidv4() });
     }, [setInvoice]);
 
     const value = useMemo(() => ({

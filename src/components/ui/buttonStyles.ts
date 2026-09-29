@@ -4,6 +4,7 @@ export const buttonVariants = {
     outline: 'bg-transparent text-ink border border-line-strong hover:bg-subtle',
     ghost: 'bg-transparent text-ink-muted hover:text-ink hover:bg-subtle',
     danger: 'bg-transparent text-danger hover:bg-danger/10',
+    destructive: 'bg-danger-solid text-white hover:opacity-90',
 };
 
 export const buttonSizes = {

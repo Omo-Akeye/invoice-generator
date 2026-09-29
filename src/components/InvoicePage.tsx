@@ -13,6 +13,7 @@ import { TextArea } from './ui/Input';
 import { ScaledFrame } from './ui/ScaledFrame';
 import { Logo, LogoMark } from './ui/Logo';
 import { EditorSkeleton } from './ui/EditorSkeleton';
+import { ConfirmDialog } from './ui/ConfirmDialog';
 import { Footer } from './ui/Footer';
 import { CurrencyText } from './ui/CurrencyText';
 import { RollingNumber } from './ui/RollingNumber';
@@ -101,6 +102,7 @@ export const InvoicePage: React.FC = () => {
     const [showMobilePreview, setShowMobilePreview] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [notice, setNotice] = useState<Notice | null>(null);
+    const [confirmReset, setConfirmReset] = useState(false);
     const isMobile = useMediaQuery('(max-width: 1279px)');
     const canShare = useMemo(canShareFiles, []);
 
@@ -228,7 +230,7 @@ export const InvoicePage: React.FC = () => {
 
     // Exactly one #invoice-preview must exist at a time; the exporters look it up by id.
     const preview = (
-        <ScaledFrame baseWidth={PAGE_WIDTH} className="rounded-[6px] bg-white shadow-paper">
+        <ScaledFrame baseWidth={PAGE_WIDTH} className="rounded-md bg-white shadow-paper">
             <InvoicePreview />
         </ScaledFrame>
     );
@@ -250,7 +252,7 @@ export const InvoicePage: React.FC = () => {
                         </span>
                     </div>
                     <div className="flex shrink-0 items-center gap-1.5">
-                        <Button variant="ghost" size="sm" onClick={clearInvoice} aria-label="Start a new invoice">
+                        <Button variant="ghost" size="sm" onClick={() => setConfirmReset(true)} aria-label="Start a new invoice">
                             <RotateCcw size={14} strokeWidth={1.75} />
                             <span className="hidden sm:inline">Start over</span>
                         </Button>
@@ -291,7 +293,7 @@ export const InvoicePage: React.FC = () => {
                     </div>
 
                     {!isMobile && (
-                        <aside className="sticky top-[4.5rem] flex max-h-[calc(100vh-5.5rem)] flex-col no-print" aria-label="Invoice preview">
+                        <aside className="sticky top-18 flex max-h-[calc(100vh-5.5rem)] flex-col no-print" aria-label="Invoice preview">
                             <div className="mb-3 flex items-center justify-between">
                                 <p className="text-[13px] font-medium text-ink">Preview</p>
                                 <p className="text-xs text-ink-faint">{TEMPLATE_NAMES[invoice.template]} · A4</p>
@@ -306,7 +308,7 @@ export const InvoicePage: React.FC = () => {
 
             {/* Mobile: keep the preview mounted off-screen so downloads work without opening it. */}
             {isMobile && !showMobilePreview && (
-                <div aria-hidden className="pointer-events-none fixed left-[-10000px] top-0" style={{ width: PAGE_WIDTH }}>
+                <div aria-hidden className="pointer-events-none fixed -left-2500 top-0" style={{ width: PAGE_WIDTH }}>
                     {preview}
                 </div>
             )}
@@ -381,6 +383,21 @@ export const InvoicePage: React.FC = () => {
                 )}
             </AnimatePresence>
 
+            <ConfirmDialog
+                open={confirmReset}
+                title="Start a new invoice?"
+                description="This clears everything in your current draft, including your logo, client and payment details. It can't be undone."
+                confirmLabel="Clear draft"
+                destructive
+                onCancel={() => setConfirmReset(false)}
+                onConfirm={() => {
+                    clearInvoice();
+                    setConfirmReset(false);
+                    setActiveSection('template');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+            />
+
             <AnimatePresence>
                 {notice && (
                     <motion.div
@@ -389,7 +406,7 @@ export const InvoicePage: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
                         transition={{ duration: 0.2, ease: EASE }}
-                        className="fixed inset-x-4 bottom-24 z-[70] mx-auto flex max-w-md items-start gap-3 rounded-card bg-ink px-4 py-3 text-sm text-canvas shadow-pop xl:bottom-8 no-print"
+                        className="fixed inset-x-4 bottom-24 z-70 mx-auto flex max-w-md items-start gap-3 rounded-card bg-ink px-4 py-3 text-sm text-canvas shadow-pop xl:bottom-8 no-print"
                     >
                         <p className="flex-1 self-center leading-relaxed">{notice.message}</p>
                         {notice.action && (
@@ -418,7 +435,7 @@ export const InvoicePage: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center bg-canvas/60 backdrop-blur-sm no-print"
+                        className="fixed inset-0 z-100 flex items-center justify-center bg-canvas/60 backdrop-blur-sm no-print"
                     >
                         <div className="flex items-center gap-3 rounded-card border border-line bg-surface px-5 py-4 shadow-pop">
                             <Loader2 size={18} className="animate-spin text-ink-muted" />
