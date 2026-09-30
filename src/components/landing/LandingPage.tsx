@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Check, ChevronDown, Download, ImagePlus, KeyRound, ServerOff, UserX, WifiOff } from 'lucide-react';
-import { Link } from '../../lib/Link';
-import { scrollToHash } from '../../lib/navigation';
+import { Link } from 'react-router';
 import { Logo } from '../ui/Logo';
 import { Footer } from '../ui/Footer';
 import { SegmentedControl } from '../ui/SegmentedControl';
@@ -31,8 +30,8 @@ const Reveal: React.FC<{ children: React.ReactNode; className?: string; delay?: 
     );
 };
 
-const CtaLink: React.FC<{ href: string; children: React.ReactNode; variant?: 'primary' | 'secondary' | 'ghost'; className?: string }> = ({ href, children, variant = 'primary', className }) => (
-    <Link href={href} className={cn(buttonBase, buttonVariants[variant], buttonSizes.lg, className)}>
+const CtaLink: React.FC<{ to: string; children: React.ReactNode; variant?: 'primary' | 'secondary' | 'ghost'; className?: string }> = ({ to, children, variant = 'primary', className }) => (
+    <Link to={to} className={cn(buttonBase, buttonVariants[variant], buttonSizes.lg, className)}>
         {children}
     </Link>
 );
@@ -79,16 +78,16 @@ const Nav: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => {
             )}
         >
             <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:border-x lg:border-line lg:px-10">
-                <Link href="/" aria-label="InvoicePro home">
+                <Link to="/" aria-label="InvoicePro home">
                     <Logo />
                 </Link>
                 <nav aria-label="Main" className="hidden items-center gap-8 text-[13px] text-ink-muted md:flex">
-                    <Link href="/#how" className="transition-colors hover:text-ink">How it works</Link>
-                    <Link href="/#templates" className="transition-colors hover:text-ink">Templates</Link>
-                    <Link href="/#privacy" className="transition-colors hover:text-ink">Privacy</Link>
-                    <Link href="/#faq" className="transition-colors hover:text-ink">FAQ</Link>
+                    <Link to="/#how" className="transition-colors hover:text-ink">How it works</Link>
+                    <Link to="/#templates" className="transition-colors hover:text-ink">Templates</Link>
+                    <Link to="/#privacy" className="transition-colors hover:text-ink">Privacy</Link>
+                    <Link to="/#faq" className="transition-colors hover:text-ink">FAQ</Link>
                 </nav>
-                <Link href="/app" className={cn(buttonBase, buttonVariants.primary, buttonSizes.sm)}>
+                <Link to="/app" className={cn(buttonBase, buttonVariants.primary, buttonSizes.sm)}>
                     {ctaLabel}
                 </Link>
             </div>
@@ -123,11 +122,11 @@ const Hero: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => {
                         client list stays yours.
                     </motion.p>
                     <motion.div {...rise(0.18)} className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-                        <CtaLink href="/app">
+                        <CtaLink to="/app">
                             {ctaLabel}
                             <ArrowRight size={16} strokeWidth={1.75} />
                         </CtaLink>
-                        <CtaLink href="/#templates" variant="ghost">
+                        <CtaLink to="/#templates" variant="ghost">
                             See the templates
                         </CtaLink>
                     </motion.div>
@@ -147,7 +146,7 @@ const Hero: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => {
                     transition={{ duration: 0.9, ease: EASE, delay: 0.15 }}
                     className="relative mx-auto w-full max-w-md lg:max-w-none"
                 >
-                    <div className="overflow-hidden rounded-[20px] border border-line bg-subtle p-3 sm:p-4 lg:max-h-[600px] lg:[mask-image:linear-gradient(to_bottom,black_72%,transparent)]">
+                    <div className="overflow-hidden rounded-[20px] border border-line bg-subtle p-3 sm:p-4 lg:max-h-150 lg:mask-[linear-gradient(to_bottom,black_72%,transparent)]">
                         <div className="mb-3 flex items-center justify-between px-1">
                             <span className="font-mono text-xs tabular-nums text-ink-faint">{SAMPLE_INVOICE.invoiceNumber}</span>
                             <span className={cn(buttonBase, buttonVariants.primary, 'pointer-events-none h-7 gap-1.5 px-2.5 text-xs')}>
@@ -447,7 +446,7 @@ const FinalCta: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => (
                 Your next invoice is two minutes <em className="font-accent text-[1.1em] font-normal leading-none tracking-[-0.02em]">away.</em>
             </h2>
             <p className="mt-5 text-[15px] text-ink-muted">No sign-up. Nothing to install.</p>
-            <CtaLink href="/app" className="mt-9">
+            <CtaLink to="/app" className="mt-9">
                 {ctaLabel}
                 <ArrowRight size={16} strokeWidth={1.75} />
             </CtaLink>
@@ -458,10 +457,6 @@ const FinalCta: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => (
 export const LandingPage: React.FC = () => {
     const hasDraft = useHasDraft();
     const ctaLabel = hasDraft ? 'Continue your invoice' : 'Create an invoice';
-
-    useEffect(() => {
-        if (window.location.hash) scrollToHash(window.location.hash, 'auto');
-    }, []);
 
     return (
         <div className="flex min-h-screen flex-col">

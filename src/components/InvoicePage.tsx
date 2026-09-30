@@ -24,7 +24,7 @@ import { formatCurrency } from '../utils/formatters';
 import { cn } from '../utils/cn';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { sanitizeText } from '../utils/sanitize';
-import { Link } from '../lib/Link';
+import { Link } from 'react-router';
 
 type Notice = { message: string; action?: { label: string; onClick: () => void } };
 
@@ -240,7 +240,7 @@ export const InvoicePage: React.FC = () => {
             <header className="sticky top-0 z-40 border-b border-line bg-canvas/85 backdrop-blur-md no-print">
                 <div className="invoice-container flex h-14 items-center justify-between gap-4 px-4 sm:px-6">
                     <div className="flex min-w-0 items-center gap-3">
-                        <Link href="/" aria-label="InvoicePro home" className="shrink-0">
+                        <Link to="/" aria-label="InvoicePro home" className="shrink-0">
                             <LogoMark className="sm:hidden" />
                             <Logo className="hidden sm:inline-flex" />
                         </Link>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Logo } from './Logo';
-import { Link } from '../../lib/Link';
+import { Link } from 'react-router';
 import { cn } from '../../utils/cn';
 
 /** `framed` continues the landing page's vertical frame rails. */
@@ -10,7 +10,7 @@ export const Footer: React.FC<{ framed?: boolean }> = ({ framed }) => {
         <footer className="mt-auto border-t border-line no-print">
             <div className={cn('mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:px-6 md:flex-row md:items-start md:justify-between', rail)}>
                 <div className="max-w-xs space-y-3">
-                    <Link href="/" aria-label="InvoicePro home">
+                    <Link to="/" aria-label="InvoicePro home">
                         <Logo />
                     </Link>
                     <p className="text-[13px] leading-relaxed text-ink-muted">
@@ -19,10 +19,10 @@ export const Footer: React.FC<{ framed?: boolean }> = ({ framed }) => {
                 </div>
 
                 <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-2 text-[13px]">
-                    <Link href="/app" className="text-ink-muted transition-colors hover:text-ink">Create invoice</Link>
-                    <Link href="/#templates" className="text-ink-muted transition-colors hover:text-ink">Templates</Link>
-                    <Link href="/#privacy" className="text-ink-muted transition-colors hover:text-ink">Privacy</Link>
-                    <Link href="/#faq" className="text-ink-muted transition-colors hover:text-ink">FAQ</Link>
+                    <Link to="/app" className="text-ink-muted transition-colors hover:text-ink">Create invoice</Link>
+                    <Link to="/#templates" className="text-ink-muted transition-colors hover:text-ink">Templates</Link>
+                    <Link to="/#privacy" className="text-ink-muted transition-colors hover:text-ink">Privacy</Link>
+                    <Link to="/#faq" className="text-ink-muted transition-colors hover:text-ink">FAQ</Link>
                 </nav>
             </div>
 
