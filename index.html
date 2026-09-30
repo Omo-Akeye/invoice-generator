@@ -4,6 +4,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Apply a saved light/dark choice before first paint so the page never flashes the wrong theme. -->
+  <script>
+    try {
+      var theme = localStorage.getItem('invoicepro-theme');
+      if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+    } catch (e) {}
+  </script>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
   <title>InvoicePro — Free Professional Invoice Generator | Create & Export PDF Invoices</title>
@@ -38,11 +45,12 @@
 
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.svg" />
-  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
   <!-- PWA / Mobile -->
-  <meta name="theme-color" content="#0072FF" />
+  <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="InvoicePro" />
@@ -54,7 +62,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Roboto:wght@400;500;700;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Roboto:wght@400;500;700;900&display=swap"
     rel="stylesheet" />
 
   <!-- Structured Data -->
@@ -74,8 +82,8 @@
         "priceCurrency": "USD"
       },
       "featureList": [
-        "Multiple invoice templates (Classic, Modern, Elegant)",
-        "Multi-currency support (USD, EUR, GBP, JPY, NGN)",
+        "10 invoice templates: Classic, Modern, Elegant, Bold, Minimal, Corporate, Boutique, Geometric, Ledger and Studio",
+        "35 currencies, including NGN, USD, EUR, GBP, GHS, KES and ZAR",
         "Automatic tax and discount calculations",
         "Payment details (Bank Transfer, Crypto)",
         "Instant PDF and PNG export",
@@ -103,7 +111,7 @@
       <h1>InvoicePro — Free Professional Invoice Generator</h1>
       <p>Create beautiful, professional invoices in seconds with InvoicePro. Our free online invoice generator offers:</p>
       <ul>
-        <li><strong>Multiple Templates:</strong> Choose from Classic, Modern, or Elegant invoice designs.</li>
+        <li><strong>10 Templates:</strong> Classic, Modern, Elegant, Bold, Minimal, Corporate, Boutique, Geometric, Ledger and Studio.</li>
         <li><strong>Multi-Currency:</strong> Support for USD, EUR, GBP, JPY, and NGN.</li>
         <li><strong>Tax &amp; Discounts:</strong> Automatic VAT/tax calculations and flexible discount options.</li>
         <li><strong>Payment Details:</strong> Add bank transfer or crypto payment instructions to your invoices.</li>

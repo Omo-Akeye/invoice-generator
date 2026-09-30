@@ -5,23 +5,22 @@ interface CardProps {
     children: React.ReactNode;
     className?: string;
     title?: string;
+    description?: string;
     noPadding?: boolean;
 }
 
-export const Card: React.FC<CardProps> = ({ children, className, title, noPadding }) => {
+export const Card: React.FC<CardProps> = ({ children, className, title, description, noPadding }) => {
+    if (noPadding) return <div className={className}>{children}</div>;
+
     return (
-        <div className={cn(
-            !noPadding && 'bg-white dark:bg-neutral-900 rounded-apple border border-neutral-200 dark:border-neutral-800 overflow-hidden transition-all duration-300',
-            className
-        )}>
+        <div className={cn('rounded-card border border-line bg-surface', className)}>
             {title && (
-                <div className="px-6 py-4 border-b border-neutral-100 dark:border-neutral-800">
-                    <h2 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 tracking-tight">{title}</h2>
+                <div className="px-5 pt-5">
+                    <h2 className="text-[15px] font-medium tracking-[-0.01em] text-ink">{title}</h2>
+                    {description && <p className="mt-0.5 text-[13px] text-ink-muted">{description}</p>}
                 </div>
             )}
-            <div className={cn(!noPadding && "p-6")}>
-                {children}
-            </div>
+            <div className="p-5">{children}</div>
         </div>
     );
 };

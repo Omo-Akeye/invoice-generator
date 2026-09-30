@@ -1,105 +1,121 @@
 import React from 'react';
 import { useInvoice } from '../../../store/InvoiceContext';
-import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { Input } from '../../ui/Input';
-import { Plus, Trash2 } from 'lucide-react';
-import { formatCurrency, getCurrencySymbol } from '../../../utils/formatters';
+import { Plus, X } from 'lucide-react';
+import { formatCurrency } from '../../../utils/formatters';
+import { getCurrency } from '../../../utils/currencies';
 import { CurrencyText } from '../../ui/CurrencyText';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sanitizeText } from '../../../utils/sanitize';
 import { NumericFormat } from 'react-number-format';
 
-export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
+const COLUMNS = 'md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_64px_128px_112px_32px]';
+
+export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = () => {
     const { invoice, addItem, updateItem, removeItem } = useInvoice();
+    const currency = invoice.settings.currency;
+    const { symbol, decimals } = getCurrency(currency);
+    // Symbols range from "$" to "FCFA", so the price field's left padding follows the symbol's width.
+    const pricePadding = { paddingLeft: `calc(0.75rem + ${symbol.length}ch + 0.25rem)` };
 
     return (
-        <Card title={hideHeader ? "" : "ITEMS"} noPadding={hideHeader}>
-            <div className="space-y-4">
+        <div>
+            <div className={`hidden gap-3 pb-2 text-xs font-medium text-ink-faint md:grid ${COLUMNS}`}>
+                <div>Item</div>
+                <div>Description</div>
+                <div>Qty</div>
+                <div>Unit price</div>
+                <div className="text-right">Amount</div>
+                <div />
+            </div>
 
-                <div className="hidden md:grid grid-cols-[1fr_2fr_80px_120px_100px_40px] gap-4 px-1 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-                    <div>Item Name</div>
-                    <div>Description</div>
-                    <div>Qty</div>
-                    <div>Unit Price</div>
-                    <div className="text-right">Total</div>
-                    <div></div>
-                </div>
-
-                <div className="space-y-3">
-                    <AnimatePresence initial={false}>
-                        {invoice.items.map((item) => (
-                            <motion.div
-                                key={item.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="grid grid-cols-1 md:grid-cols-[1fr_2fr_80px_120px_100px_40px] gap-2 md:gap-4 items-start p-3 md:p-0 rounded-apple md:rounded-none border md:border-0 border-neutral-100 dark:border-neutral-800"
-                            >
+            <ul className="space-y-3 md:space-y-2">
+                <AnimatePresence initial={false}>
+                    {invoice.items.map((item, index) => (
+                        <motion.li
+                            key={item.id}
+                            layout
+                            initial={{ opacity: 0, y: 6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                            transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
+                            className={`relative grid grid-cols-2 items-center gap-2 rounded-card border border-line bg-canvas p-3 md:gap-3 md:rounded-none md:border-0 md:bg-transparent md:p-0 ${COLUMNS}`}
+                        >
+                            <span className="col-span-2 text-xs font-medium text-ink-faint md:hidden">Item {index + 1}</span>
+                            <div className="col-span-2 md:col-span-1">
                                 <Input
+                                    aria-label="Item name"
                                     placeholder="Item name"
                                     value={item.name}
                                     onChange={(e) => updateItem(item.id, { name: sanitizeText(e.target.value, 100) })}
                                 />
+                            </div>
+                            <div className="col-span-2 md:col-span-1">
                                 <Input
-                                    placeholder="Short description"
+                                    aria-label="Description"
+                                    placeholder="Optional details"
                                     value={item.description}
                                     onChange={(e) => updateItem(item.id, { description: sanitizeText(e.target.value, 200) })}
                                 />
+                            </div>
+                            <NumericFormat
+                                customInput={Input}
+                                inputMode="decimal"
+                                aria-label="Quantity"
+                                className="tabular-nums"
+                                thousandSeparator=","
+                                decimalScale={2}
+                                allowNegative={false}
+                                placeholder="1"
+                                value={item.quantity === 0 ? '' : item.quantity}
+                                onValueChange={(values) => updateItem(item.id, { quantity: values.floatValue ?? 0 })}
+                                onFocus={(e) => e.target.select()}
+                            />
+                            <div className="relative">
+                                <span className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-sm text-ink-faint">
+                                    <CurrencyText currency={currency}>{symbol}</CurrencyText>
+                                </span>
                                 <NumericFormat
                                     customInput={Input}
+                                    inputMode="decimal"
+                                    aria-label="Unit price"
+                                    className="tabular-nums"
+                                    style={pricePadding}
                                     thousandSeparator=","
-                                    decimalScale={2}
+                                    decimalScale={decimals}
                                     allowNegative={false}
-                                    placeholder="0"
-                                    value={item.quantity === 0 ? '' : item.quantity}
-                                    onValueChange={(values) => updateItem(item.id, { quantity: values.floatValue ?? 0 })}
+                                    placeholder={decimals ? '0.00' : '0'}
+                                    value={item.unitPrice === 0 ? '' : item.unitPrice}
+                                    onValueChange={(values) => updateItem(item.id, { unitPrice: values.floatValue ?? 0 })}
                                     onFocus={(e) => e.target.select()}
                                 />
-                                <div className="relative">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm z-10">
-                                        <CurrencyText currency={invoice.settings.currency}>{getCurrencySymbol(invoice.settings.currency)}</CurrencyText>
-                                    </span>
-                                    <NumericFormat
-                                        customInput={Input}
-                                        className="pl-6"
-                                        thousandSeparator=","
-                                        decimalScale={2}
-                                        allowNegative={false}
-                                        placeholder="0.00"
-                                        value={item.unitPrice === 0 ? '' : item.unitPrice}
-                                        onValueChange={(values) => updateItem(item.id, { unitPrice: values.floatValue ?? 0 })}
-                                        onFocus={(e) => e.target.select()}
-                                    />
-                                </div>
-                                <div className="flex items-center justify-end h-10 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(item.total, invoice.settings.currency)}</CurrencyText>
-                                </div>
-                                <div className="flex justify-end">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30"
-                                        onClick={() => removeItem(item.id)}
-                                        disabled={invoice.items.length === 1}
-                                    >
-                                        <Trash2 size={16} />
-                                    </Button>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
-                </div>
+                            </div>
+                            <div className="col-span-2 flex h-9 items-center justify-between text-sm font-medium tabular-nums text-ink md:col-span-1 md:justify-end">
+                                <span className="text-[13px] font-normal text-ink-muted md:hidden">Amount</span>
+                                <CurrencyText currency={currency}>{formatCurrency(item.total, currency)}</CurrencyText>
+                            </div>
+                            <div className="absolute right-2 top-2 md:static md:flex md:justify-end">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 text-ink-faint hover:bg-danger/10 hover:text-danger"
+                                    onClick={() => removeItem(item.id)}
+                                    disabled={invoice.items.length === 1}
+                                    aria-label={`Remove ${item.name || `item ${index + 1}`}`}
+                                >
+                                    <X size={15} strokeWidth={1.75} />
+                                </Button>
+                            </div>
+                        </motion.li>
+                    ))}
+                </AnimatePresence>
+            </ul>
 
-                <Button
-                    variant="secondary"
-                    className="w-full mt-4 border-2 border-dashed border-neutral-200 dark:border-neutral-800 bg-transparent hover:border-brand-primary h-12"
-                    onClick={addItem}
-                >
-                    <Plus size={18} className="mr-2" />
-                    Add New Item
-                </Button>
-            </div>
-        </Card>
+            <Button variant="ghost" size="sm" className="mt-3 -ml-2 text-ink-muted" onClick={addItem}>
+                <Plus size={15} strokeWidth={1.75} />
+                Add line item
+            </Button>
+        </div>
     );
 };

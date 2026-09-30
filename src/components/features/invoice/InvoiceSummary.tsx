@@ -1,137 +1,109 @@
 import React from 'react';
 import { useInvoice } from '../../../store/InvoiceContext';
-import { Card } from '../../ui/Card';
-import { Input } from '../../ui/Input';
-import { ExportButton } from '../../ui/ExportButton';
+import { FieldLabel, Input } from '../../ui/Input';
+import { CurrencyPicker } from './CurrencyPicker';
+import { getCurrency } from '../../../utils/currencies';
+import { Switch } from '../../ui/Switch';
+import { SegmentedControl } from '../../ui/SegmentedControl';
 import { formatCurrency } from '../../../utils/formatters';
 import { CurrencyText } from '../../ui/CurrencyText';
-import type { Currency } from '../../../types/invoice';
+import { RollingNumber } from '../../ui/RollingNumber';
 import { NumericFormat } from 'react-number-format';
 
-export const InvoiceSummary: React.FC<{ hideHeader?: boolean; onExport?: (format: 'pdf' | 'png') => void }> = ({ hideHeader, onExport }) => {
+
+export const InvoiceSummary: React.FC<{ hideHeader?: boolean }> = () => {
     const { invoice, updateSettings } = useInvoice();
+    const { settings } = invoice;
+    const money = (value: number) => <CurrencyText currency={settings.currency}>{formatCurrency(value, settings.currency)}</CurrencyText>;
 
     return (
-        <Card title={hideHeader ? "" : "SUMMARY & SETTINGS"} noPadding={hideHeader}>
-            <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <label className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Include Tax (VAT)</label>
-                            <input
-                                type="checkbox"
-                                checked={invoice.settings.includeTax}
-                                onChange={(e) => updateSettings({ includeTax: e.target.checked })}
-                                className="w-4 h-4 rounded border-neutral-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
-                            />
-                        </div>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div className="space-y-5">
+                <CurrencyPicker value={settings.currency} onChange={(currency) => updateSettings({ currency })} />
 
-                        {invoice.settings.includeTax && (
-                            <NumericFormat
-                                customInput={Input}
-                                label="Tax Rate (%)"
-                                decimalScale={2}
-                                allowNegative={false}
-                                isAllowed={(values) => !values.floatValue || values.floatValue <= 100}
-                                placeholder="0"
-                                value={invoice.settings.taxRate === 0 ? '' : invoice.settings.taxRate}
-                                onValueChange={(values) => updateSettings({ taxRate: values.floatValue ?? 0 })}
-                                onFocus={(e) => e.target.select()}
-                            />
-                        )}
+                <div className="space-y-3">
+                    <Switch
+                        label="Charge tax"
+                        description="Adds VAT or sales tax to the subtotal."
+                        checked={settings.includeTax}
+                        onChange={(includeTax) => updateSettings({ includeTax })}
+                    />
+                    {settings.includeTax && (
+                        <NumericFormat
+                            customInput={Input}
+                            inputMode="decimal"
+                            aria-label="Tax rate (%)"
+                            className="tabular-nums"
+                            suffix="%"
+                            decimalScale={2}
+                            allowNegative={false}
+                            isAllowed={(values) => !values.floatValue || values.floatValue <= 100}
+                            placeholder="7.5%"
+                            value={settings.taxRate === 0 ? '' : settings.taxRate}
+                            onValueChange={(values) => updateSettings({ taxRate: values.floatValue ?? 0 })}
+                            onFocus={(e) => e.target.select()}
+                        />
+                    )}
+                </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider ml-1">
-                                Currency
-                            </label>
-                            <select
-                                className="flex h-10 w-full rounded-apple border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary transition-all duration-200 cursor-pointer"
-                                value={invoice.settings.currency}
-                                onChange={(e) => updateSettings({ currency: e.target.value as Currency })}
-                            >
-                                <option value="USD">USD ($)</option>
-                                <option value="EUR">EUR (€)</option>
-                                <option value="GBP">GBP (£)</option>
-                                <option value="JPY">JPY (¥)</option>
-                                <option value="NGN">NGN (₦)</option>
-                            </select>
-                        </div>
-
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Discount</label>
-                                <select
-                                    className="text-xs bg-transparent border-none focus:ring-0 text-brand-primary font-bold cursor-pointer"
-                                    value={invoice.settings.discountType}
-                                    onChange={(e) => updateSettings({ discountType: e.target.value as 'percentage' | 'fixed' })}
-                                >
-                                    <option value="percentage">Percentage (%)</option>
-                                    <option value="fixed">Fixed Amount</option>
-                                </select>
-                            </div>
-                            <NumericFormat
-                                customInput={Input}
-                                thousandSeparator=","
-                                decimalScale={2}
-                                allowNegative={false}
-                                placeholder="0"
-                                value={invoice.settings.discountValue === 0 ? '' : invoice.settings.discountValue}
-                                onValueChange={(values) => updateSettings({ discountValue: values.floatValue ?? 0 })}
-                                onFocus={(e) => e.target.select()}
-                            />
-                        </div>
+                <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-3">
+                        <FieldLabel>Discount</FieldLabel>
+                        <SegmentedControl
+                            size="sm"
+                            className="w-auto"
+                            ariaLabel="Discount type"
+                            value={settings.discountType}
+                            onChange={(discountType) => updateSettings({ discountType })}
+                            options={[
+                                { value: 'percentage', label: 'Percent' },
+                                { value: 'fixed', label: 'Amount' },
+                            ]}
+                        />
                     </div>
-
-                    <div className="bg-neutral-50 dark:bg-neutral-950 p-6 rounded-apple space-y-3 border border-neutral-100 dark:border-neutral-800 flex flex-col justify-between">
-                        <div className="space-y-3">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-neutral-500 font-medium uppercase tracking-tight">Subtotal</span>
-                                <span className="text-neutral-900 dark:text-neutral-100 font-semibold">
-                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.subtotal, invoice.settings.currency)}</CurrencyText>
-                                </span>
-                            </div>
-
-                            {invoice.settings.includeTax && (
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-neutral-500 font-medium uppercase tracking-tight">Tax ({invoice.settings.taxRate}%)</span>
-                                    <span className="text-neutral-900 dark:text-neutral-100 font-semibold">
-                                        + <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.taxAmount, invoice.settings.currency)}</CurrencyText>
-                                    </span>
-                                </div>
-                            )}
-
-                            {invoice.settings.discountValue > 0 && (
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-neutral-500 font-medium uppercase tracking-tight">
-                                        Discount {invoice.settings.discountType === 'percentage' ? `(${invoice.settings.discountValue}%)` : ''}
-                                    </span>
-                                    <span className="text-red-500 font-semibold">
-                                        - <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.discountAmount, invoice.settings.currency)}</CurrencyText>
-                                    </span>
-                                </div>
-                            )}
-
-                            <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 flex justify-between items-baseline">
-                                <span className="text-base font-bold text-neutral-900 dark:text-neutral-100 uppercase tracking-tighter">Total</span>
-                                <span className="text-2xl font-black text-brand-primary">
-                                    <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
-                                </span>
-                            </div>
-                        </div>
-                        {onExport && (
-                            <div className="mt-6">
-                                <ExportButton 
-                                    onExport={onExport} 
-                                    isExporting={false} 
-                                    fullWidth 
-                                    dropUp 
-                                    size="md" 
-                                />
-                            </div>
-                        )}
-                    </div>
+                    <NumericFormat
+                        customInput={Input}
+                        inputMode="decimal"
+                        aria-label="Discount"
+                        className="tabular-nums"
+                        thousandSeparator=","
+                        suffix={settings.discountType === 'percentage' ? '%' : undefined}
+                        decimalScale={settings.discountType === 'percentage' ? 2 : getCurrency(settings.currency).decimals}
+                        allowNegative={false}
+                        placeholder={settings.discountType === 'percentage' ? '0%' : getCurrency(settings.currency).decimals ? '0.00' : '0'}
+                        value={settings.discountValue === 0 ? '' : settings.discountValue}
+                        onValueChange={(values) => updateSettings({ discountValue: values.floatValue ?? 0 })}
+                        onFocus={(e) => e.target.select()}
+                    />
                 </div>
             </div>
-        </Card>
+
+            <dl className="h-fit space-y-3 rounded-card bg-subtle p-5 text-sm tabular-nums">
+                <div className="flex justify-between gap-4 text-ink-muted">
+                    <dt>Subtotal</dt>
+                    <dd className="text-ink">{money(invoice.subtotal)}</dd>
+                </div>
+                {settings.includeTax && (
+                    <div className="flex justify-between gap-4 text-ink-muted">
+                        <dt>Tax ({settings.taxRate}%)</dt>
+                        <dd className="text-ink">+ {money(invoice.taxAmount)}</dd>
+                    </div>
+                )}
+                {settings.discountValue > 0 && (
+                    <div className="flex justify-between gap-4 text-ink-muted">
+                        <dt>Discount{settings.discountType === 'percentage' ? ` (${settings.discountValue}%)` : ''}</dt>
+                        <dd className="text-ink">− {money(invoice.discountAmount)}</dd>
+                    </div>
+                )}
+                <div className="flex items-baseline justify-between gap-4 border-t border-line-strong pt-3">
+                    <dt className="font-medium text-ink">Total due</dt>
+                    <dd className="text-xl font-semibold tracking-[-0.02em] text-ink">
+                        <CurrencyText currency={settings.currency}>
+                            <RollingNumber value={formatCurrency(invoice.total, settings.currency)} />
+                        </CurrencyText>
+                    </dd>
+                </div>
+            </dl>
+        </div>
     );
 };

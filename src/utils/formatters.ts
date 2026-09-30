@@ -1,26 +1,25 @@
 import type { Currency } from '../types/invoice';
+import { getCurrency, DEFAULT_CURRENCY } from './currencies';
 
-const CURRENCY_SYMBOLS: Record<Currency, string> = {
-    NGN: '₦',
-    EUR: '€',
-    GBP: '£',
-    JPY: '¥',
-    USD: '$',
+export const getCurrencySymbol = (currency: Currency): string => getCurrency(currency).symbol;
+
+const numberFormats = new Map<number, Intl.NumberFormat>();
+const numberFormat = (decimals: number) => {
+    let format = numberFormats.get(decimals);
+    if (!format) {
+        format = new Intl.NumberFormat('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        numberFormats.set(decimals, format);
+    }
+    return format;
 };
 
-export const getCurrencySymbol = (currency: Currency): string => {
-    return CURRENCY_SYMBOLS[currency] ?? '$';
-};
-
-export const formatCurrency = (amount: number, currency: Currency = 'USD'): string => {
+/** One consistent style for every currency: symbol first, English grouping, ISO decimals ("₦1,000.00", "¥1,000", "KSh 1,000.00"). */
+export const formatCurrency = (amount: number, currency: Currency = DEFAULT_CURRENCY): string => {
+    const { symbol, decimals } = getCurrency(currency);
     const isNegative = amount < 0;
-    const formatted = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    }).format(Math.abs(amount));
-
-    const symbol = getCurrencySymbol(currency);
-    return `${isNegative ? '-' : ''}${symbol}${formatted}`;
+    const formatted = numberFormat(decimals).format(Math.abs(amount));
+    const gap = /[A-Za-z]$/.test(symbol) ? ' ' : '';
+    return `${isNegative ? '-' : ''}${symbol}${gap}${formatted}`;
 };
 
 export const formatDate = (date: string | Date): string => {

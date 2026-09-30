@@ -1,24 +1,136 @@
 @import "tailwindcss";
 
+/* Design tokens. See .claude/skills/invoicepro-design/SKILL.md before changing. */
 @theme {
-    --font-sans: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --color-brand-primary: #0071e3;
-    --color-brand-secondary: #86868b;
-    --radius-apple: 12px;
-    --shadow-premium: none;
+    --font-sans: "Geist", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --font-invoice: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-accent: "Instrument Serif", "Playfair Display", Georgia, serif;
+
+    --radius-control: 8px;
+    --radius-card: 14px;
+
+    --shadow-paper: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -6px rgb(0 0 0 / 0.08), 0 32px 64px -24px rgb(0 0 0 / 0.12);
+    --shadow-pop: 0 1px 2px rgb(0 0 0 / 0.06), 0 12px 32px -8px rgb(0 0 0 / 0.16);
+
+    --ease-out-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* inline: utilities read the runtime variables directly, so .theme-dark can re-scope them. */
+@theme inline {
+    --color-canvas: var(--canvas);
+    --color-surface: var(--surface);
+    --color-subtle: var(--subtle);
+    --color-line: var(--line);
+    --color-line-strong: var(--line-strong);
+    --color-ink: var(--ink);
+    --color-ink-muted: var(--ink-muted);
+    --color-ink-faint: var(--ink-faint);
+    --color-accent: var(--accent);
+    --color-accent-soft: var(--accent-soft);
+    --color-positive: var(--positive);
+    --color-danger: var(--danger);
+    --color-danger-solid: var(--danger-solid);
 }
 
 :root {
-    color-scheme: light dark;
+    color-scheme: light;
+    --canvas: #fafaf9;
+    --surface: #ffffff;
+    --subtle: #f3f3f1;
+    --line: #ebebe7;
+    --line-strong: #dcdcd7;
+    --ink: #121212;
+    --ink-muted: #5c5c58;
+    --ink-faint: #97978f;
+    --accent: #13805a;
+    --accent-soft: #e7f4ee;
+    --positive: #13805a;
+    --danger: #d23b3b;
+    --danger-solid: #d23b3b;
+}
+
+/*
+ * Theme selection. <html data-theme="light|dark"> is set by the theme switch (src/lib/theme.ts)
+ * and by an inline script in index.html before first paint. No attribute means "follow the system".
+ * .theme-dark forces the dark palette on one region (e.g. the landing privacy band).
+ */
+:root[data-theme="dark"],
+.theme-dark {
+    color-scheme: dark;
+    --canvas: #0b0b0c;
+    --surface: #141416;
+    --subtle: #1b1b1e;
+    --line: #232326;
+    --line-strong: #303034;
+    --ink: #f3f3f1;
+    --ink-muted: #a4a4a0;
+    --ink-faint: #6c6c68;
+    --accent: #3ccf91;
+    --accent-soft: #10271d;
+    --positive: #3ccf91;
+    --danger: #f07070;
+    --danger-solid: #c43636;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --canvas: #0b0b0c;
+        --surface: #141416;
+        --subtle: #1b1b1e;
+        --line: #232326;
+        --line-strong: #303034;
+        --ink: #f3f3f1;
+        --ink-muted: #a4a4a0;
+        --ink-faint: #6c6c68;
+        --accent: #3ccf91;
+        --accent-soft: #10271d;
+        --positive: #3ccf91;
+        --danger: #f07070;
+        --danger-solid: #c43636;
+    }
+}
+
+/* Theme change animation: a crossfade via the View Transitions API... */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 380ms;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ...or, where that API is missing, a brief colour transition on everything. */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow !important;
+    transition-duration: 320ms !important;
+    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 body {
-    @apply bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    @apply bg-canvas text-ink antialiased;
+    font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
+}
+
+::selection {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 button {
     cursor: pointer;
+}
+
+a,
+button,
+input,
+select,
+textarea,
+label {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 button:disabled {
@@ -26,20 +138,38 @@ button:disabled {
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-neutral-300 dark:bg-neutral-700 rounded-full hover:bg-neutral-400 dark:hover:bg-neutral-600 transition-colors;
+    background: var(--line-strong);
+    border-radius: 999px;
+    border: 3px solid var(--canvas);
+}
+
+.scrollbar-hide {
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }
 
 .invoice-container {
     max-width: 1440px;
     margin: 0 auto;
+}
+
+/* Invoice sheets keep their original typeface so exports look the same as before. */
+#invoice-preview,
+.invoice-sheet {
+    font-family: var(--font-invoice);
+    color-scheme: light;
 }
 
 @media print {
@@ -48,25 +178,17 @@ button:disabled {
     }
 }
 
-@keyframes pulse-soft {
-
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.5;
-        transform: scale(1.2);
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }
 
-.animate-pulse-soft {
-    animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.font-naira {
+.font-currency {
     font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
 }
-

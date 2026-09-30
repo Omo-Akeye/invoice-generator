@@ -1,65 +1,65 @@
 import React from 'react';
 import { useInvoice } from '../../../store/InvoiceContext';
 import { Input } from '../../ui/Input';
-import { Card } from '../../ui/Card';
 import { sanitizeText, sanitizeEmail } from '../../../utils/sanitize';
 
-export const ClientForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
+export const ClientForm: React.FC<{ hideHeader?: boolean }> = () => {
     const { invoice, updateClient } = useInvoice();
 
     return (
-        <Card title={hideHeader ? "" : "BILL TO"} noPadding={hideHeader}>
-            <div className="space-y-4">
-                <Input
-                    label="Client Name"
-                    placeholder="e.g. Fola Adeola"
-                    value={invoice.client.name}
-                    onChange={(e) => updateClient({ name: sanitizeText(e.target.value, 100) })}
-                />
-                <Input
-                    label="Client Email"
-                    placeholder="fola@gtbank.com"
-                    type="email"
-                    value={invoice.client.email}
-                    onChange={(e) => updateClient({ email: sanitizeEmail(e.target.value) })}
-                />
-                <Input
-                    label="Client Address"
-                    placeholder="8 Abuja Street, Wuse 2, Abuja"
-                    value={invoice.client.address}
-                    onChange={(e) => updateClient({ address: sanitizeText(e.target.value, 200) })}
-                />
-            </div>
-        </Card>
+        <fieldset className="space-y-3">
+            <legend className="mb-3 text-[13px] font-medium text-ink">Bill to</legend>
+            <Input
+                label="Client name"
+                placeholder="Fola Adeola"
+                autoComplete="off"
+                value={invoice.client.name}
+                onChange={(e) => updateClient({ name: sanitizeText(e.target.value, 100) })}
+            />
+            <Input
+                label="Email"
+                placeholder="fola@company.com"
+                autoComplete="off"
+                type="email"
+                value={invoice.client.email}
+                onChange={(e) => updateClient({ email: sanitizeEmail(e.target.value) })}
+            />
+            <Input
+                label="Address"
+                placeholder="8 Abuja Street, Wuse 2, Abuja"
+                autoComplete="off"
+                value={invoice.client.address}
+                onChange={(e) => updateClient({ address: sanitizeText(e.target.value, 200) })}
+            />
+        </fieldset>
     );
 };
 
-export const InvoiceDetailsForm: React.FC<{ hideHeader?: boolean }> = ({ hideHeader }) => {
+export const InvoiceDetailsForm: React.FC<{ hideHeader?: boolean }> = () => {
     const { invoice, updateInvoiceDetails } = useInvoice();
 
     return (
-        <Card title={hideHeader ? "" : "INVOICE DETAILS"} noPadding={hideHeader}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                    label="Invoice Number"
-                    value={invoice.invoiceNumber}
-                    onChange={(e) => updateInvoiceDetails({ invoiceNumber: sanitizeText(e.target.value, 50) })}
-                />
-                <div className="grid grid-cols-2 gap-2">
-                    <Input
-                        label="Issue Date"
-                        type="date"
-                        value={invoice.issueDate}
-                        onChange={(e) => updateInvoiceDetails({ issueDate: e.target.value })}
-                    />
-                    <Input
-                        label="Due Date"
-                        type="date"
-                        value={invoice.dueDate}
-                        onChange={(e) => updateInvoiceDetails({ dueDate: e.target.value })}
-                    />
-                </div>
-            </div>
-        </Card>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <Input
+                label="Invoice number"
+                className="font-mono sm:text-[13px] tabular-nums"
+                value={invoice.invoiceNumber}
+                onChange={(e) => updateInvoiceDetails({ invoiceNumber: sanitizeText(e.target.value, 50) })}
+            />
+            <Input
+                label="Issue date"
+                type="date"
+                className="tabular-nums"
+                value={invoice.issueDate}
+                onChange={(e) => updateInvoiceDetails({ issueDate: e.target.value })}
+            />
+            <Input
+                label="Due date"
+                type="date"
+                className="tabular-nums"
+                value={invoice.dueDate}
+                onChange={(e) => updateInvoiceDetails({ dueDate: e.target.value })}
+            />
+        </div>
     );
 };

@@ -1,3 +1,10 @@
 export { ClassicTemplate } from './ClassicTemplate';
 export { ModernTemplate } from './ModernTemplate';
 export { ElegantTemplate } from './ElegantTemplate';
+export { BoldTemplate } from './BoldTemplate';
+export { MinimalTemplate } from './MinimalTemplate';
+export { CorporateTemplate } from './CorporateTemplate';
+export { BoutiqueTemplate } from './BoutiqueTemplate';
+export { GeometricTemplate } from './GeometricTemplate';
+export { LedgerTemplate } from './LedgerTemplate';
+export { StudioTemplate } from './StudioTemplate';

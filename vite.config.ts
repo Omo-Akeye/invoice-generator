@@ -9,28 +9,20 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'sitemap.xml', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png', 'robots.txt', 'sitemap.xml'],
       manifest: {
         name: 'InvoicePro — Professional Invoice Generator',
         short_name: 'InvoicePro',
         description: 'Create beautiful, professional invoices in seconds. Free, privacy-first, no signup required.',
-        theme_color: '#0072FF',
-        background_color: '#0a0a0a',
+        theme_color: '#121212',
+        background_color: '#fafaf9',
         display: 'standalone',
         orientation: 'portrait-primary',
         icons: [
-          {
-            src: 'favicon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-            purpose: 'any'
-          },
-          {
-            src: 'favicon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-            purpose: 'maskable'
-          }
+          { src: 'favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
         ]
       },
       workbox: {
