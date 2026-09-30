@@ -1,32 +1,54 @@
 <div align="center">
   <a href="https://www.invoicegeneratorpro.online/">
-    <img src="public/og-image.png" alt="InvoicePro Dashboard" width="100%">
+    <img src="public/og-image.png" alt="InvoicePro" width="100%">
   </a>
 </div>
 
-# InvoicePro — Professional Invoice Generator
+# InvoicePro — Free Invoice Generator
 
-> Create beautiful, professional invoices in seconds. Free, privacy-first, no signup required.
-> 
-> 🌐 **Live Demo:** [www.invoicegeneratorpro.online](https://www.invoicegeneratorpro.online/)
+> Create professional invoices in minutes. Free, private, no sign-up.
+>
+> 🌐 **Live:** [www.invoicegeneratorpro.online](https://www.invoicegeneratorpro.online/)
 
-InvoicePro is a fully client-side invoice generator built with React and TypeScript. It lets you compose and export pixel-perfect PDF invoices directly in your browser — with zero backend, zero accounts, and zero data ever leaving your device.
+InvoicePro is a fully client-side invoice generator built with React and TypeScript. You fill in a few details, pick a template, and download or share a print-ready PDF. There is no backend and no account: invoices are built on your device and your draft is saved, encrypted, in your own browser.
 
 ---
 
 ## ✨ Features
 
-- **3 Professional Templates** — Choose from *Classic*, *Modern*, and *Elegant* layouts to match your brand
-- **Live Preview** — See your invoice update in real time as you fill in the details
-- **Payment Instructions** — Include Bank Transfer or Crypto payment details directly on the invoice
-- **Multiple Export Options** — Download high-fidelity PDFs or PNGs using `html2canvas-pro` + `jsPDF`
-- **AES-256-GCM Encryption** — Invoice data is encrypted with the Web Crypto API before being written to `localStorage`; your data never leaves the browser
-- **Tax & Discount Support** — Toggle VAT/tax with a configurable rate; apply percentage or fixed-amount discounts
-- **Multi-Currency** — Supports USD, EUR, GBP, JPY, and NGN out of the box
-- **Company Logo Upload** — Attach your logo directly to the invoice
-- **Responsive & Mobile-Friendly** — Collapsible accordion UI on mobile with a full-screen preview mode
-- **Dark Mode** — Respects the system's `prefers-color-scheme` preference
-- **PWA Ready** — Installable as a Progressive Web App for offline use; service worker handles asset caching
+**Making invoices**
+- **3 templates** — *Classic*, *Modern* and *Elegant*, with live miniature previews in the picker
+- **Live preview** — an A4 preview that updates as you type
+- **Line items, tax and discounts** — VAT/sales tax at any rate; percentage or fixed-amount discounts; totals animate as they change
+- **5 currencies** — NGN, USD, EUR, GBP and JPY
+- **Payment instructions** — bank transfer, crypto wallet, or custom instructions printed on the invoice
+- **Company logo** — upload once and it appears on every template
+
+**Getting it to your client**
+- **Download** — PDF or PNG, rendered at a fixed page width so exports look the same on every device
+- **Share PDF** — on phones (and desktops that support it), send the PDF straight to WhatsApp, email or any app through the native share sheet
+- **Works offline** — installable PWA; once loaded, it keeps working without a connection
+
+**Privacy**
+- **No account, no server** — invoices are generated in the browser
+- **Encrypted draft** — autosaved to `localStorage` with AES-256-GCM (see below)
+
+**Experience**
+- **Landing page** at `/`, editor at `/app`; returning visitors see "Continue your invoice"
+- **Responsive** — step-by-step collapsible sections, a sticky total bar and a full-screen preview on mobile
+- **Light and dark mode** — follows your system setting
+- **Accessible** — labelled fields, keyboard-friendly menus and dialogs, reduced-motion support, 16px inputs on phones (no iOS zoom)
+
+---
+
+## 🔐 Privacy & Security
+
+Invoice data is stored **only in your browser**. There is no server-side storage and no database.
+
+- A unique **AES-256-GCM** key is generated per device with the Web Crypto API and stored in `IndexedDB` as a non-extractable key
+- Every save to `localStorage` is encrypted with that key; data is decrypted in memory on load
+- Clearing your browser data deletes your draft — download anything you need to keep
+- The site uses **Vercel Analytics** for anonymous page-view counts. It never receives anything you type into an invoice.
 
 ---
 
@@ -35,54 +57,52 @@ InvoicePro is a fully client-side invoice generator built with React and TypeScr
 ```
 src/
 ├── components/
-│   ├── features/
-│   │   └── invoice/
-│   │       ├── CompanyForm.tsx       # Sender / company details form
-│   │       ├── DetailsForm.tsx       # Invoice metadata + client details
-│   │       ├── InvoiceItems.tsx      # Line items management
-│   │       ├── InvoicePreview.tsx    # Live preview wrapper
-│   │       ├── InvoiceSummary.tsx    # Tax, discount, totals & export
-│   │       ├── PaymentDetailsForm.tsx# Payment instructions input
-│   │       ├── TemplatePicker.tsx    # Template selection UI
-│   │       └── templates/
-│   │           ├── ClassicTemplate.tsx
-│   │           ├── ModernTemplate.tsx
-│   │           └── ElegantTemplate.tsx
-│   ├── ui/
-│   │   ├── Button.tsx
-│   │   ├── Card.tsx
-│   │   ├── ErrorBoundary.tsx
-│   │   ├── ExportButton.tsx
-│   │   ├── Footer.tsx
-│   │   └── Input.tsx
-│   └── InvoicePage.tsx               # Root page — layout, accordion, export logic
+│   ├── landing/
+│   │   ├── LandingPage.tsx          # Marketing page at "/"
+│   │   └── sampleInvoice.ts         # Fictional data used to render real templates on the landing page
+│   ├── features/invoice/
+│   │   ├── CompanyForm.tsx          # Sender details + logo
+│   │   ├── DetailsForm.tsx          # Invoice number/dates + client details
+│   │   ├── InvoiceItems.tsx         # Line items
+│   │   ├── InvoiceSummary.tsx       # Currency, tax, discount and totals
+│   │   ├── PaymentDetailsForm.tsx   # Bank / crypto / custom payment instructions
+│   │   ├── TemplatePicker.tsx       # Template selection with live thumbnails
+│   │   ├── InvoicePreview.tsx       # The #invoice-preview element used for export
+│   │   ├── InvoiceSheet.tsx         # Scaled, read-only render of a template
+│   │   └── templates/               # Classic, Modern and Elegant invoice layouts
+│   ├── ui/                          # Design-system primitives (Button, Input, Select, Switch,
+│   │                                #   SegmentedControl, ConfirmDialog, ExportButton, RollingNumber,
+│   │                                #   ScaledFrame, EditorSkeleton, Logo, Footer, ErrorBoundary, …)
+│   └── InvoicePage.tsx              # Editor layout, preview, export and share logic
 ├── hooks/
-│   ├── useLocalStorage.ts            # Encrypted localStorage hook
+│   ├── useLocalStorage.ts           # Encrypted localStorage hook
 │   └── useMediaQuery.ts
 ├── store/
-│   └── InvoiceContext.tsx            # Global invoice state (React Context)
+│   └── InvoiceContext.tsx           # Invoice state (React Context)
 ├── types/
-│   └── invoice.ts                    # TypeScript types & interfaces
+│   └── invoice.ts
 ├── utils/
-│   ├── calculations.ts               # Subtotal, tax, discount, total helpers
-│   ├── cn.ts                         # Tailwind class merging utility
-│   ├── crypto.ts                     # AES-256-GCM encrypt/decrypt via Web Crypto
-│   ├── formatters.ts                 # Currency formatting
-│   └── pdf.ts                        # PDF and PNG generation (html2canvas-pro + jsPDF)
-├── App.tsx
+│   ├── calculations.ts              # Subtotal, tax, discount and total helpers
+│   ├── cn.ts                        # Tailwind class merging
+│   ├── crypto.ts                    # AES-256-GCM encrypt/decrypt via Web Crypto
+│   ├── formatters.ts                # Currency and date formatting
+│   ├── pdf.ts                       # PDF/PNG rendering, download and native share
+│   └── sanitize.ts                  # Input sanitising
+├── App.tsx                          # Routes (React Router)
+├── EditorApp.tsx                    # Lazy-loaded editor entry: InvoiceProvider + InvoicePage
+├── index.css                        # Tailwind v4 theme and design tokens (light/dark)
 └── main.tsx
 ```
 
----
+### Routing
 
-## 🔐 Privacy & Security
+| Path | Page |
+|---|---|
+| `/` | Landing page |
+| `/app` | Invoice editor (code-split; loads on demand) |
+| anything else | Redirects to `/` |
 
-All invoice data is stored **exclusively in your browser**. There is no server, no database, and no analytics capturing your business data.
-
-- A unique **AES-256-GCM** encryption key is generated per device and stored in `IndexedDB` (never exported or transmitted)
-- Every write to `localStorage` is encrypted with this key before being persisted
-- On load, data is decrypted in-memory — the plaintext is never written back to disk
-- Clearing browser storage is equivalent to "deleting your account"
+`vercel.json` rewrites all page routes to `index.html` so deep links like `/app` work in production.
 
 ---
 
@@ -91,14 +111,17 @@ All invoice data is stored **exclusively in your browser**. There is no server, 
 | Layer | Technology |
 |---|---|
 | Framework | React 19 + TypeScript |
-| Build Tool | Vite 7 |
-| Styling | Tailwind CSS v4 |
-| Animations | Framer Motion |
-| PDF Export | html2canvas-pro + jsPDF |
+| Routing | React Router 7 |
+| Build tool | Vite 7 |
+| Styling | Tailwind CSS v4 (semantic tokens in `src/index.css`) |
+| Fonts | Geist (UI), Geist Mono (numbers), Instrument Serif (accent), Inter / Playfair Display (invoice templates) |
+| Animation | Framer Motion |
+| PDF / PNG export | html2canvas-pro + jsPDF |
+| Sharing | Web Share API |
 | Encryption | Web Crypto API (AES-256-GCM) |
 | Icons | Lucide React |
 | PWA | vite-plugin-pwa + Workbox |
-| IDs | uuid v4 |
+| Analytics | Vercel Analytics (anonymous page views) |
 
 ---
 
@@ -112,11 +135,8 @@ All invoice data is stored **exclusively in your browser**. There is no server, 
 ### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/Omo-Akeye/invoice-generator.git
 cd invoice-generator
-
-# Install dependencies
 npm install
 ```
 
@@ -126,34 +146,33 @@ npm install
 npm run dev
 ```
 
-The app will start at `http://localhost:5173` with Hot Module Replacement enabled.
+Open `http://localhost:5173` for the landing page, or `http://localhost:5173/app` for the editor.
 
-### Production Build
+> **Testing Share PDF:** the Web Share API only works on HTTPS (or `localhost`). To try it on a real phone, use a deployed preview (e.g. a Vercel preview URL) rather than your computer's local network address.
+
+### Production build
 
 ```bash
 npm run build
-```
-
-Output is written to the `dist/` directory and is ready to be deployed to any static host (Vercel, Netlify, GitHub Pages, etc.).
-
-### Preview Production Build Locally
-
-```bash
 npm run preview
 ```
 
+Output goes to `dist/` and can be deployed to any static host. On hosts other than Vercel, add a rewrite so unknown paths serve `index.html`.
+
 ---
 
-## 📄 How to Generate an Invoice
+## 📄 How to Create an Invoice
 
-1. **Pick a Template** — Select *Classic*, *Modern*, or *Elegant* from the Template Design section
-2. **Fill in Invoice Details** — Set the invoice number, issue date, and due date
-3. **Add Sender & Client Info** — Enter your company name, address, email, phone, and optionally upload a logo; then enter your client's details
-4. **Add Line Items** — Add services or products with quantity and unit price; totals are calculated automatically
-5. **Configure Summary** — Toggle tax (VAT), set rates, apply discounts, and choose a currency
-6. **Payment Details** — Choose Bank Transfer or Crypto and input your payment details
-7. **Add Notes** — Include any payment terms or additional information
-8. **Export Invoice** — Click the **Export** button in the header or summary panel to download your invoice as a PDF or PNG.
+1. **Template** — pick *Classic*, *Modern* or *Elegant* (you can switch any time)
+2. **Invoice details** — invoice number, issue date and due date
+3. **From and bill to** — your business details and logo, then your client's details
+4. **Line items** — add what you're charging for; amounts calculate automatically
+5. **Currency, tax and discount** — choose a currency, toggle tax, set a discount
+6. **Payment details** — bank transfer, crypto or custom instructions (optional)
+7. **Notes** — payment terms or a thank-you (optional)
+8. **Download or share** — open **Download** in the header (or the bottom bar on mobile) and choose *Share PDF*, *Download PDF* or *Download PNG*
+
+Use **Start over** to clear the draft; you'll be asked to confirm first.
 
 ---
 
@@ -168,6 +187,3 @@ npm run preview
 
 ---
 
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
