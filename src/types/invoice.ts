@@ -1,4 +1,6 @@
-export type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'NGN';
+import type { CurrencyCode } from '../utils/currencies';
+
+export type Currency = CurrencyCode;
 
 export type InvoiceTemplate = 'classic' | 'modern' | 'elegant';
 

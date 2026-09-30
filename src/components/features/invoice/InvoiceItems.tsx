@@ -3,7 +3,8 @@ import { useInvoice } from '../../../store/InvoiceContext';
 import { Button } from '../../ui/Button';
 import { Input } from '../../ui/Input';
 import { Plus, X } from 'lucide-react';
-import { formatCurrency, getCurrencySymbol } from '../../../utils/formatters';
+import { formatCurrency } from '../../../utils/formatters';
+import { getCurrency } from '../../../utils/currencies';
 import { CurrencyText } from '../../ui/CurrencyText';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sanitizeText } from '../../../utils/sanitize';
@@ -14,6 +15,9 @@ const COLUMNS = 'md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_64px_128px_112px_
 export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = () => {
     const { invoice, addItem, updateItem, removeItem } = useInvoice();
     const currency = invoice.settings.currency;
+    const { symbol, decimals } = getCurrency(currency);
+    // Symbols range from "$" to "FCFA", so the price field's left padding follows the symbol's width.
+    const pricePadding = { paddingLeft: `calc(0.75rem + ${symbol.length}ch + 0.25rem)` };
 
     return (
         <div>
@@ -70,17 +74,18 @@ export const InvoiceItems: React.FC<{ hideHeader?: boolean }> = () => {
                             />
                             <div className="relative">
                                 <span className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-sm text-ink-faint">
-                                    <CurrencyText currency={currency}>{getCurrencySymbol(currency)}</CurrencyText>
+                                    <CurrencyText currency={currency}>{symbol}</CurrencyText>
                                 </span>
                                 <NumericFormat
                                     customInput={Input}
                                     inputMode="decimal"
                                     aria-label="Unit price"
-                                    className="pl-7 tabular-nums"
+                                    className="tabular-nums"
+                                    style={pricePadding}
                                     thousandSeparator=","
-                                    decimalScale={2}
+                                    decimalScale={decimals}
                                     allowNegative={false}
-                                    placeholder="0.00"
+                                    placeholder={decimals ? '0.00' : '0'}
                                     value={item.unitPrice === 0 ? '' : item.unitPrice}
                                     onValueChange={(values) => updateItem(item.id, { unitPrice: values.floatValue ?? 0 })}
                                     onFocus={(e) => e.target.select()}

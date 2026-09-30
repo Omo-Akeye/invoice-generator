@@ -19,15 +19,16 @@ export const RollingNumber: React.FC<{ value: string; className?: string }> = ({
                 if (digit === -1) {
                     return (
                         <span key={`s${key}`} aria-hidden>
-                            {char}
+                            {/* A plain space would collapse inside the flex row ("KSh 100" → "KSh100"). */}
+                            {char === ' ' ? '\u00a0' : char}
                         </span>
                     );
                 }
                 return (
-                    <span key={`d${key}`} aria-hidden className="relative inline-block h-[1lh] overflow-hidden">
+                    <span key={`d${key}`} aria-hidden className="relative inline-block h-lh overflow-hidden">
                         <span className="invisible">0</span>
                         <span
-                            className="absolute inset-x-0 top-0 flex flex-col transition-transform duration-[250ms] ease-out-soft"
+                            className="absolute inset-x-0 top-0 flex flex-col transition-transform duration-250 ease-out-soft"
                             style={{ transform: `translateY(-${digit * 10}%)` }}
                         >
                             {DIGITS.map((d) => (

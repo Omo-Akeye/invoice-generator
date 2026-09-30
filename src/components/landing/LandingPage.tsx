@@ -9,6 +9,7 @@ import { buttonBase, buttonSizes, buttonVariants } from '../ui/buttonStyles';
 import { InvoiceSheet } from '../features/invoice/InvoiceSheet';
 import { SAMPLE_INVOICE } from './sampleInvoice';
 import { formatCurrency } from '../../utils/formatters';
+import { CURRENCIES } from '../../utils/currencies';
 import { CurrencyText } from '../ui/CurrencyText';
 import type { InvoiceTemplate } from '../../types/invoice';
 import { cn } from '../../utils/cn';
@@ -294,14 +295,15 @@ const Features: React.FC = () => {
                     </Reveal>
 
                     <Reveal className="md:col-span-2" delay={0.06}>
-                        <FeatureCard className="h-full" title="Five currencies" body="Naira, dollar, euro, pound and yen, each formatted correctly.">
-                            <div className="grid grid-cols-5 gap-2 font-naira text-lg text-ink">
-                                {['₦', '$', '€', '£', '¥'].map((symbol, i) => (
+                        <FeatureCard className="h-full" title="35 currencies" body="Naira, dollar, cedi, shilling, rand, euro and more, each with the right symbol and decimals.">
+                            <div className="grid grid-cols-5 gap-2 font-currency text-lg text-ink">
+                                {['₦', '$', 'GH₵', '€', `+${CURRENCIES.length - 4}`].map((symbol, i, all) => (
                                     <span
                                         key={symbol}
                                         className={cn(
                                             'flex aspect-square items-center justify-center rounded-[10px] border',
-                                            i === 0 ? 'border-accent bg-accent-soft text-accent' : 'border-line bg-subtle text-ink-muted'
+                                            i === 0 ? 'border-accent bg-accent-soft text-accent' : 'border-line bg-subtle text-ink-muted',
+                                            i === all.length - 1 && 'font-sans text-[13px] font-medium'
                                         )}
                                     >
                                         {symbol}
@@ -386,7 +388,7 @@ const FAQS = [
     { q: 'What happens if I clear my browser data?', a: 'Your saved draft is deleted along with it. Download the PDF of anything you need to keep.' },
     { q: 'How do I send the invoice to my client?', a: 'On most phones, open the Download menu and choose Share PDF to send it straight to WhatsApp, email or any other app. On a computer, download the PDF and attach it like any other file.' },
     { q: 'Can I use it offline?', a: 'Yes. After your first visit the app is cached, and you can install it to your home screen or desktop from the browser menu.' },
-    { q: 'Which currencies are supported?', a: 'Nigerian naira, US dollar, euro, British pound and Japanese yen.' },
+    { q: 'Which currencies are supported?', a: '35 currencies, including the naira, US dollar, euro, pound and yen, plus the cedi, Kenyan and Ugandan shillings, rand, CFA francs, rupee, dirham and more. Naira is the default; search the currency picker by name, code or country.' },
 ];
 
 const Faq: React.FC = () => {

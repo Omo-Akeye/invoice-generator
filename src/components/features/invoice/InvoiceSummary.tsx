@@ -1,21 +1,15 @@
 import React from 'react';
 import { useInvoice } from '../../../store/InvoiceContext';
-import { FieldLabel, Input, Select } from '../../ui/Input';
+import { FieldLabel, Input } from '../../ui/Input';
+import { CurrencyPicker } from './CurrencyPicker';
+import { getCurrency } from '../../../utils/currencies';
 import { Switch } from '../../ui/Switch';
 import { SegmentedControl } from '../../ui/SegmentedControl';
 import { formatCurrency } from '../../../utils/formatters';
 import { CurrencyText } from '../../ui/CurrencyText';
 import { RollingNumber } from '../../ui/RollingNumber';
-import type { Currency } from '../../../types/invoice';
 import { NumericFormat } from 'react-number-format';
 
-const CURRENCIES: { value: Currency; label: string }[] = [
-    { value: 'NGN', label: 'NGN — Nigerian naira (₦)' },
-    { value: 'USD', label: 'USD — US dollar ($)' },
-    { value: 'EUR', label: 'EUR — Euro (€)' },
-    { value: 'GBP', label: 'GBP — British pound (£)' },
-    { value: 'JPY', label: 'JPY — Japanese yen (¥)' },
-];
 
 export const InvoiceSummary: React.FC<{ hideHeader?: boolean }> = () => {
     const { invoice, updateSettings } = useInvoice();
@@ -25,15 +19,7 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean }> = () => {
     return (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="space-y-5">
-                <Select
-                    label="Currency"
-                    value={settings.currency}
-                    onChange={(e) => updateSettings({ currency: e.target.value as Currency })}
-                >
-                    {CURRENCIES.map((c) => (
-                        <option key={c.value} value={c.value}>{c.label}</option>
-                    ))}
-                </Select>
+                <CurrencyPicker value={settings.currency} onChange={(currency) => updateSettings({ currency })} />
 
                 <div className="space-y-3">
                     <Switch
@@ -82,9 +68,9 @@ export const InvoiceSummary: React.FC<{ hideHeader?: boolean }> = () => {
                         className="tabular-nums"
                         thousandSeparator=","
                         suffix={settings.discountType === 'percentage' ? '%' : undefined}
-                        decimalScale={2}
+                        decimalScale={settings.discountType === 'percentage' ? 2 : getCurrency(settings.currency).decimals}
                         allowNegative={false}
-                        placeholder={settings.discountType === 'percentage' ? '0%' : '0.00'}
+                        placeholder={settings.discountType === 'percentage' ? '0%' : getCurrency(settings.currency).decimals ? '0.00' : '0'}
                         value={settings.discountValue === 0 ? '' : settings.discountValue}
                         onValueChange={(values) => updateSettings({ discountValue: values.floatValue ?? 0 })}
                         onFocus={(e) => e.target.select()}

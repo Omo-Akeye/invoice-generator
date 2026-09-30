@@ -1,14 +1,15 @@
 import React from 'react';
+import { getCurrency } from '../../utils/currencies';
 
 /**
- * Wraps text containing the Naira sign (₦) with a font that reliably renders it.
- * This is a rendering concern — the formatCurrency utility stays a pure string function.
- * 
- * For non-NGN currencies, children are rendered as-is with no wrapper span.
+ * Wraps amounts in a font that reliably draws the currency's symbol (₦, GH₵, ₹, ₱, ₩).
+ * This is a rendering concern — formatCurrency stays a pure string function.
+ *
+ * Other currencies render as-is with no wrapper span.
  */
 export const CurrencyText: React.FC<{ currency: string; children: React.ReactNode }> = ({ currency, children }) => {
-    if (currency === 'NGN') {
-        return <span className="font-naira">{children}</span>;
+    if (getCurrency(currency).fallbackFont) {
+        return <span className="font-currency">{children}</span>;
     }
     return <>{children}</>;
 };

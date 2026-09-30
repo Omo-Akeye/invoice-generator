@@ -20,7 +20,7 @@ InvoicePro is a fully client-side invoice generator built with React and TypeScr
 - **3 templates** — *Classic*, *Modern* and *Elegant*, with live miniature previews in the picker
 - **Live preview** — an A4 preview that updates as you type
 - **Line items, tax and discounts** — VAT/sales tax at any rate; percentage or fixed-amount discounts; totals animate as they change
-- **5 currencies** — NGN, USD, EUR, GBP and JPY
+- **35 currencies** — NGN (default), USD, EUR, GBP and JPY first, plus African, Asian, Middle Eastern and other major currencies; searchable by name, code or country, each with the correct symbol and decimal places
 - **Payment instructions** — bank transfer, crypto wallet, or custom instructions printed on the invoice
 - **Company logo** — upload once and it appears on every template
 
@@ -65,6 +65,7 @@ src/
 │   │   ├── DetailsForm.tsx          # Invoice number/dates + client details
 │   │   ├── InvoiceItems.tsx         # Line items
 │   │   ├── InvoiceSummary.tsx       # Currency, tax, discount and totals
+│   │   ├── CurrencyPicker.tsx       # Searchable currency combobox
 │   │   ├── PaymentDetailsForm.tsx   # Bank / crypto / custom payment instructions
 │   │   ├── TemplatePicker.tsx       # Template selection with live thumbnails
 │   │   ├── InvoicePreview.tsx       # The #invoice-preview element used for export
@@ -85,6 +86,7 @@ src/
 │   ├── calculations.ts              # Subtotal, tax, discount and total helpers
 │   ├── cn.ts                        # Tailwind class merging
 │   ├── crypto.ts                    # AES-256-GCM encrypt/decrypt via Web Crypto
+│   ├── currencies.ts                # The 35 supported currencies: symbols, decimals, search
 │   ├── formatters.ts                # Currency and date formatting
 │   ├── pdf.ts                       # PDF/PNG rendering, download and native share
 │   └── sanitize.ts                  # Input sanitising
