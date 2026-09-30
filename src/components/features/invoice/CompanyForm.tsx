@@ -33,7 +33,7 @@ export const CompanyForm: React.FC<{ hideHeader?: boolean }> = () => {
             <legend className="mb-3 text-[13px] font-medium text-ink">From</legend>
             <div className="flex items-end gap-3">
                 {invoice.company.logo ? (
-                    <div className="group relative h-[62px] w-[62px] shrink-0 overflow-hidden rounded-control border border-line bg-white">
+                    <div className="group relative h-15.5 w-15.5 shrink-0 overflow-hidden rounded-control border border-line bg-white">
                         <img src={invoice.company.logo} alt="Your logo" className="h-full w-full object-contain p-1" />
                         <button
                             type="button"
@@ -45,7 +45,7 @@ export const CompanyForm: React.FC<{ hideHeader?: boolean }> = () => {
                         </button>
                     </div>
                 ) : (
-                    <label className="flex h-[62px] w-[62px] shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-control border border-dashed border-line-strong text-ink-faint transition-colors hover:border-ink-faint hover:text-ink-muted focus-within:border-accent">
+                    <label className="flex h-15.5 w-15.5 shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-control border border-dashed border-line-strong text-ink-faint transition-colors hover:border-ink-faint hover:text-ink-muted focus-within:border-accent">
                         <ImagePlus size={16} strokeWidth={1.75} />
                         <span className="text-[10px] font-medium">Logo</span>
                         <input type="file" className="sr-only" accept="image/*" onChange={handleLogoChange} />
@@ -54,7 +54,7 @@ export const CompanyForm: React.FC<{ hideHeader?: boolean }> = () => {
                 <div className="flex-1">
                     <Input
                         label="Business name"
-                        placeholder="Lumen Studio"
+                        placeholder="Function Studio"
                         autoComplete="organization"
                         value={invoice.company.name}
                         onChange={(e) => updateCompany({ name: sanitizeText(e.target.value, 100) })}

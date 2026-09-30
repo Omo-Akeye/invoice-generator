@@ -55,13 +55,13 @@ export const PaymentDetailsForm: React.FC<{ hideHeader?: boolean }> = () => {
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <Input
                                 label="Bank name"
-                                placeholder="First Bank Nigeria"
+                                placeholder="Your bank's name"
                                 value={paymentInfo?.bankName ?? ''}
                                 onChange={(e) => set({ bankName: e.target.value })}
                             />
                             <Input
                                 label="Account name"
-                                placeholder="Lumen Studio Ltd"
+                                placeholder="Function Studio Ltd"
                                 value={paymentInfo?.accountName ?? ''}
                                 onChange={(e) => set({ accountName: e.target.value })}
                             />
@@ -125,7 +125,7 @@ export const PaymentDetailsForm: React.FC<{ hideHeader?: boolean }> = () => {
                         <TextArea
                             label="Payment instructions"
                             rows={4}
-                            placeholder="Send payment via Wise to account@example.com and include the invoice number."
+                            placeholder="Send payment to account@example.com and include the invoice number."
                             value={paymentInfo?.customInstructions ?? ''}
                             onChange={(e) => set({ customInstructions: e.target.value })}
                         />

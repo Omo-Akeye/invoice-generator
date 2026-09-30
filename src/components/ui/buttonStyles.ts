@@ -1,5 +1,6 @@
 export const buttonVariants = {
-    primary: 'bg-ink text-canvas hover:opacity-90',
+    primary: 'bg-brand text-on-brand hover:bg-brand-hover',
+    inverse: 'bg-ink text-canvas hover:opacity-90',
     secondary: 'bg-surface text-ink border border-line-strong hover:bg-subtle',
     outline: 'bg-transparent text-ink border border-line-strong hover:bg-subtle',
     ghost: 'bg-transparent text-ink-muted hover:text-ink hover:bg-subtle',

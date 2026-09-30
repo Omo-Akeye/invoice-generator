@@ -26,6 +26,9 @@
     --color-ink: var(--ink);
     --color-ink-muted: var(--ink-muted);
     --color-ink-faint: var(--ink-faint);
+    --color-brand: var(--brand);
+    --color-brand-hover: var(--brand-hover);
+    --color-on-brand: var(--on-brand);
     --color-accent: var(--accent);
     --color-accent-soft: var(--accent-soft);
     --color-positive: var(--positive);
@@ -33,80 +36,49 @@
     --color-danger-solid: var(--danger-solid);
 }
 
+/*
+ * brand: the lime fill (primary buttons, logo, highlights). Always pair it with on-brand text.
+ * accent: the readable form of the brand for text, icons and focus rings (olive on light, lime on dark).
+ */
 :root {
     color-scheme: light;
-    --canvas: #fafaf9;
-    --surface: #ffffff;
-    --subtle: #f3f3f1;
-    --line: #ebebe7;
-    --line-strong: #dcdcd7;
-    --ink: #121212;
-    --ink-muted: #5c5c58;
-    --ink-faint: #97978f;
-    --accent: #13805a;
-    --accent-soft: #e7f4ee;
-    --positive: #13805a;
-    --danger: #d23b3b;
-    --danger-solid: #d23b3b;
+    --canvas: #f2f1ea;
+    --surface: #fbfaf5;
+    --subtle: #e9e7dd;
+    --line: #e0ddd1;
+    --line-strong: #ccc8b8;
+    --ink: #16160f;
+    --ink-muted: #5a5949;
+    --ink-faint: #8c8a79;
+    --brand: #d4f24a;
+    --brand-hover: #c8e834;
+    --on-brand: #16160f;
+    --accent: #5a6b0f;
+    --accent-soft: #eaf3c4;
+    --positive: #2f7a3a;
+    --danger: #c2362f;
+    --danger-solid: #c2362f;
 }
 
-/*
- * Theme selection. <html data-theme="light|dark"> is set by the theme switch (src/lib/theme.ts)
- * and by an inline script in index.html before first paint. No attribute means "follow the system".
- * .theme-dark forces the dark palette on one region (e.g. the landing privacy band).
- */
-:root[data-theme="dark"],
+/* .theme-dark gives one region of the page (the landing privacy band) a dark palette. The site itself is light only. */
 .theme-dark {
     color-scheme: dark;
-    --canvas: #0b0b0c;
-    --surface: #141416;
-    --subtle: #1b1b1e;
-    --line: #232326;
-    --line-strong: #303034;
-    --ink: #f3f3f1;
-    --ink-muted: #a4a4a0;
-    --ink-faint: #6c6c68;
-    --accent: #3ccf91;
-    --accent-soft: #10271d;
-    --positive: #3ccf91;
+    --canvas: #10100c;
+    --surface: #181813;
+    --subtle: #20201a;
+    --line: #2a2a21;
+    --line-strong: #38372c;
+    --ink: #f2f1ea;
+    --ink-muted: #a9a796;
+    --ink-faint: #75735f;
+    --brand: #d4f24a;
+    --brand-hover: #def66b;
+    --on-brand: #16160f;
+    --accent: #d4f24a;
+    --accent-soft: #262b0e;
+    --positive: #86d694;
     --danger: #f07070;
     --danger-solid: #c43636;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        color-scheme: dark;
-        --canvas: #0b0b0c;
-        --surface: #141416;
-        --subtle: #1b1b1e;
-        --line: #232326;
-        --line-strong: #303034;
-        --ink: #f3f3f1;
-        --ink-muted: #a4a4a0;
-        --ink-faint: #6c6c68;
-        --accent: #3ccf91;
-        --accent-soft: #10271d;
-        --positive: #3ccf91;
-        --danger: #f07070;
-        --danger-solid: #c43636;
-    }
-}
-
-/* Theme change animation: a crossfade via the View Transitions API... */
-::view-transition-old(root),
-::view-transition-new(root) {
-    animation-duration: 380ms;
-    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-/* ...or, where that API is missing, a brief colour transition on everything. */
-.theme-transition,
-.theme-transition *,
-.theme-transition *::before,
-.theme-transition *::after {
-    transition-property: background-color, border-color, color, fill, stroke, box-shadow !important;
-    transition-duration: 320ms !important;
-    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 body {
@@ -116,7 +88,7 @@ body {
 }
 
 ::selection {
-    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    background: color-mix(in srgb, var(--brand) 55%, transparent);
 }
 
 button {

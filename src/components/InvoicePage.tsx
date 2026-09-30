@@ -15,7 +15,6 @@ import { ScaledFrame } from './ui/ScaledFrame';
 import { Logo, LogoMark } from './ui/Logo';
 import { EditorSkeleton } from './ui/EditorSkeleton';
 import { ConfirmDialog } from './ui/ConfirmDialog';
-import { ThemeToggle } from './ui/ThemeToggle';
 import { Footer } from './ui/Footer';
 import { CurrencyText } from './ui/CurrencyText';
 import { RollingNumber } from './ui/RollingNumber';
@@ -50,7 +49,17 @@ const EditorSection: React.FC<{
     onToggle: (id: Section) => void;
     children: React.ReactNode;
 }> = ({ id, index, title, description, hint, isOpen, collapsible, onToggle, children }) => {
-    const number = <span className="w-5 shrink-0 pt-px font-mono text-xs tabular-nums text-ink-faint">{String(index).padStart(2, '0')}</span>;
+    // Same step tag as the landing page. In the phone accordion, only the open step is lime.
+    const step = (
+        <span
+            className={cn(
+                'mb-2 inline-flex rounded-sm px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.08em] tabular-nums transition-colors duration-150',
+                isOpen ? 'bg-brand text-on-brand' : 'bg-subtle text-ink-muted'
+            )}
+        >
+            Step {index}
+        </span>
+    );
 
     return (
         <section id={`section-${id}`} className="scroll-mt-20 rounded-card border border-line bg-surface">
@@ -62,20 +71,18 @@ const EditorSection: React.FC<{
                     aria-controls={`section-body-${id}`}
                     className="flex w-full items-center gap-3 px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/40 rounded-card"
                 >
-                    {number}
                     <span className="min-w-0 flex-1">
+                        {step}
                         <span className="block text-[15px] font-medium tracking-[-0.01em] text-ink">{title}</span>
                         {!isOpen && hint && <span className="mt-0.5 block truncate text-[13px] text-ink-muted">{hint}</span>}
                     </span>
                     <ChevronDown size={16} strokeWidth={1.75} className={cn('shrink-0 text-ink-faint transition-transform duration-200', isOpen && 'rotate-180')} />
                 </button>
             ) : (
-                <div className="flex gap-3 px-5 pt-5">
-                    {number}
-                    <div>
-                        <h2 className="text-[15px] font-medium tracking-[-0.01em] text-ink">{title}</h2>
-                        <p className="mt-0.5 text-[13px] text-ink-muted">{description}</p>
-                    </div>
+                <div className="px-5 pt-5">
+                    {step}
+                    <h2 className="text-[15px] font-medium tracking-[-0.01em] text-ink">{title}</h2>
+                    <p className="mt-0.5 text-[13px] text-ink-muted">{description}</p>
                 </div>
             )}
 
@@ -89,7 +96,7 @@ const EditorSection: React.FC<{
                         transition={{ duration: 0.24, ease: EASE }}
                         className="overflow-hidden"
                     >
-                        <div className={cn(collapsible ? 'px-4 pb-5 pt-1' : 'p-5 pl-13')}>{children}</div>
+                        <div className={cn(collapsible ? 'px-4 pb-5 pt-1' : 'p-5')}>{children}</div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -253,7 +260,6 @@ export const InvoicePage: React.FC = () => {
                         </span>
                     </div>
                     <div className="flex shrink-0 items-center gap-1.5">
-                        <ThemeToggle className="mr-1" />
                         <Button variant="ghost" size="sm" onClick={() => setConfirmReset(true)} aria-label="Start a new invoice">
                             <RotateCcw size={14} strokeWidth={1.75} />
                             <span className="hidden sm:inline">Start over</span>
@@ -269,7 +275,7 @@ export const InvoicePage: React.FC = () => {
                 <div className="grid items-start gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(440px,0.82fr)]">
                     <div className="min-w-0 no-print">
                         <div className="mb-8">
-                            <h1 className="text-2xl font-semibold tracking-[-0.03em] text-ink sm:text-[28px]">New invoice</h1>
+                            <h1 className="text-2xl font-normal tracking-[-0.035em] text-ink sm:text-[28px]">New invoice</h1>
                             <p className="mt-1.5 text-[15px] text-ink-muted">
                                 Your draft saves automatically to this browser, and nowhere else.
                             </p>

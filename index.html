@@ -4,13 +4,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Apply a saved light/dark choice before first paint so the page never flashes the wrong theme. -->
-  <script>
-    try {
-      var theme = localStorage.getItem('invoicepro-theme');
-      if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
-    } catch (e) {}
-  </script>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
   <title>InvoicePro — Free Professional Invoice Generator | Create & Export PDF Invoices</title>
@@ -49,8 +42,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
   <!-- PWA / Mobile -->
-  <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f2f1ea" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="InvoicePro" />
@@ -62,7 +54,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Roboto:wght@400;500;700;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Roboto:wght@400;500;700;900&display=swap"
     rel="stylesheet" />
 
   <!-- Structured Data -->

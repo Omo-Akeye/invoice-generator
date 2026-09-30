@@ -33,15 +33,15 @@ export const SAMPLE_INVOICE: Invoice = {
     dueDate: '2026-10-14',
     template: 'classic',
     company: {
-        name: 'Lumen Studio',
+        name: 'Function Studio',
         address: '12 Admiralty Way, Lekki, Lagos',
-        email: 'hello@lumen.studio',
+        email: 'hello@functionstudio.com',
         phone: '+234 809 555 0142',
     },
     client: {
-        name: 'Kora Foods Ltd.',
+        name: 'Acme Foods Ltd.',
         address: '4 Aminu Kano Crescent, Wuse 2, Abuja',
-        email: 'accounts@korafoods.ng',
+        email: 'accounts@acmefoods.com',
     },
     items,
     settings,
@@ -52,8 +52,8 @@ export const SAMPLE_INVOICE: Invoice = {
     notes: 'Payment due within 14 days. Thank you for the work together.',
     paymentInfo: {
         method: 'bank_transfer',
-        bankName: 'Providus Bank',
-        accountName: 'Lumen Studio Ltd',
+        bankName: 'Sample Bank',
+        accountName: 'Function Studio Ltd',
         accountNumber: '0123456789',
     },
 };

@@ -36,7 +36,7 @@ export class ErrorBoundary extends Component<Props, State> {
             return (
                 <div className="flex min-h-screen flex-col items-center justify-center bg-canvas p-6 text-center">
                     <AlertTriangle className="mb-5 text-danger" size={24} strokeWidth={1.75} />
-                    <h1 className="mb-2 text-2xl font-semibold tracking-[-0.03em] text-ink">Something went wrong</h1>
+                    <h1 className="mb-2 text-2xl font-normal tracking-[-0.035em] text-ink sm:text-[28px]">Something went wrong</h1>
                     <p className="mb-8 max-w-md text-[15px] leading-relaxed text-ink-muted">
                         The app hit an unexpected error. Refreshing usually fixes it. If it keeps happening, your saved draft may be damaged and resetting will clear it.
                     </p>

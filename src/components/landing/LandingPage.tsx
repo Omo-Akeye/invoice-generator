@@ -3,7 +3,6 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Check, ChevronDown, Download, ImagePlus, KeyRound, ServerOff, UserX, WifiOff } from 'lucide-react';
 import { Link } from 'react-router';
 import { Logo } from '../ui/Logo';
-import { ThemeToggle } from '../ui/ThemeToggle';
 import { Footer } from '../ui/Footer';
 import { buttonBase, buttonSizes, buttonVariants } from '../ui/buttonStyles';
 import { InvoiceSheet } from '../features/invoice/InvoiceSheet';
@@ -39,13 +38,22 @@ const CtaLink: React.FC<{ to: string; children: React.ReactNode; variant?: 'prim
 );
 
 const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <p className="mb-4 text-[13px] font-medium text-accent">{children}</p>
+    <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.08em] text-accent">{children}</p>
+);
+
+/**
+ * The brand moment in a display headline: one word on a lime marker. As an inline-block with its
+ * own tight line-height, the marker stays shorter than the headline's 1.02 leading, so it never
+ * rides up into the line above; the extra bottom padding covers descenders like the "p".
+ */
+const Highlight: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <span className="inline-block rounded-[0.12em] bg-brand px-[0.1em] pb-[0.14em] pt-[0.02em] leading-[0.86] text-on-brand">{children}</span>
 );
 
 const SectionHeading: React.FC<{ eyebrow: string; title: React.ReactNode; body?: React.ReactNode; className?: string }> = ({ eyebrow, title, body, className }) => (
     <div className={cn('max-w-xl', className)}>
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h2 className="text-3xl font-semibold tracking-[-0.03em] text-ink text-balance sm:text-4xl">{title}</h2>
+        <h2 className="text-3xl font-light leading-[1.08] tracking-[-0.035em] text-ink text-balance sm:text-[44px]">{title}</h2>
         {body && <p className="mt-4 text-[15px] leading-relaxed text-ink-muted text-pretty">{body}</p>}
     </div>
 );
@@ -90,7 +98,6 @@ const Nav: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => {
                     <Link to="/#faq" className="transition-colors hover:text-ink">FAQ</Link>
                 </nav>
                 <div className="flex items-center gap-2 sm:gap-3">
-                    <ThemeToggle />
                     <Link to="/app" className={cn(buttonBase, buttonVariants.primary, buttonSizes.sm)}>
                         {ctaLabel}
                     </Link>
@@ -112,15 +119,14 @@ const Hero: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => {
         <section className="relative overflow-hidden">
             <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:pb-28 lg:pt-24 lg:border-x lg:border-line lg:px-10">
                 <div>
-                    <motion.p {...rise(0)} className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-xs text-ink-muted">
-                        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                        No sign-up needed
-                    </motion.p>
+                    <motion.div {...rise(0)}>
+                        <Eyebrow>Free invoice generator</Eyebrow>
+                    </motion.div>
                     <motion.h1
                         {...rise(0.05)}
-                        className="text-5xl font-semibold leading-[1.02] tracking-[-0.045em] text-ink text-balance sm:text-6xl lg:text-7xl"
+                        className="text-5xl font-light leading-[1.02] tracking-[-0.05em] text-ink text-balance sm:text-6xl lg:text-7xl"
                     >
-                        Invoices that get you <em className="font-accent text-[1.1em] font-normal leading-none tracking-[-0.02em]">paid.</em>
+                        Invoices that get you <Highlight>paid.</Highlight>
                     </motion.h1>
                     <motion.p {...rise(0.12)} className="mt-6 max-w-md text-lg leading-relaxed text-ink-muted text-pretty">
                         An invoice generator that works right in your browser. Send a polished PDF your client can pay in minutes.
@@ -183,7 +189,9 @@ const HowItWorks: React.FC = () => (
                 {STEPS.map((step, i) => (
                     <Reveal key={step.title} delay={i * 0.08}>
                         <li className="border-t border-line-strong pt-6">
-                            <span className="font-mono text-xs tabular-nums text-ink-faint">0{i + 1}</span>
+                            <span className="inline-flex rounded-sm bg-brand px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.08em] tabular-nums text-on-brand">
+                                Step {i + 1}
+                            </span>
                             <h3 className="mt-3 text-[17px] font-medium tracking-[-0.01em] text-ink">{step.title}</h3>
                             <p className="mt-2 text-[15px] leading-relaxed text-ink-muted">{step.body}</p>
                         </li>
@@ -234,7 +242,7 @@ const Templates: React.FC = () => {
                                         onClick={() => setActive(template.id)}
                                         className={cn(
                                             'h-8 rounded-full border px-3.5 text-[13px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40',
-                                            isActive ? 'border-ink bg-ink text-canvas' : 'border-line-strong text-ink-muted hover:border-ink-faint hover:text-ink'
+                                            isActive ? 'border-brand bg-brand text-on-brand' : 'border-line-strong text-ink-muted hover:border-ink-faint hover:text-ink'
                                         )}
                                     >
                                         {template.name}
@@ -258,18 +266,28 @@ const Templates: React.FC = () => {
                 </Reveal>
 
                 <Reveal delay={0.1} className="mx-auto w-full max-w-md">
-                    <div className="relative rounded-[20px] bg-subtle p-4 sm:p-6">
-                        <AnimatePresence mode="popLayout" initial={false}>
-                            <motion.div
-                                key={active}
-                                initial={reduce ? false : { opacity: 0, scale: 0.985 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, transition: { duration: 0.12 } }}
-                                transition={{ duration: 0.35, ease: EASE }}
-                            >
-                                <InvoiceSheet invoice={SAMPLE_INVOICE} template={active} className="rounded-[8px] shadow-paper" />
-                            </motion.div>
-                        </AnimatePresence>
+                    <div className="rounded-[20px] bg-subtle p-4 sm:p-6">
+                        {/*
+                          A fixed A4 frame: some templates run taller than a page, and letting the stage grow
+                          made the whole section jump when switching. Sheets crossfade on top of each other,
+                          and anything past the page fades out at the bottom.
+                        */}
+                        <div className="relative aspect-210/297 overflow-hidden rounded-[8px] bg-white shadow-paper">
+                            <div className="absolute inset-0 mask-[linear-gradient(to_bottom,black_90%,transparent)]">
+                                <AnimatePresence initial={false}>
+                                    <motion.div
+                                        key={active}
+                                        className="absolute inset-x-0 top-0"
+                                        initial={reduce ? false : { opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                                        transition={{ duration: 0.3, ease: EASE }}
+                                    >
+                                        <InvoiceSheet invoice={SAMPLE_INVOICE} template={active} />
+                                    </motion.div>
+                                </AnimatePresence>
+                            </div>
+                        </div>
                     </div>
                 </Reveal>
             </div>
@@ -382,8 +400,8 @@ const Privacy: React.FC = () => (
     <section id="privacy" className="theme-dark scroll-mt-16 bg-surface text-ink">
         <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32 lg:border-x lg:border-line lg:px-10">
             <Reveal className="max-w-2xl">
-                <p className="mb-4 text-[13px] font-medium text-accent">Privacy</p>
-                <h2 className="text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
+                <Eyebrow>Privacy</Eyebrow>
+                <h2 className="text-3xl font-light leading-[1.05] tracking-[-0.04em] text-balance sm:text-5xl">
                     Your invoices never leave your browser.
                 </h2>
                 <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-ink-muted">
@@ -467,14 +485,15 @@ const Faq: React.FC = () => {
     );
 };
 
+// The one full-bleed brand band: lime ground, dark type and a dark button, identical in both themes.
 const FinalCta: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => (
-    <section className="border-t border-line">
-        <Reveal className="mx-auto flex max-w-6xl flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32 lg:border-x lg:border-line lg:px-10">
-            <h2 className="max-w-2xl text-4xl font-semibold tracking-[-0.04em] text-ink text-balance sm:text-5xl">
-                Your next invoice is two minutes <em className="font-accent text-[1.1em] font-normal leading-none tracking-[-0.02em]">away.</em>
+    <section className="bg-brand text-on-brand">
+        <Reveal className="mx-auto flex max-w-6xl flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32 lg:border-x lg:border-on-brand/15 lg:px-10">
+            <h2 className="max-w-2xl text-4xl font-light leading-[1.05] tracking-[-0.045em] text-balance sm:text-6xl">
+                Your next invoice is two minutes away.
             </h2>
-            <p className="mt-5 text-[15px] text-ink-muted">No sign-up. Nothing to install.</p>
-            <CtaLink to="/app" className="mt-9">
+            <p className="mt-5 text-[15px] text-on-brand/70">No sign-up. Nothing to install.</p>
+            <CtaLink to="/app" className="mt-9 bg-on-brand text-brand hover:bg-on-brand hover:opacity-90 focus-visible:ring-on-brand/40 focus-visible:ring-offset-brand">
                 {ctaLabel}
                 <ArrowRight size={16} strokeWidth={1.75} />
             </CtaLink>

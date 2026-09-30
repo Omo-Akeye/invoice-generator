@@ -23,6 +23,7 @@ export const EditorSkeleton: React.FC = () => (
                 <div className="mt-8 space-y-4">
                     {[0, 1, 2].map((i) => (
                         <div key={i} className="rounded-card border border-line bg-surface p-5">
+                            <Bar className="mb-2 h-5 w-14" />
                             <Bar className="h-4 w-32" />
                             <Bar className="mt-2 h-3 w-56 max-w-full" />
                             <div className="mt-6 grid grid-cols-3 gap-3">
@@ -37,7 +38,7 @@ export const EditorSkeleton: React.FC = () => (
             <div className="hidden xl:block">
                 <Bar className="h-4 w-16" />
                 <div className="mt-3 rounded-[20px] bg-subtle p-6">
-                    <div className="aspect-[210/297] rounded-[6px] bg-surface" />
+                    <div className="aspect-210/297 rounded-md bg-surface" />
                 </div>
             </div>
         </div>

@@ -28,7 +28,7 @@ const TemplateOption: React.FC<{ template: TemplateDefinition; isActive: boolean
                 {/* A live, miniature render of the real template with the user's own data. */}
                 <InvoiceSheet invoice={invoice} template={template.id} className="pointer-events-none rounded-sm shadow-sm" />
                 {isActive && (
-                    <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-white">
+                    <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-on-brand">
                         <Check size={12} strokeWidth={2.5} />
                     </span>
                 )}
