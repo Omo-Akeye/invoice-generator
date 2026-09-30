@@ -1,12 +1,23 @@
 import type { Invoice } from '../../../../types/invoice';
 import { formatCurrency, formatDate } from '../../../../utils/formatters';
 import { CurrencyText } from '../../../ui/CurrencyText';
+import { mix } from '../../../../utils/color';
+import { getBrandTones } from './brand';
 
 interface TemplateProps {
     invoice: Invoice;
 }
 
 export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
+    // Warm amber by default; a brand colour re-tints the gilded bars, headings, labels and payment panel.
+    const t = getBrandTones(invoice.brandColor);
+    const bar = t
+        ? `linear-gradient(90deg, ${t.deep}, ${t.graphic}, ${t.fill}, ${t.graphic}, ${t.deep})`
+        : 'linear-gradient(90deg, #92400e, #d97706, #f59e0b, #d97706, #92400e)';
+    const heading = t ? t.deep : '#78350f';
+    const label = t ? t.text : '#b45309';
+    const rule = t ? t.graphic : '#92400e';
+    const panel = t ? { background: t.tint, borderColor: t.line } : { background: '#fffbeb' };
     return (
         <div
             className="bg-white text-black w-full aspect-[210/297] p-6"
@@ -14,18 +25,18 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
         >
             <div
                 className="w-full h-[3px] rounded-full mb-8"
-                style={{ background: 'linear-gradient(90deg, #92400e, #d97706, #f59e0b, #d97706, #92400e)' }}
+                style={{ background: bar }}
             />
 
             <div className="flex justify-between items-start mb-8">
                 <div>
                     <h2
                         className="text-3xl font-light tracking-wide mb-1"
-                        style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#78350f' }}
+                        style={{ fontFamily: "'Playfair Display', Georgia, serif", color: heading }}
                     >
                         Invoice
                     </h2>
-                    <p className="text-[11px] font-semibold text-amber-800/60 tracking-[0.2em] uppercase">
+                    <p className="text-[11px] font-semibold text-amber-800/60 tracking-[0.2em] uppercase" style={t ? { color: mix(t.text, '#ffffff', 0.35) } : undefined}>
                         {invoice.invoiceNumber}
                     </p>
                 </div>
@@ -52,7 +63,7 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                 <div>
                     <p
                         className="text-[10px] font-medium uppercase tracking-[0.2em] mb-2"
-                        style={{ color: '#b45309' }}
+                        style={{ color: label }}
                     >
                         Billed To
                     </p>
@@ -68,13 +79,13 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
 
                 <div className="text-right space-y-4">
                     <div>
-                        <p className="text-[10px] font-medium uppercase tracking-[0.2em] mb-0.5" style={{ color: '#b45309' }}>
+                        <p className="text-[10px] font-medium uppercase tracking-[0.2em] mb-0.5" style={{ color: label }}>
                             Date Issued
                         </p>
                         <p className="text-xs font-medium text-stone-700">{formatDate(invoice.issueDate)}</p>
                     </div>
                     <div>
-                        <p className="text-[10px] font-medium uppercase tracking-[0.2em] mb-0.5" style={{ color: '#b45309' }}>
+                        <p className="text-[10px] font-medium uppercase tracking-[0.2em] mb-0.5" style={{ color: label }}>
                             Date Due
                         </p>
                         <p className="text-xs font-medium text-stone-700">{formatDate(invoice.dueDate)}</p>
@@ -85,28 +96,28 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
             <div className="mb-8 overflow-hidden">
                 <table className="w-full table-fixed">
                     <thead>
-                        <tr className="border-b-2" style={{ borderColor: '#92400e' }}>
+                        <tr className="border-b-2" style={{ borderColor: rule }}>
                             <th
                                 className="pb-2 text-left text-[10px] font-medium uppercase tracking-[0.15em] w-[40%]"
-                                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#78350f' }}
+                                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: heading }}
                             >
                                 Description
                             </th>
                             <th
                                 className="pb-2 text-center text-[10px] font-medium uppercase tracking-[0.15em] w-[10%]"
-                                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#78350f' }}
+                                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: heading }}
                             >
                                 Qty
                             </th>
                             <th
                                 className="pb-2 text-right text-[10px] font-medium uppercase tracking-[0.15em] w-[25%]"
-                                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#78350f' }}
+                                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: heading }}
                             >
                                 Rate
                             </th>
                             <th
                                 className="pb-2 text-right text-[10px] font-medium uppercase tracking-[0.15em] w-[25%]"
-                                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#78350f' }}
+                                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: heading }}
                             >
                                 Amount
                             </th>
@@ -161,16 +172,16 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                         </div>
                     )}
 
-                    <div className="flex justify-between items-baseline pt-3 mt-1 border-t-2" style={{ borderColor: '#92400e' }}>
+                    <div className="flex justify-between items-baseline pt-3 mt-1 border-t-2" style={{ borderColor: rule }}>
                         <span
                             className="text-xs font-semibold uppercase tracking-[0.1em]"
-                            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#78350f' }}
+                            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: heading }}
                         >
                             Total Due
                         </span>
                         <span
                             className="text-xl font-bold leading-none whitespace-nowrap"
-                            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#78350f' }}
+                            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: heading }}
                         >
                             <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
                         </span>
@@ -182,7 +193,7 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                 <div className="mt-10 pt-4 border-t border-stone-100">
                     <p
                         className="text-[10px] font-medium uppercase tracking-[0.2em] mb-2"
-                        style={{ color: '#b45309' }}
+                        style={{ color: label }}
                     >
                         Notes & Terms
                     </p>
@@ -192,21 +203,21 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
 
             {invoice.paymentInfo && (
                 <div className="mt-6 pt-4 border-t border-stone-100">
-                    <p className="text-[10px] font-medium uppercase tracking-[0.2em] mb-3" style={{ color: '#b45309' }}>Payment Details</p>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.2em] mb-3" style={{ color: label }}>Payment Details</p>
                     {invoice.paymentInfo.method === 'bank_transfer' && (
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 p-3 rounded-lg border border-amber-100" style={{ background: '#fffbeb' }}>
-                            {invoice.paymentInfo.bankName && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Bank</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.bankName}</p></div>}
-                            {invoice.paymentInfo.accountName && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Account Name</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.accountName}</p></div>}
-                            {invoice.paymentInfo.accountNumber && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Account No.</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.accountNumber}</p></div>}
-                            {invoice.paymentInfo.routingNumber && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Routing / Sort</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.routingNumber}</p></div>}
-                            {invoice.paymentInfo.swift && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>SWIFT / BIC</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.swift}</p></div>}
-                            {invoice.paymentInfo.iban && <div className="col-span-2"><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>IBAN</p><p className="text-[11px] font-medium text-stone-800 font-mono">{invoice.paymentInfo.iban}</p></div>}
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 p-3 rounded-lg border border-amber-100" style={panel}>
+                            {invoice.paymentInfo.bankName && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: label }}>Bank</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.bankName}</p></div>}
+                            {invoice.paymentInfo.accountName && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: label }}>Account Name</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.accountName}</p></div>}
+                            {invoice.paymentInfo.accountNumber && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: label }}>Account No.</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.accountNumber}</p></div>}
+                            {invoice.paymentInfo.routingNumber && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: label }}>Routing / Sort</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.routingNumber}</p></div>}
+                            {invoice.paymentInfo.swift && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: label }}>SWIFT / BIC</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.swift}</p></div>}
+                            {invoice.paymentInfo.iban && <div className="col-span-2"><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: label }}>IBAN</p><p className="text-[11px] font-medium text-stone-800 font-mono">{invoice.paymentInfo.iban}</p></div>}
                         </div>
                     )}
                     {invoice.paymentInfo.method === 'crypto' && (
-                        <div className="space-y-2 p-3 rounded-lg border border-amber-100" style={{ background: '#fffbeb' }}>
-                            {invoice.paymentInfo.cryptoCurrency && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Currency</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.cryptoCurrency}</p></div>}
-                            {invoice.paymentInfo.walletAddress && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: '#b45309' }}>Wallet Address</p><p className="text-[10px] font-mono text-stone-700 break-all">{invoice.paymentInfo.walletAddress}</p></div>}
+                        <div className="space-y-2 p-3 rounded-lg border border-amber-100" style={panel}>
+                            {invoice.paymentInfo.cryptoCurrency && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: label }}>Currency</p><p className="text-[11px] font-medium text-stone-800">{invoice.paymentInfo.cryptoCurrency}</p></div>}
+                            {invoice.paymentInfo.walletAddress && <div><p className="text-[9px] uppercase tracking-widest mb-0.5" style={{ color: label }}>Wallet Address</p><p className="text-[10px] font-mono text-stone-700 break-all">{invoice.paymentInfo.walletAddress}</p></div>}
                         </div>
                     )}
                     {invoice.paymentInfo.method === 'other' && invoice.paymentInfo.customInstructions && (
@@ -217,7 +228,7 @@ export const ElegantTemplate: React.FC<TemplateProps> = ({ invoice }) => {
 
             <div
                 className="w-full h-[3px] rounded-full mt-8"
-                style={{ background: 'linear-gradient(90deg, #92400e, #d97706, #f59e0b, #d97706, #92400e)' }}
+                style={{ background: bar }}
             />
         </div>
     );

@@ -2,6 +2,7 @@ import type { Invoice } from '../../../../types/invoice';
 import { formatDate } from '../../../../utils/formatters';
 import { Money, PaymentFields } from './parts';
 import { clientName, companyName, getTotalRows } from './totals';
+import { getBrandTones } from './brand';
 
 const YELLOW = '#facc15';
 const MIN_ROWS = 6;
@@ -10,6 +11,9 @@ const cell = 'border border-neutral-800 px-2.5 py-2';
 // Spreadsheet-style: a fully ruled grid with a highlighted header and total, padded to look like a ledger.
 export const LedgerTemplate: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
     const blankRows = Math.max(0, MIN_ROWS - invoice.items.length);
+    // Yellow highlighter by default; a brand colour fills the same cells, with text that stays readable on it.
+    const t = getBrandTones(invoice.brandColor);
+    const highlight = t ? { background: t.fill, color: t.onFill } : { background: YELLOW };
     return (
         <div className="w-full aspect-[210/297] bg-white px-10 py-10 text-neutral-900">
             <div className="flex items-start justify-between gap-8">
@@ -34,7 +38,7 @@ export const LedgerTemplate: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
 
             <table className="mt-8 w-full table-fixed border-collapse text-[11px]">
                 <thead>
-                    <tr style={{ background: YELLOW }}>
+                    <tr style={highlight}>
                         <th className={`${cell} w-[46%] text-left font-bold`}>Description</th>
                         <th className={`${cell} w-[12%] text-center font-bold`}>Qty</th>
                         <th className={`${cell} w-[20%] text-right font-bold`}>Price</th>
@@ -70,8 +74,8 @@ export const LedgerTemplate: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
                     ))}
                     <tr>
                         <td colSpan={2} className="border-0" />
-                        <td className={`${cell} text-right font-extrabold`} style={{ background: YELLOW }}>Total</td>
-                        <td className={`${cell} whitespace-nowrap text-right text-[13px] font-extrabold`} style={{ background: YELLOW }}>
+                        <td className={`${cell} text-right font-extrabold`} style={highlight}>Total</td>
+                        <td className={`${cell} whitespace-nowrap text-right text-[13px] font-extrabold`} style={highlight}>
                             <Money invoice={invoice} value={invoice.total} />
                         </td>
                     </tr>

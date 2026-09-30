@@ -69,6 +69,8 @@ export interface Invoice {
     issueDate: string;
     dueDate: string;
     template: InvoiceTemplate;
+    /** "#rrggbb" that recolours the template's accents. Absent = the template's own palette. */
+    brandColor?: string;
     company: CompanyInfo;
     client: ClientInfo;
     items: LineItem[];
