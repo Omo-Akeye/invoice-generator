@@ -1,15 +1,18 @@
 import type { Invoice } from '../../../../types/invoice';
 import { formatCurrency, formatDate } from '../../../../utils/formatters';
 import { CurrencyText } from '../../../ui/CurrencyText';
+import { getBrandTones } from './brand';
 
 interface TemplateProps {
     invoice: Invoice;
 }
 
 export const ClassicTemplate: React.FC<TemplateProps> = ({ invoice }) => {
+    // Black and white by default; a brand colour takes over the header rule, the title and the total.
+    const t = getBrandTones(invoice.brandColor);
     return (
         <div className="bg-white text-black p-6 w-full aspect-[210/297]">
-            <div className="flex justify-between items-start border-b-2 border-neutral-900 pb-5 mb-6">
+            <div className="flex justify-between items-start border-b-2 border-neutral-900 pb-5 mb-6" style={t ? { borderColor: t.graphic } : undefined}>
                 <div className="space-y-2">
                     {invoice.company.logo && (
                         <img src={invoice.company.logo} alt="Logo" className="h-10 w-auto object-contain" />
@@ -23,7 +26,7 @@ export const ClassicTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                 </div>
 
                 <div className="text-right">
-                    <h2 className="text-2xl font-black text-neutral-900 uppercase tracking-tight mb-2">Invoice</h2>
+                    <h2 className="text-2xl font-black text-neutral-900 uppercase tracking-tight mb-2" style={t ? { color: t.text } : undefined}>Invoice</h2>
                     <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">Invoice Number</p>
                     <p className="text-sm font-bold">{invoice.invoiceNumber}</p>
                 </div>
@@ -97,9 +100,9 @@ export const ClassicTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                         </div>
                     )}
 
-                    <div className="flex justify-between items-baseline pt-3 border-t border-neutral-900">
+                    <div className="flex justify-between items-baseline pt-3 border-t border-neutral-900" style={t ? { borderColor: t.graphic } : undefined}>
                         <span className="text-[10px] font-black uppercase tracking-tight">Total Due</span>
-                        <span className="text-lg font-black text-neutral-900 leading-none whitespace-nowrap">
+                        <span className="text-lg font-black text-neutral-900 leading-none whitespace-nowrap" style={t ? { color: t.text } : undefined}>
                             <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
                         </span>
                     </div>

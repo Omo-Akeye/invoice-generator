@@ -6,6 +6,7 @@ import { InvoiceItems } from './features/invoice/InvoiceItems';
 import { InvoiceSummary } from './features/invoice/InvoiceSummary';
 import { InvoicePreview } from './features/invoice/InvoicePreview';
 import { TemplatePicker } from './features/invoice/TemplatePicker';
+import { BrandColorPicker } from './features/invoice/BrandColorPicker';
 import { getTemplate } from './features/invoice/templates/registry';
 import { PaymentDetailsForm } from './features/invoice/PaymentDetailsForm';
 import { Button } from './ui/Button';
@@ -177,7 +178,12 @@ export const InvoicePage: React.FC = () => {
             title: 'Template',
             description: 'Pick a look. You can switch any time.',
             hint: getTemplate(invoice.template).name,
-            body: <TemplatePicker />,
+            body: (
+                <>
+                    <TemplatePicker />
+                    <BrandColorPicker className="mt-6 border-t border-line pt-5" />
+                </>
+            ),
         },
         {
             id: 'details',

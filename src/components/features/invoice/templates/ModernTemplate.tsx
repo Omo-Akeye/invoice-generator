@@ -1,17 +1,36 @@
 import type { Invoice } from '../../../../types/invoice';
 import { formatCurrency, formatDate } from '../../../../utils/formatters';
 import { CurrencyText } from '../../../ui/CurrencyText';
+import { mix } from '../../../../utils/color';
+import { getBrandTones } from './brand';
 
 interface TemplateProps {
     invoice: Invoice;
 }
 
 export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
+    // Navy-to-sky by default; a brand colour re-tints the header, table head, labels, panels and total bar.
+    const t = getBrandTones(invoice.brandColor);
+    // Pale colours (lime, yellow) keep their true colour in the header with dark text; others go deep with white text.
+    const lightHeader = !!t?.isLight;
+    const headerBg = !t
+        ? 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0ea5e9 100%)'
+        : lightHeader
+          ? `linear-gradient(135deg, ${t.fill} 0%, ${mix(t.fill, t.graphic, 0.3)} 100%)`
+          : `linear-gradient(135deg, ${t.deep} 0%, ${mix(t.deep, t.graphic, 0.55)} 55%, ${t.graphic} 100%)`;
+    const totalBg = t
+        ? `linear-gradient(135deg, ${t.deep} 0%, ${mix(t.deep, t.graphic, 0.4)} 100%)`
+        : 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%)';
+    const panel = t ? t.tint : '#f0f9ff';
+    const dark = t ? t.deep : '#0f172a';
+    const label = t ? { color: t.text } : undefined;
+    const muted = t ? { color: t.onDeepMuted } : undefined;
+    const headerMuted = lightHeader && t ? { color: mix(t.onFill, t.fill, 0.3) } : muted;
     return (
         <div className="bg-white text-black w-full aspect-[210/297]" style={{ fontFamily: "'Inter', sans-serif" }}>
             <div
                 className="px-6 py-8 text-white relative overflow-hidden"
-                style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0ea5e9 100%)' }}
+                style={{ background: headerBg, color: lightHeader ? t?.onFill : undefined }}
             >
                 <div className="absolute top-[-40px] right-[-40px] w-32 h-32 rounded-full opacity-10 bg-white" />
                 <div className="absolute bottom-[-20px] right-[60px] w-20 h-20 rounded-full opacity-5 bg-white" />
@@ -22,15 +41,15 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                             <img
                                 src={invoice.company.logo}
                                 alt="Logo"
-                                className="h-10 w-auto object-contain mb-2 brightness-0 invert"
+                                className={`h-10 w-auto object-contain mb-2 brightness-0 ${lightHeader ? '' : 'invert'}`}
                             />
                         )}
                         <h1 className="text-lg font-extrabold tracking-tight leading-tight">
                             {invoice.company.name || 'YOUR COMPANY'}
                         </h1>
-                        <p className="text-[11px] text-blue-200 leading-relaxed">{invoice.company.address}</p>
-                        <p className="text-[11px] text-blue-200">{invoice.company.email}</p>
-                        <p className="text-[11px] text-blue-200">{invoice.company.phone}</p>
+                        <p className="text-[11px] text-blue-200 leading-relaxed" style={headerMuted}>{invoice.company.address}</p>
+                        <p className="text-[11px] text-blue-200" style={headerMuted}>{invoice.company.email}</p>
+                        <p className="text-[11px] text-blue-200" style={headerMuted}>{invoice.company.phone}</p>
                     </div>
                     <div className="text-right">
                         <div
@@ -47,24 +66,24 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
             <div className="px-6 py-6">
                 <div
                     className="flex gap-6 mb-6 p-4 rounded-xl"
-                    style={{ background: '#f0f9ff' }}
+                    style={{ background: panel }}
                 >
                     <div className="flex-1">
-                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-0.5">Issue Date</p>
+                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-0.5" style={label}>Issue Date</p>
                         <p className="text-xs font-bold text-slate-800">{formatDate(invoice.issueDate)}</p>
                     </div>
                     <div className="flex-1">
-                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-0.5">Due Date</p>
+                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-0.5" style={label}>Due Date</p>
                         <p className="text-xs font-bold text-slate-800">{formatDate(invoice.dueDate)}</p>
                     </div>
                     <div className="flex-1">
-                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-0.5">Currency</p>
+                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-0.5" style={label}>Currency</p>
                         <p className="text-xs font-bold text-slate-800">{invoice.settings.currency}</p>
                     </div>
                 </div>
 
                 <div className="mb-6 p-4 rounded-xl border border-slate-100" style={{ background: '#fafbfc' }}>
-                    <p className="text-[9px] font-bold text-sky-500 uppercase tracking-[0.15em] mb-2">Bill To</p>
+                    <p className="text-[9px] font-bold text-sky-500 uppercase tracking-[0.15em] mb-2" style={label}>Bill To</p>
                     <p className="text-sm font-extrabold text-slate-900 leading-tight">{invoice.client.name || 'CLIENT NAME'}</p>
                     <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">{invoice.client.address}</p>
                     <p className="text-[11px] text-slate-500">{invoice.client.email}</p>
@@ -73,7 +92,7 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
                 <div className="mb-6 overflow-hidden">
                     <table className="w-full table-fixed">
                         <thead>
-                            <tr style={{ background: '#0f172a' }}>
+                            <tr style={{ background: dark }}>
                                 <th className="py-2.5 px-3 text-left text-[9px] font-bold text-white uppercase tracking-wider rounded-l-lg w-[40%]">Service</th>
                                 <th className="py-2.5 px-3 text-center text-[9px] font-bold text-white uppercase tracking-wider w-[10%]">Qty</th>
                                 <th className="py-2.5 px-3 text-right text-[9px] font-bold text-white uppercase tracking-wider w-[25%]">Rate</th>
@@ -122,9 +141,9 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
 
                         <div
                             className="flex justify-between items-baseline px-4 py-3 rounded-xl mt-2"
-                            style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%)' }}
+                            style={{ background: totalBg }}
                         >
-                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-200">Total Due</span>
+                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-200" style={muted}>Total Due</span>
                             <span className="text-lg font-black text-white leading-none whitespace-nowrap">
                                 <CurrencyText currency={invoice.settings.currency}>{formatCurrency(invoice.total, invoice.settings.currency)}</CurrencyText>
                             </span>
@@ -134,28 +153,28 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ invoice }) => {
 
                 {invoice.notes && (
                     <div className="mt-8 pt-4 border-t border-slate-100">
-                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-2">Notes & Terms</p>
+                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-2" style={label}>Notes & Terms</p>
                         <p className="text-[11px] text-slate-500 leading-relaxed">{invoice.notes}</p>
                     </div>
                 )}
 
                 {invoice.paymentInfo && (
                     <div className="mt-6 pt-4 border-t border-slate-100">
-                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-3">Payment Details</p>
+                        <p className="text-[9px] font-bold text-sky-400 uppercase tracking-[0.15em] mb-3" style={label}>Payment Details</p>
                         {invoice.paymentInfo.method === 'bank_transfer' && (
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-2 p-3 rounded-xl" style={{ background: '#f0f9ff' }}>
-                                {invoice.paymentInfo.bankName && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Bank</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.bankName}</p></div>}
-                                {invoice.paymentInfo.accountName && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Account Name</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.accountName}</p></div>}
-                                {invoice.paymentInfo.accountNumber && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Account No.</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.accountNumber}</p></div>}
-                                {invoice.paymentInfo.routingNumber && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Routing / Sort</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.routingNumber}</p></div>}
-                                {invoice.paymentInfo.swift && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">SWIFT / BIC</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.swift}</p></div>}
-                                {invoice.paymentInfo.iban && <div className="col-span-2"><p className="text-[9px] text-sky-400 uppercase tracking-wide">IBAN</p><p className="text-[11px] font-semibold text-slate-800 font-mono">{invoice.paymentInfo.iban}</p></div>}
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-2 p-3 rounded-xl" style={{ background: panel }}>
+                                {invoice.paymentInfo.bankName && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide" style={label}>Bank</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.bankName}</p></div>}
+                                {invoice.paymentInfo.accountName && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide" style={label}>Account Name</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.accountName}</p></div>}
+                                {invoice.paymentInfo.accountNumber && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide" style={label}>Account No.</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.accountNumber}</p></div>}
+                                {invoice.paymentInfo.routingNumber && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide" style={label}>Routing / Sort</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.routingNumber}</p></div>}
+                                {invoice.paymentInfo.swift && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide" style={label}>SWIFT / BIC</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.swift}</p></div>}
+                                {invoice.paymentInfo.iban && <div className="col-span-2"><p className="text-[9px] text-sky-400 uppercase tracking-wide" style={label}>IBAN</p><p className="text-[11px] font-semibold text-slate-800 font-mono">{invoice.paymentInfo.iban}</p></div>}
                             </div>
                         )}
                         {invoice.paymentInfo.method === 'crypto' && (
-                            <div className="space-y-2 p-3 rounded-xl" style={{ background: '#f0f9ff' }}>
-                                {invoice.paymentInfo.cryptoCurrency && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Currency</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.cryptoCurrency}</p></div>}
-                                {invoice.paymentInfo.walletAddress && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide">Wallet Address</p><p className="text-[10px] font-mono text-slate-700 break-all">{invoice.paymentInfo.walletAddress}</p></div>}
+                            <div className="space-y-2 p-3 rounded-xl" style={{ background: panel }}>
+                                {invoice.paymentInfo.cryptoCurrency && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide" style={label}>Currency</p><p className="text-[11px] font-semibold text-slate-800">{invoice.paymentInfo.cryptoCurrency}</p></div>}
+                                {invoice.paymentInfo.walletAddress && <div><p className="text-[9px] text-sky-400 uppercase tracking-wide" style={label}>Wallet Address</p><p className="text-[10px] font-mono text-slate-700 break-all">{invoice.paymentInfo.walletAddress}</p></div>}
                             </div>
                         )}
                         {invoice.paymentInfo.method === 'other' && invoice.paymentInfo.customInstructions && (

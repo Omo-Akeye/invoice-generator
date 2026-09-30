@@ -9,6 +9,7 @@ import {
     calculateGrandTotal
 } from '../utils/calculations';
 import { v4 as uuidv4 } from 'uuid';
+import { normalizeHex } from '../utils/color';
 
 interface InvoiceContextType {
     invoice: Invoice;
@@ -17,6 +18,8 @@ interface InvoiceContextType {
     updateClient: (client: Partial<ClientInfo>) => void;
     updateSettings: (settings: Partial<InvoiceSettings>) => void;
     updateTemplate: (template: InvoiceTemplate) => void;
+    /** Pass undefined to go back to the template's own colours. */
+    updateBrandColor: (color: string | undefined) => void;
     addItem: () => void;
     updateItem: (id: string, updates: Partial<LineItem>) => void;
     removeItem: (id: string) => void;
@@ -86,6 +89,8 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
         return {
             ...rawInvoice,
+            // Saved data is untrusted: anything that isn't a clean hex never reaches a template's styles.
+            brandColor: normalizeHex(rawInvoice.brandColor),
             subtotal,
             taxAmount,
             discountAmount,
@@ -117,6 +122,10 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const updateTemplate = useCallback((template: InvoiceTemplate) => {
         setInvoice(prev => ({ ...prev, template }));
+    }, [setInvoice]);
+
+    const updateBrandColor = useCallback((color: string | undefined) => {
+        setInvoice(prev => ({ ...prev, brandColor: normalizeHex(color) }));
     }, [setInvoice]);
 
     const updateInvoiceDetails = useCallback((updates: Partial<Pick<Invoice, 'invoiceNumber' | 'issueDate' | 'dueDate' | 'notes' | 'company'>>) => {
@@ -182,6 +191,7 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateClient,
         updateSettings,
         updateTemplate,
+        updateBrandColor,
         addItem,
         updateItem,
         removeItem,
@@ -196,6 +206,7 @@ export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateClient,
         updateSettings,
         updateTemplate,
+        updateBrandColor,
         addItem,
         updateItem,
         removeItem,
