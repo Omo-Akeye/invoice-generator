@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Check, ChevronDown, Download, ImagePlus, KeyRound, ServerOff, UserX, WifiOff } from 'lucide-react';
 import { Link } from 'react-router';
 import { Logo } from '../ui/Logo';
+import { ThemeToggle } from '../ui/ThemeToggle';
 import { Footer } from '../ui/Footer';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { buttonBase, buttonSizes, buttonVariants } from '../ui/buttonStyles';
@@ -88,9 +89,12 @@ const Nav: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => {
                     <Link to="/#privacy" className="transition-colors hover:text-ink">Privacy</Link>
                     <Link to="/#faq" className="transition-colors hover:text-ink">FAQ</Link>
                 </nav>
-                <Link to="/app" className={cn(buttonBase, buttonVariants.primary, buttonSizes.sm)}>
-                    {ctaLabel}
-                </Link>
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <ThemeToggle />
+                    <Link to="/app" className={cn(buttonBase, buttonVariants.primary, buttonSizes.sm)}>
+                        {ctaLabel}
+                    </Link>
+                </div>
             </div>
         </header>
     );

@@ -36,7 +36,7 @@ InvoicePro is a fully client-side invoice generator built with React and TypeScr
 **Experience**
 - **Landing page** at `/`, editor at `/app`; returning visitors see "Continue your invoice"
 - **Responsive** — step-by-step collapsible sections, a sticky total bar and a full-screen preview on mobile
-- **Light and dark mode** — follows your system setting
+- **Light and dark mode** — follows your system by default; a Light / Dark switch in the header overrides it (remembered in your browser) with a smooth crossfade
 - **Accessible** — labelled fields, keyboard-friendly menus and dialogs, reduced-motion support, 16px inputs on phones (no iOS zoom)
 
 ---
@@ -92,6 +92,7 @@ src/
 │   └── sanitize.ts                  # Input sanitising
 ├── App.tsx                          # Routes (React Router)
 ├── EditorApp.tsx                    # Lazy-loaded editor entry: InvoiceProvider + InvoicePage
+├── lib/theme.ts                     # Light/dark preference (defaults to system), persistence and transition
 ├── index.css                        # Tailwind v4 theme and design tokens (light/dark)
 └── main.tsx
 ```

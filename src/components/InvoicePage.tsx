@@ -14,6 +14,7 @@ import { ScaledFrame } from './ui/ScaledFrame';
 import { Logo, LogoMark } from './ui/Logo';
 import { EditorSkeleton } from './ui/EditorSkeleton';
 import { ConfirmDialog } from './ui/ConfirmDialog';
+import { ThemeToggle } from './ui/ThemeToggle';
 import { Footer } from './ui/Footer';
 import { CurrencyText } from './ui/CurrencyText';
 import { RollingNumber } from './ui/RollingNumber';
@@ -252,6 +253,7 @@ export const InvoicePage: React.FC = () => {
                         </span>
                     </div>
                     <div className="flex shrink-0 items-center gap-1.5">
+                        <ThemeToggle className="mr-1" />
                         <Button variant="ghost" size="sm" onClick={() => setConfirmReset(true)} aria-label="Start a new invoice">
                             <RotateCcw size={14} strokeWidth={1.75} />
                             <span className="hidden sm:inline">Start over</span>

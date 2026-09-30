@@ -50,8 +50,31 @@
     --danger-solid: #d23b3b;
 }
 
+/*
+ * Theme selection. <html data-theme="light|dark"> is set by the theme switch (src/lib/theme.ts)
+ * and by an inline script in index.html before first paint. No attribute means "follow the system".
+ * .theme-dark forces the dark palette on one region (e.g. the landing privacy band).
+ */
+:root[data-theme="dark"],
+.theme-dark {
+    color-scheme: dark;
+    --canvas: #0b0b0c;
+    --surface: #141416;
+    --subtle: #1b1b1e;
+    --line: #232326;
+    --line-strong: #303034;
+    --ink: #f3f3f1;
+    --ink-muted: #a4a4a0;
+    --ink-faint: #6c6c68;
+    --accent: #3ccf91;
+    --accent-soft: #10271d;
+    --positive: #3ccf91;
+    --danger: #f07070;
+    --danger-solid: #c43636;
+}
+
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
         color-scheme: dark;
         --canvas: #0b0b0c;
         --surface: #141416;
@@ -69,22 +92,21 @@
     }
 }
 
-/* Forces the dark palette on one region (e.g. the landing privacy band). */
-.theme-dark {
-    color-scheme: dark;
-    --canvas: #0b0b0c;
-    --surface: #141416;
-    --subtle: #1b1b1e;
-    --line: #232326;
-    --line-strong: #303034;
-    --ink: #f3f3f1;
-    --ink-muted: #a4a4a0;
-    --ink-faint: #6c6c68;
-    --accent: #3ccf91;
-    --accent-soft: #10271d;
-    --positive: #3ccf91;
-    --danger: #f07070;
-    --danger-solid: #c43636;
+/* Theme change animation: a crossfade via the View Transitions API... */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 380ms;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ...or, where that API is missing, a brief colour transition on everything. */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow !important;
+    transition-duration: 320ms !important;
+    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 body {
