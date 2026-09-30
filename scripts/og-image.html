@@ -11,36 +11,37 @@
 <html>
 <head>
 <meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700;800;900&family=Roboto:wght@400;500;700;900&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800;900&family=Roboto:wght@400;500;700;900&display=block" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 1200px; height: 630px; overflow: hidden; }
   body {
-    background: #fafaf9; color: #121212;
+    background: #f2f1ea; color: #16160f;
     font-family: "Geist", sans-serif; -webkit-font-smoothing: antialiased;
     position: relative;
   }
   /* Blueprint frame rails, as on the landing page */
-  .rail-v { position: absolute; top: 0; bottom: 0; width: 1px; background: #e6e6e1; }
-  .rail-h { position: absolute; left: 0; right: 0; height: 1px; background: #e6e6e1; }
+  .rail-v { position: absolute; top: 0; bottom: 0; width: 1px; background: #e0ddd1; }
+  .rail-h { position: absolute; left: 0; right: 0; height: 1px; background: #e0ddd1; }
 
   .left { position: absolute; left: 88px; top: 72px; width: 560px; }
   .brand { display: flex; align-items: center; gap: 12px; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
   .brand svg { width: 40px; height: 40px; }
-  h1 { margin-top: 54px; font-size: 86px; font-weight: 600; line-height: 0.98; letter-spacing: -0.05em; }
-  h1 em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; font-size: 1.12em; letter-spacing: -0.02em; }
-  .sub { margin-top: 26px; font-size: 25px; line-height: 1.4; color: #5c5c58; letter-spacing: -0.01em; text-wrap: balance; }
-  .chips { position: absolute; left: 88px; bottom: 60px; display: flex; gap: 22px; font-size: 19px; color: #5c5c58; }
+  h1 { margin-top: 54px; font-size: 86px; font-weight: 300; line-height: 1.02; letter-spacing: -0.05em; }
+  /* Same lime marker as the landing hero: an inline-block shorter than the leading, so it never touches the line above. */
+  h1 .hl { display: inline-block; background: #d4f24a; color: #16160f; border-radius: 0.12em; padding: 0.02em 0.1em 0.14em; line-height: 0.86; }
+  .sub { margin-top: 26px; font-size: 25px; line-height: 1.4; color: #5a5949; letter-spacing: -0.01em; text-wrap: balance; }
+  .chips { position: absolute; left: 88px; bottom: 60px; display: flex; gap: 22px; font-size: 19px; color: #5a5949; }
   .chips span { display: inline-flex; align-items: center; gap: 8px; }
   .chips svg { width: 18px; height: 18px; }
 
   .stage {
     position: absolute; left: 690px; top: 56px; width: 450px; height: 640px;
-    background: #f1f1ee; border: 1px solid #e3e3de; border-radius: 28px; padding: 18px;
+    background: #e9e7dd; border: 1px solid #e0ddd1; border-radius: 28px; padding: 18px;
   }
   .stage-bar { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px 14px; }
-  .mono { font-family: "Geist Mono", monospace; font-size: 15px; color: #97978f; }
-  .btn { display: inline-flex; align-items: center; gap: 7px; background: #121212; color: #fafaf9; font-size: 15px; font-weight: 500; padding: 8px 13px; border-radius: 9px; }
+  .mono { font-family: "Geist Mono", monospace; font-size: 15px; color: #8c8a79; }
+  .btn { display: inline-flex; align-items: center; gap: 7px; background: #d4f24a; color: #16160f; font-size: 15px; font-weight: 500; padding: 8px 13px; border-radius: 9px; }
   .btn svg { width: 15px; height: 15px; }
 
   .paper {
@@ -78,17 +79,17 @@
 
   <div class="left">
     <div class="brand">
-      <svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#121212"/><path d="M7.5 5.5h9v13l-2.25-1.5L12 18.5l-2.25-1.5L7.5 18.5z" fill="#fafaf9"/><path d="M9.6 11.4l1.7 1.7 3.2-3.6" fill="none" stroke="#13805a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#d4f24a"/><path d="M7.5 5.5h9v13l-2.25-1.5L12 18.5l-2.25-1.5L7.5 18.5z" fill="#16160f"/><path d="M9.6 11.4l1.7 1.7 3.2-3.6" fill="none" stroke="#d4f24a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       InvoicePro
     </div>
-    <h1>Invoices that<br>get you <em>paid.</em></h1>
+    <h1>Invoices that<br>get you <span class="hl">paid.</span></h1>
     <p class="sub">An invoice generator that works right in your browser. No sign-up, and your data never leaves your device.</p>
   </div>
 
   <div class="chips">
-    <span><svg viewBox="0 0 24 24" fill="none" stroke="#13805a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>PDF &amp; share</span>
-    <span><svg viewBox="0 0 24 24" fill="none" stroke="#13805a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>35 currencies</span>
-    <span><svg viewBox="0 0 24 24" fill="none" stroke="#13805a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Works offline</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="#5a6b0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>PDF &amp; share</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="#5a6b0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>35 currencies</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="#5a6b0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Works offline</span>
   </div>
 
   <div class="stage">
@@ -99,8 +100,8 @@
     <div class="paper">
       <div class="row">
         <div>
-          <div class="co">Lumen Studio</div>
-          <div class="muted">12 Admiralty Way, Lekki, Lagos<br>hello@lumen.studio</div>
+          <div class="co">Function Studio</div>
+          <div class="muted">12 Admiralty Way, Lekki, Lagos<br>hello@functionstudio.com</div>
         </div>
         <div>
           <div class="inv">INVOICE</div>
@@ -112,7 +113,7 @@
       <div class="row">
         <div>
           <div class="label">Bill to</div>
-          <div class="client">Kora Foods Ltd.</div>
+          <div class="client">Acme Foods Ltd.</div>
           <div class="muted">Wuse 2, Abuja</div>
         </div>
         <div style="text-align:right">

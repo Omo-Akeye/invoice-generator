@@ -1,0 +1,47 @@
+<!--
+  Source for the PNG app icons in public/. Same artwork as public/favicon.svg.
+  ?shape=tile  rounded lime tile on a transparent background (favicon-32, icon-192, icon-512)
+  ?shape=full  full-bleed lime square, for icons the OS masks itself (apple-touch-icon, icon-maskable-512).
+               The glyph already sits inside the maskable 80% safe zone.
+
+  To re-render: capture each shape once at 512x512 with headless Chrome, then downscale to each size
+  (high-quality bicubic). Don't screenshot the small sizes directly: headless Chrome on Windows enforces a
+  minimum window width of roughly 500px, so a 32/180/192px capture comes out cropped. PowerShell, from
+  the project root (Chrome needs an absolute file URL):
+
+  $chrome = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+  foreach ($shape in 'tile','full') {
+    & $chrome --headless=new --hide-scrollbars --force-device-scale-factor=1 --default-background-color=00000000 `
+      --window-size=512,512 --screenshot="$env:TEMP\icon-$shape.png" "file:///$PWD/scripts/icon.html?shape=$shape"
+  }
+  # Wait a few seconds for the PNGs, then:
+  Add-Type -AssemblyName System.Drawing
+  $icons = @(@('favicon-32.png', 32, 'tile'), @('icon-192.png', 192, 'tile'), @('icon-512.png', 512, 'tile'),
+             @('apple-touch-icon.png', 180, 'full'), @('icon-maskable-512.png', 512, 'full'))
+  foreach ($i in $icons) {
+    $src = [System.Drawing.Image]::FromFile("$env:TEMP\icon-$($i[2]).png"); $n = [int]$i[1]
+    $bmp = New-Object System.Drawing.Bitmap $n, $n; $g = [System.Drawing.Graphics]::FromImage($bmp)
+    $g.InterpolationMode = 'HighQualityBicubic'; $g.PixelOffsetMode = 'HighQuality'
+    $g.DrawImage($src, 0, 0, $n, $n); $bmp.Save("$PWD\public\$($i[0])"); $g.Dispose(); $bmp.Dispose(); $src.Dispose()
+  }
+-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 100vw; height: 100vh; overflow: hidden; background: transparent; }
+  svg { display: block; width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <rect id="tile" fill="#d4f24a" width="24" height="24" rx="6" />
+    <path fill="#16160f" d="M7.5 5.5h9v13l-2.25-1.5L12 18.5l-2.25-1.5L7.5 18.5z" />
+    <path stroke="#d4f24a" d="M9.6 11.4l1.7 1.7 3.2-3.6" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+  <script>
+    if (new URLSearchParams(location.search).get('shape') === 'full') document.getElementById('tile').setAttribute('rx', '0');
+  </script>
+</body>
+</html>

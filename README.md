@@ -92,8 +92,7 @@ src/
 │   └── sanitize.ts                  # Input sanitising
 ├── App.tsx                          # Routes (React Router)
 ├── EditorApp.tsx                    # Lazy-loaded editor entry: InvoiceProvider + InvoicePage
-├── lib/theme.ts                     # Light/dark preference (defaults to system), persistence and transition
-├── index.css                        # Tailwind v4 theme and design tokens (light/dark)
+├── index.css                        # Tailwind v4 theme and design tokens
 └── main.tsx
 ```
 

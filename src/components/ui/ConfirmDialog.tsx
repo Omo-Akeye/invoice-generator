@@ -95,7 +95,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                         exit={{ opacity: 0, y: 8, scale: 0.98, transition: { duration: 0.12 } }}
                         transition={{ duration: 0.22, ease: EASE }}
                     >
-                        <h2 id={titleId} className="text-[17px] font-semibold tracking-[-0.02em] text-ink">
+                        <h2 id={titleId} className="text-[17px] font-medium tracking-[-0.02em] text-ink">
                             {title}
                         </h2>
                         <div id={descriptionId} className="mt-2 text-[14px] leading-relaxed text-ink-muted">

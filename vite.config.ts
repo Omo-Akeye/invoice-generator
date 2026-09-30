@@ -14,8 +14,8 @@ export default defineConfig({
         name: 'InvoicePro — Professional Invoice Generator',
         short_name: 'InvoicePro',
         description: 'Create beautiful, professional invoices in seconds. Free, privacy-first, no signup required.',
-        theme_color: '#121212',
-        background_color: '#fafaf9',
+        theme_color: '#16160f',
+        background_color: '#f2f1ea',
         display: 'standalone',
         orientation: 'portrait-primary',
         icons: [
