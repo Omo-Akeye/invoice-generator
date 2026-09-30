@@ -110,7 +110,7 @@ const Hero: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => {
                 <div>
                     <motion.p {...rise(0)} className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-xs text-ink-muted">
                         <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                        Free, with no sign-up
+                        No sign-up needed
                     </motion.p>
                     <motion.h1
                         {...rise(0.05)}
@@ -119,8 +119,8 @@ const Hero: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => {
                         Invoices that get you <em className="font-accent text-[1.1em] font-normal leading-none tracking-[-0.02em]">paid.</em>
                     </motion.h1>
                     <motion.p {...rise(0.12)} className="mt-6 max-w-md text-lg leading-relaxed text-ink-muted text-pretty">
-                        Fill in a few details, pick a template, download a polished PDF. Everything happens in your browser, so your
-                        client list stays yours.
+                        An invoice generator that works right in your browser. Send a polished PDF your client can pay in minutes.
+                        No sign-up, and your data never leaves your device.
                     </motion.p>
                     <motion.div {...rise(0.18)} className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
                         <CtaLink to="/app">
@@ -383,7 +383,7 @@ const Privacy: React.FC = () => (
 );
 
 const FAQS = [
-    { q: 'Is it actually free?', a: 'Yes. There is no paid plan, no watermark and no limit on how many invoices you make.' },
+    { q: 'Does it cost anything?', a: "No. There's no paid plan, no watermark and no limit on how many invoices you make." },
     { q: 'Where is my invoice saved?', a: "In your browser's local storage, encrypted. It stays on this device only, so it won't appear if you open the site on another phone or computer." },
     { q: 'What happens if I clear my browser data?', a: 'Your saved draft is deleted along with it. Download the PDF of anything you need to keep.' },
     { q: 'How do I send the invoice to my client?', a: 'On most phones, open the Download menu and choose Share PDF to send it straight to WhatsApp, email or any other app. On a computer, download the PDF and attach it like any other file.' },

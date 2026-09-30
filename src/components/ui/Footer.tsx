@@ -14,7 +14,7 @@ export const Footer: React.FC<{ framed?: boolean }> = ({ framed }) => {
                         <Logo />
                     </Link>
                     <p className="text-[13px] leading-relaxed text-ink-muted">
-                        A free invoice generator that runs entirely in your browser. No account, no server, no copies of your data.
+                        An invoice generator that runs entirely in your browser. No account, no server, no copies of your data.
                     </p>
                 </div>
 
