@@ -6,6 +6,7 @@ import { InvoiceItems } from './features/invoice/InvoiceItems';
 import { InvoiceSummary } from './features/invoice/InvoiceSummary';
 import { InvoicePreview } from './features/invoice/InvoicePreview';
 import { TemplatePicker } from './features/invoice/TemplatePicker';
+import { getTemplate } from './features/invoice/templates/registry';
 import { PaymentDetailsForm } from './features/invoice/PaymentDetailsForm';
 import { Button } from './ui/Button';
 import { ExportButton } from './ui/ExportButton';
@@ -36,7 +37,6 @@ const EASE = [0.2, 0.8, 0.2, 1] as const;
 // Every export renders the preview at this width, so PDFs look the same on every device.
 const PAGE_WIDTH = 640;
 
-const TEMPLATE_NAMES = { classic: 'Classic', modern: 'Modern', elegant: 'Elegant' } as const;
 const PAYMENT_NAMES = { bank_transfer: 'Bank transfer', crypto: 'Crypto', other: 'Custom' } as const;
 
 const EditorSection: React.FC<{
@@ -169,7 +169,7 @@ export const InvoicePage: React.FC = () => {
             id: 'template',
             title: 'Template',
             description: 'Pick a look. You can switch any time.',
-            hint: TEMPLATE_NAMES[invoice.template],
+            hint: getTemplate(invoice.template).name,
             body: <TemplatePicker />,
         },
         {
@@ -298,7 +298,7 @@ export const InvoicePage: React.FC = () => {
                         <aside className="sticky top-18 flex max-h-[calc(100vh-5.5rem)] flex-col no-print" aria-label="Invoice preview">
                             <div className="mb-3 flex items-center justify-between">
                                 <p className="text-[13px] font-medium text-ink">Preview</p>
-                                <p className="text-xs text-ink-faint">{TEMPLATE_NAMES[invoice.template]} · A4</p>
+                                <p className="text-xs text-ink-faint">{getTemplate(invoice.template).name} · A4</p>
                             </div>
                             <div className="min-h-0 overflow-y-auto rounded-[20px] bg-subtle p-6">{preview}</div>
                         </aside>

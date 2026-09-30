@@ -17,7 +17,7 @@ InvoicePro is a fully client-side invoice generator built with React and TypeScr
 ## ✨ Features
 
 **Making invoices**
-- **3 templates** — *Classic*, *Modern* and *Elegant*, with live miniature previews in the picker
+- **10 templates** — *Classic*, *Ledger* and *Boutique* up front, plus *Modern*, *Elegant*, *Bold*, *Minimal*, *Corporate*, *Geometric* and *Studio* under "More templates"; the picker shows live miniature previews
 - **Live preview** — an A4 preview that updates as you type
 - **Line items, tax and discounts** — VAT/sales tax at any rate; percentage or fixed-amount discounts; totals animate as they change
 - **35 currencies** — NGN (default), USD, EUR, GBP and JPY first, plus African, Asian, Middle Eastern and other major currencies; searchable by name, code or country, each with the correct symbol and decimal places
@@ -70,7 +70,7 @@ src/
 │   │   ├── TemplatePicker.tsx       # Template selection with live thumbnails
 │   │   ├── InvoicePreview.tsx       # The #invoice-preview element used for export
 │   │   ├── InvoiceSheet.tsx         # Scaled, read-only render of a template
-│   │   └── templates/               # Classic, Modern and Elegant invoice layouts
+│   │   └── templates/               # The 10 invoice layouts, plus registry.ts (names, order) and shared parts
 │   ├── ui/                          # Design-system primitives (Button, Input, Select, Switch,
 │   │                                #   SegmentedControl, ConfirmDialog, ExportButton, RollingNumber,
 │   │                                #   ScaledFrame, EditorSkeleton, Logo, Footer, ErrorBoundary, …)
@@ -166,7 +166,7 @@ Output goes to `dist/` and can be deployed to any static host. On hosts other th
 
 ## 📄 How to Create an Invoice
 
-1. **Template** — pick *Classic*, *Modern* or *Elegant* (you can switch any time)
+1. **Template** — pick one of the 10 designs (open "More templates" for all of them; you can switch any time)
 2. **Invoice details** — invoice number, issue date and due date
 3. **From and bill to** — your business details and logo, then your client's details
 4. **Line items** — add what you're charging for; amounts calculate automatically

@@ -2,7 +2,17 @@ import type { CurrencyCode } from '../utils/currencies';
 
 export type Currency = CurrencyCode;
 
-export type InvoiceTemplate = 'classic' | 'modern' | 'elegant';
+export type InvoiceTemplate =
+    | 'classic'
+    | 'modern'
+    | 'elegant'
+    | 'bold'
+    | 'minimal'
+    | 'corporate'
+    | 'boutique'
+    | 'geometric'
+    | 'ledger'
+    | 'studio';
 
 export type PaymentMethod = 'bank_transfer' | 'crypto' | 'other';
 

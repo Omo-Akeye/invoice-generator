@@ -5,9 +5,9 @@ import { Link } from 'react-router';
 import { Logo } from '../ui/Logo';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { Footer } from '../ui/Footer';
-import { SegmentedControl } from '../ui/SegmentedControl';
 import { buttonBase, buttonSizes, buttonVariants } from '../ui/buttonStyles';
 import { InvoiceSheet } from '../features/invoice/InvoiceSheet';
+import { TEMPLATES } from '../features/invoice/templates/registry';
 import { SAMPLE_INVOICE } from './sampleInvoice';
 import { formatCurrency } from '../../utils/formatters';
 import { CURRENCIES } from '../../utils/currencies';
@@ -169,7 +169,7 @@ const Hero: React.FC<{ ctaLabel: string }> = ({ ctaLabel }) => {
 
 const STEPS = [
     { title: 'Add your details', body: 'Your business, your client, and what you did. Totals, tax and discounts calculate as you type.' },
-    { title: 'Choose a look', body: 'Three templates, each tuned for print. The live preview shows exactly what your client will get.' },
+    { title: 'Choose a look', body: 'Ten templates, each tuned for print. The live preview shows exactly what your client will get.' },
     { title: 'Download and send', body: 'Export a crisp PDF or PNG and send it however you like: email, WhatsApp, Slack.' },
 ];
 
@@ -194,10 +194,18 @@ const HowItWorks: React.FC = () => (
     </section>
 );
 
-const TEMPLATE_INFO: Record<InvoiceTemplate, { name: string; body: string }> = {
-    classic: { name: 'Classic', body: 'Black and white with strong rules. At home in any inbox and prints well on anything.' },
-    modern: { name: 'Modern', body: 'A confident colour header and airy table. Suits studios, agencies and product teams.' },
-    elegant: { name: 'Elegant', body: 'Serif headings and warm tones. Right for consultants, events and hospitality.' },
+// Longer descriptions for the landing page; names come from the template registry.
+const TEMPLATE_BLURBS: Record<InvoiceTemplate, string> = {
+    classic: 'Black and white with strong rules. At home in any inbox and prints well on anything.',
+    modern: 'A confident colour header and airy table. Suits studios, agencies and product teams.',
+    elegant: 'Serif headings and warm tones. Right for consultants, events and hospitality.',
+    bold: 'An oversized INVOICE and dark wave shapes. Hard to miss in a crowded inbox.',
+    minimal: 'Letter-spaced type between fine lines, with nothing extra. Calm and quietly premium.',
+    corporate: 'A navy header and a clear amount-due strip. Built for firms and B2B billing.',
+    boutique: 'Cream paper, serif type and a handwritten-style thank-you. Made for shops and makers.',
+    geometric: 'Teal and coral corners with a signature line. Friendly, but still formal.',
+    ledger: 'A fully ruled grid with yellow highlights, like a tidy spreadsheet. Easy to scan.',
+    studio: 'A huge type-led headline and a strict Swiss grid. For designers and creative teams.',
 };
 
 const Templates: React.FC = () => {
@@ -210,16 +218,30 @@ const Templates: React.FC = () => {
                 <Reveal>
                     <SectionHeading
                         eyebrow="Templates"
-                        title="Three designs. All of them print-ready."
+                        title="Ten designs. All of them print-ready."
                         body="Switch templates at any time without retyping anything. Your logo, currency and payment details carry across."
                     />
                     <div className="mt-10 max-w-sm">
-                        <SegmentedControl
-                            ariaLabel="Preview template"
-                            value={active}
-                            onChange={setActive}
-                            options={(Object.keys(TEMPLATE_INFO) as InvoiceTemplate[]).map((id) => ({ value: id, label: TEMPLATE_INFO[id].name }))}
-                        />
+                        <div role="radiogroup" aria-label="Preview template" className="flex flex-wrap gap-2">
+                            {TEMPLATES.map((template) => {
+                                const isActive = template.id === active;
+                                return (
+                                    <button
+                                        key={template.id}
+                                        type="button"
+                                        role="radio"
+                                        aria-checked={isActive}
+                                        onClick={() => setActive(template.id)}
+                                        className={cn(
+                                            'h-8 rounded-full border px-3.5 text-[13px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40',
+                                            isActive ? 'border-ink bg-ink text-canvas' : 'border-line-strong text-ink-muted hover:border-ink-faint hover:text-ink'
+                                        )}
+                                    >
+                                        {template.name}
+                                    </button>
+                                );
+                            })}
+                        </div>
                         <AnimatePresence mode="wait" initial={false}>
                             <motion.p
                                 key={active}
@@ -229,7 +251,7 @@ const Templates: React.FC = () => {
                                 transition={{ duration: 0.2 }}
                                 className="mt-5 min-h-12 text-[15px] leading-relaxed text-ink-muted"
                             >
-                                {TEMPLATE_INFO[active].body}
+                                {TEMPLATE_BLURBS[active]}
                             </motion.p>
                         </AnimatePresence>
                     </div>

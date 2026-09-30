@@ -1,28 +1,16 @@
 import { forwardRef } from 'react';
 import { useInvoice } from '../../../store/InvoiceContext';
-import { ClassicTemplate, ModernTemplate, ElegantTemplate } from './templates';
+import { getTemplate } from './templates/registry';
 
 export const InvoicePreview = forwardRef<HTMLDivElement>((_, ref) => {
     const { invoice } = useInvoice();
-
-    const renderTemplate = () => {
-        switch (invoice.template) {
-            case 'modern':
-                return <ModernTemplate invoice={invoice} />;
-            case 'elegant':
-                return <ElegantTemplate invoice={invoice} />;
-            case 'classic':
-            default:
-                return <ClassicTemplate invoice={invoice} />;
-        }
-    };
+    const Template = getTemplate(invoice.template).component;
 
     return (
         <div ref={ref} id="invoice-preview">
-            {renderTemplate()}
+            <Template invoice={invoice} />
         </div>
     );
 });
 
 InvoicePreview.displayName = 'InvoicePreview';
-
